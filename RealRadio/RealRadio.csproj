@@ -35,6 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="../AudioStreamer/AudioStreamer.csproj" />
     <ProjectReference Include="../AudioStreamer.MediaFoundation/AudioStreamer.MediaFoundation.csproj" />
+    <ProjectReference Include="../YtDlp/YtDlp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +59,8 @@
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.MediaFoundation.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\NAudio*.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\YtDlp.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\YoutubeDLSharp.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,6 +71,7 @@
     <CopyToPluginFolder Include="$(TargetDir)\RealRadio.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.MediaFoundation.pdb" />
+    <CopyToPluginFolder Include="$(TargetDir)\YtDlp.pdb" />
   </ItemGroup>
 
   <Target Name="CopyToPluginFolder" AfterTargets="PostBuildEvent" Condition="'$(CI)' == ''" Outputs="%(PluginFolder.Identity)">
