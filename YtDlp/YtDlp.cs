@@ -98,7 +98,23 @@ public class YtDlp
         }
         else
         {
-            VideoData videoData = JsonConvert.DeserializeObject<VideoData>(await File.ReadAllTextAsync(filePath))!;
+            VideoData videoData;
+
+            try
+            {
+                // Try to read deserialize cached video data
+                videoData = JsonConvert.DeserializeObject<VideoData>(await File.ReadAllTextAsync(filePath))!;
+            }
+            catch
+            {
+                // Re-fetch video data if it fails
+                result = await youtubeDL.RunVideoDataFetch(url, cancellationToken);
+
+                // Save fetched video data again
+                await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
+                videoData = result.Data;
+            }
+
             result = new RunResult<VideoData>(true, error: [], result: videoData);
         }
 
