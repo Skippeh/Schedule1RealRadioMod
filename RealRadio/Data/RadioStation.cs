@@ -22,6 +22,14 @@ public class RadioStation : ScriptableObject
     public string? Url;
 
     /// <summary>
+    /// If <see cref="Type"/> is <see cref="RadioType.YtDlp"/>, this is the urls of all the video/audio files to play on this station.
+    /// The files will be played in a random order.
+    ///
+    /// The files are downloaded and converted to an audio file using yt-dlp.
+    /// </summary>
+    public string[]? Urls;
+
+    /// <summary>
     /// Whether or not this radio station can be played by NPCs. This applies for vehicles driven by NPCs and random houses around the map.
     /// </summary>
     public bool CanBePlayedByNPCs = true;

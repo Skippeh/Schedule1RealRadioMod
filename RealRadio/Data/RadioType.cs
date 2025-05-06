@@ -4,4 +4,5 @@ using System;
 public enum RadioType
 {
     InternetRadio,
+    YtDlp,
 }
