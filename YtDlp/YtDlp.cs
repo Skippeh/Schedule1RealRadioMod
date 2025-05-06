@@ -68,14 +68,16 @@ public class YtDlp
         await DownloadBinaries();
 
         var urlHash = HashUrl(url);
-        if (File.Exists(Path.Combine(audioFilesPath, $"{urlHash}.mp3")))
-            return new RunResult<string>(true, error: [], result: Path.Combine(audioFilesPath, $"{urlHash}.mp3"));
+        string filePath = $"{urlHash}.mp3";
+
+        if (File.Exists(Path.Combine(audioFilesPath, filePath)))
+            return new RunResult<string>(true, error: [], result: Path.Combine(audioFilesPath, filePath));
 
         var options = new OptionSet()
         {
             CacheDir = ytDlpCachePath,
             AudioQuality = 3,
-            Output = Path.Combine(audioFilesPath, $"{urlHash}.mp3"),
+            Output = Path.Combine(audioFilesPath, filePath),
         };
 
         return await youtubeDL.RunAudioDownload(url, AudioConversionFormat.Mp3, cancellationToken, progress, output, options);
