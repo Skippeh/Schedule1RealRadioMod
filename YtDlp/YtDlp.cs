@@ -70,7 +70,6 @@ public class YtDlp
         {
             CacheDir = ytDlpCachePath,
             AudioQuality = 3,
-            NoCheckCertificates = true,
             Output = Path.Combine(audioFilesPath, $"{urlHash}.mp3"),
         };
 
