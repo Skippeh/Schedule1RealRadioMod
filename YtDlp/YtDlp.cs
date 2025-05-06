@@ -78,6 +78,7 @@ public class YtDlp
 
     public async Task<RunResult<VideoData>> DownloadMetaData(string url, CancellationToken cancellationToken)
     {
+        await DownloadBinaries();
         uint urlHash = HashUrl(url);
         string filePath = Path.Combine(audioFilesPath, $"{urlHash}.json");
         RunResult<VideoData> result;
