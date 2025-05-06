@@ -107,6 +107,8 @@ public class YtDlp
 
     private uint HashUrl(string url)
     {
-        return url.GetStableHashCode();
+        var uri = new Uri(url);
+        url = uri.Host + uri.PathAndQuery;
+        return uri.PathAndQuery.GetStableHashCode();
     }
 }
