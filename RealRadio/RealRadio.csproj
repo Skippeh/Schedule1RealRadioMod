@@ -58,6 +58,7 @@
     <CopyToPluginFolder Include="$(TargetDir)\RealRadio.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.MediaFoundation.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\HashUtility.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\NAudio*.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\YtDlp.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\YoutubeDLSharp.dll" />
@@ -71,6 +72,7 @@
     <CopyToPluginFolder Include="$(TargetDir)\RealRadio.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.MediaFoundation.pdb" />
+    <CopyToPluginFolder Include="$(TargetDir)\HashUtility.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\YtDlp.pdb" />
   </ItemGroup>
 
