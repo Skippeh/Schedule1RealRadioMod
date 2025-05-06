@@ -18,6 +18,7 @@ public class YtDlp
     private readonly string audioFilesPath;
     private readonly string ytDlpCachePath;
     private Task? downloadBinariesTask;
+    private bool binariesDownloaded;
 
     private Dictionary<string, Task> downloadTasks = [];
 
@@ -55,7 +56,11 @@ public class YtDlp
             return;
         }
 
+        if (binariesDownloaded)
+            return;
+
         await Utils.DownloadBinaries(skipExisting: true, directoryPath: binariesPath);
+        binariesDownloaded = true;
     }
 
     public async Task<RunResult<string>> DownloadAudioFile(string url, CancellationToken cancellationToken, IProgress<DownloadProgress>? progress, IProgress<string>? output = null)
