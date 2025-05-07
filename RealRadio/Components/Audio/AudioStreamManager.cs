@@ -70,10 +70,10 @@ public class AudioStreamManager : MonoBehaviour
         switch (station.Type)
         {
             case RadioType.InternetRadio:
-                controller = go.AddComponent<InternetRadioController>();
+                controller = go.AddComponent<InternetRadioHostController>();
                 break;
             case RadioType.YtDlp:
-                controller = go.AddComponent<YtDlpRadioController>();
+                controller = go.AddComponent<YtDlpHostController>();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(station.Type), station.Type, "Unknown radio type");

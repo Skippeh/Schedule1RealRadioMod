@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RealRadio.Components.Audio.HostControllers;
 
-public class YtDlpRadioController : HostController
+public class YtDlpHostController : HostController
 {
     private Dictionary<int, string> audioFilePaths = [];
 

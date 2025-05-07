@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RealRadio.Components.Audio.HostControllers;
 
-public class InternetRadioController : HostController
+public class InternetRadioHostController : HostController
 {
     protected override void Awake()
     {
