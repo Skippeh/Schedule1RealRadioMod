@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
-using RealRadio.Components.Audio.RadioControllers;
+using RealRadio.Components.Audio.HostControllers;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
 using UnityEngine;
@@ -65,7 +65,7 @@ public class AudioStreamManager : MonoBehaviour
 
         var host = go.AddComponent<StreamAudioHost>();
 
-        RadioController controller;
+        HostController controller;
 
         switch (station.Type)
         {

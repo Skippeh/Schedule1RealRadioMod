@@ -3,9 +3,9 @@ using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using UnityEngine;
 
-namespace RealRadio.Components.Audio.RadioControllers;
+namespace RealRadio.Components.Audio.HostControllers;
 
-public class InternetRadioController : RadioController
+public class InternetRadioController : HostController
 {
     protected override void Awake()
     {

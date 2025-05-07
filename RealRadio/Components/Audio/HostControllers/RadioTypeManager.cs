@@ -2,10 +2,10 @@ using System;
 using RealRadio.Data;
 using UnityEngine;
 
-namespace RealRadio.Components.Audio.RadioControllers;
+namespace RealRadio.Components.Audio.HostControllers;
 
 [RequireComponent(typeof(StreamAudioHost))]
-public class RadioController : MonoBehaviour
+public class HostController : MonoBehaviour
 {
     [NonSerialized]
     public RadioStation Station = null!;
