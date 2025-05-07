@@ -63,7 +63,7 @@ public class YtDlp
         binariesDownloaded = true;
     }
 
-    public async Task<RunResult<string>> DownloadAudioFile(string url, CancellationToken cancellationToken, IProgress<DownloadProgress>? progress, IProgress<string>? output = null)
+    public async Task<string> DownloadAudioFile(string url, CancellationToken cancellationToken, IProgress<DownloadProgress>? progress, IProgress<string>? output = null)
     {
         await DownloadBinaries();
 
@@ -71,7 +71,7 @@ public class YtDlp
         string filePath = $"{urlHash}.mp3";
 
         if (File.Exists(Path.Combine(audioFilesPath, filePath)))
-            return new RunResult<string>(true, error: [], result: Path.Combine(audioFilesPath, filePath));
+            return Path.Combine(audioFilesPath, filePath);
 
         var options = new OptionSet()
         {
@@ -80,23 +80,31 @@ public class YtDlp
             Output = Path.Combine(audioFilesPath, filePath),
         };
 
-        return await youtubeDL.RunAudioDownload(url, AudioConversionFormat.Mp3, cancellationToken, progress, output, options);
+        RunResult<string> result = await youtubeDL.RunAudioDownload(url, AudioConversionFormat.Mp3, cancellationToken, progress, output, options);
+
+        if (!result.Success)
+        {
+            throw new YtDlpVideoDownloadException(result.ErrorOutput);
+        }
+
+        return result.Data;
     }
 
-    public async Task<RunResult<VideoData>> DownloadMetaData(string url, CancellationToken cancellationToken)
+    public async Task<VideoData> DownloadMetaData(string url, CancellationToken cancellationToken)
     {
         await DownloadBinaries();
         uint urlHash = HashUrl(url);
         string filePath = Path.Combine(audioFilesPath, $"{urlHash}.json");
         RunResult<VideoData> result;
+
         if (!File.Exists(Path.Combine(audioFilesPath, $"{urlHash}.json")))
         {
             result = await youtubeDL.RunVideoDataFetch(url, cancellationToken);
 
-            if (result.Success)
-            {
-                await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
-            }
+            if (!result.Success)
+                throw new YtDlpFetchMetaDataException(result.ErrorOutput);
+
+            await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
         }
         else
         {
@@ -112,15 +120,18 @@ public class YtDlp
                 // Re-fetch video data if it fails
                 result = await youtubeDL.RunVideoDataFetch(url, cancellationToken);
 
+                if (!result.Success)
+                    throw new YtDlpFetchMetaDataException(result.ErrorOutput);
+
                 // Save fetched video data again
                 await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
                 videoData = result.Data;
             }
 
-            result = new RunResult<VideoData>(true, error: [], result: videoData);
+            result = new RunResult<VideoData>(success: true, error: [], result: videoData);
         }
 
-        return result;
+        return result.Data;
     }
 
     private uint HashUrl(string url)

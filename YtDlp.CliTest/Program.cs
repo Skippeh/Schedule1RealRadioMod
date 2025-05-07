@@ -18,11 +18,11 @@ internal class Program
         var ytDlp = new YtDlp(cachePath);
         var metaData = await ytDlp.DownloadMetaData(url, default);
 
-        Console.WriteLine($"Video name: {metaData.Data.Title}");
+        Console.WriteLine($"Video name: {metaData.Title}");
 
-        var result = await ytDlp.DownloadAudioFile(url, default, new OutputDownloadProgress(), new OutputProgress());
+        string filePath = await ytDlp.DownloadAudioFile(url, default, new OutputDownloadProgress(), new OutputProgress());
 
-        Console.WriteLine($"Success: {result.Success}, Data: {result.Data}, ErrorOutput: {string.Join("\n", result.ErrorOutput)}");
+        Console.WriteLine($"Audio file path: {filePath}");
     }
 }
 
