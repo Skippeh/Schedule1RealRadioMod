@@ -156,7 +156,7 @@ public class StreamAudioHost : MonoBehaviour
         bool startRequested = this.startRequested;
         bool stopRequested = this.stopRequested;
 
-        if (startRequested && !stopRequested)
+        if (startRequested && !stopRequested && AudioStream != null)
         {
             StartAudioStreamNow();
         }
@@ -200,7 +200,7 @@ public class StreamAudioHost : MonoBehaviour
         stopRequested = true;
     }
 
-    public void StartAudioStreamNow()
+    private void StartAudioStreamNow()
     {
         startRequested = false;
 
