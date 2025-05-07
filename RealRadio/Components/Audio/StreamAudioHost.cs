@@ -126,6 +126,7 @@ public class StreamAudioHost : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>() ?? throw new InvalidOperationException("No AudioSource component found on game object");
+        audioSource.mute = true;
     }
 
     private void Start()
@@ -310,7 +311,6 @@ public class StreamAudioHost : MonoBehaviour
 
         if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || inactiveTimer >= MaxClientInactivityTime)
         {
-            Array.Fill(data, 0);
             readingAudioData = false;
             return;
         }
