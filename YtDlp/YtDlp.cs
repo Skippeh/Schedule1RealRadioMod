@@ -48,7 +48,11 @@ public class YtDlp
         downloadBinariesTask = DownloadBinaries();
     }
 
-    private async Task DownloadBinaries()
+    /// <summary>
+    /// Downloads the binaries if they haven't been downloaded yet. This task is started automatically from the constructor, but it can be awaited by calling this method if needed.
+    /// </summary>
+    /// <returns></returns>
+    public async Task DownloadBinaries()
     {
         if (downloadBinariesTask != null)
         {
@@ -59,11 +63,14 @@ public class YtDlp
         if (binariesDownloaded)
             return;
 
-        await Utils.DownloadBinaries(skipExisting: true, directoryPath: binariesPath);
-        binariesDownloaded = true;
+        await Task.Run(async () =>
+        {
+            await Utils.DownloadBinaries(skipExisting: true, directoryPath: binariesPath);
+            binariesDownloaded = true;
+        });
     }
 
-    public async Task<string> DownloadAudioFile(string url, CancellationToken cancellationToken, IProgress<DownloadProgress>? progress, IProgress<string>? output = null)
+    public async Task<string> DownloadAudioFile(string url, CancellationToken cancellationToken, IProgress<DownloadProgress>? progress = null, IProgress<string>? output = null)
     {
         await DownloadBinaries();
 

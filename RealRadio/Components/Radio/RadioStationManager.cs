@@ -10,6 +10,7 @@ namespace RealRadio.Components.Radio;
 
 public class RadioStationManager : PersistentSingleton<RadioStationManager>
 {
+    public Action<RadioStation>? StationAdded;
     public Action? OnStationsChanged;
     public IReadOnlyList<RadioStation> Stations => stations;
     public IReadOnlyList<RadioStation> SortedStations { get; private set; } = null!;
@@ -41,6 +42,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
             npcStations.Add(stations.Count - 1, station);
 
         stationsChanged = true;
+        StationAdded?.Invoke(station);
     }
 
     public void RemoveRadioStation(RadioStation station)
