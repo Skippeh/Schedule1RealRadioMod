@@ -41,18 +41,12 @@ public class YtDlpHostController : HostController
             yield break;
         }
 
-        var filePathUrl = GetFileUrl(url);
-
-        if (filePathUrl == null)
-        {
-            Plugin.Logger.LogError($"Could not find local filepath for audio file '{url}'");
-            yield break;
-        }
+        var filePathUrl = GetFileUrl(task.Result);
 
         Host.StopAudioStream();
         yield return new WaitUntil(() => Host.AudioStream == null || !Host.AudioStream.Started);
 
-        Plugin.Logger.LogInfo($"Playing audio file '{url}'");
+        Plugin.Logger.LogInfo($"Playing audio file '{filePathUrl}'");
 
         Host.AudioStream = new MediaFoundationAudioStream(filePathUrl, resetReaderAtEof: false)
         {
@@ -61,11 +55,8 @@ public class YtDlpHostController : HostController
         Host.StartAudioStream();
     }
 
-    private string? GetFileUrl(string url)
+    private string GetFileUrl(string filePath)
     {
-        if (!YtDlpManager.Instance.AudioFilePaths.TryGetValue(url, out var filePath))
-            return null;
-
         return $"file:///{filePath}";
     }
 }
