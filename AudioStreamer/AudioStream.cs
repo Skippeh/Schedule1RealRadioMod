@@ -24,6 +24,12 @@ public abstract class AudioStream : IDisposable, IWaveProvider, ISampleProvider
 
     protected abstract int ReadInternal(byte[] buffer, int offset, int count);
 
+    public abstract bool CanSeek { get; }
+
+    public abstract long Position { get; set; }
+
+    public abstract long Length { get; }
+
     /// <summary>
     /// Used when reading floats but they need to be converted to bytes
     /// </summary>
