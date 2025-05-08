@@ -25,6 +25,8 @@ public class StreamAudioHost : MonoBehaviour
     public float[]? AudioData { get; private set; }
     public int AudioDataLength { get; private set; }
 
+    public bool StreamEnded => AudioStream?.CanSeek == true && AudioStream.Position >= AudioStream.Length;
+
     private AudioSource audioSource = null!;
     private Task? startStreamTask;
     private CancellationTokenSource? startStreamCts;
@@ -188,16 +190,20 @@ public class StreamAudioHost : MonoBehaviour
     {
         foreach (var client in spawnedClients)
             Destroy(client.gameObject);
+
+        StopAudioStreamNow();
     }
 
     public void StartAudioStream()
     {
         startRequested = true;
+        stopRequested = false;
     }
 
     public void StopAudioStream()
     {
         stopRequested = true;
+        startRequested = false;
     }
 
     private void StartAudioStreamNow()
