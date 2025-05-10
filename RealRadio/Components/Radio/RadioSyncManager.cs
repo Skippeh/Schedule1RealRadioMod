@@ -59,10 +59,20 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         var existingState = radioStates[station];
 
-        if (existingState != null && newState.SongIteration == existingState.SongIteration)
+        if (existingState != null && newState.SongIteration == existingState.SongIteration && existingState.SongIteration != null)
         {
             ReceiveSongState(conn, station, existingState);
             return;
+        }
+
+        if (newState.SongIteration == null)
+        {
+            // if this is the first time this station state has been requested set the iteration to 1,
+            // otherwise increment it
+            if (existingState?.SongIteration == null)
+                newState.SongIteration = 1;
+            else
+                newState.SongIteration = existingState.SongIteration.Value + 1;
         }
 
         if (newState.SongIndex >= station.Urls!.Length)
@@ -82,16 +92,17 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             throw new ArgumentNullException(nameof(state));
 
         if (IsClientOnly)
+        {
+            Plugin.Logger.LogInfo($"Adding to current time: {NetworkManager.TimeManager.RoundTripTime / 1000f} sec(s)");
+            state.CurrentTime += NetworkManager.TimeManager.RoundTripTime / 1000f;
             radioStates[station] = state;
+        }
 
         OnStateReceived?.Invoke(station, state);
     }
 
     private void Update()
     {
-        if (!IsServer)
-            return;
-
         foreach (var (_, state) in radioStates)
         {
             if (state.CurrentTime != null)
@@ -105,4 +116,13 @@ public record class RadioStationState
     public uint? SongIteration;
     public ushort? SongIndex;
     public float? CurrentTime;
+
+    /// <summary>
+    /// Checks if the state is valid. The state is valid if all fields have non null values.
+    /// </summary>
+    [MemberNotNullWhen(true, nameof(SongIteration), nameof(SongIndex), nameof(CurrentTime))]
+    public bool IsValid()
+    {
+        return SongIteration != null && SongIndex != null && CurrentTime != null;
+    }
 }

@@ -6,6 +6,7 @@ using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
+using RealRadio.Events;
 using ScheduleOne;
 using UnityEngine;
 
@@ -13,11 +14,32 @@ namespace RealRadio.Components.Audio.HostControllers;
 
 public class YtDlpHostController : HostController
 {
-    private uint currentSongIteration;
+    private uint? currentSongIteration;
 
     public void Play(string url, float startTime)
     {
         StartCoroutine(DownloadAndPlayAudioFile(url, startTime));
+    }
+
+    private bool PlayState(RadioStationState state)
+    {
+        if (!state.IsValid())
+        {
+            Plugin.Logger.LogWarning($"Can't play invalid song state: {state}");
+            return false;
+        }
+
+        if (state.SongIndex >= Station.Urls!.Length)
+        {
+            Plugin.Logger.LogWarning($"Received out of bounds song index: {state.SongIndex} (max {Station.Urls.Length - 1})");
+            return false;
+        }
+
+        Plugin.Logger.LogInfo($"Play state: {state}");
+
+        currentSongIteration = state.SongIteration.Value;
+        Play(Station.Urls![state.SongIndex.Value], state.CurrentTime.Value);
+        return true;
     }
 
     protected override void Awake()
@@ -25,13 +47,37 @@ public class YtDlpHostController : HostController
         base.Awake();
 
         if (Station.Type != RadioType.YtDlp)
-            throw new InvalidOperationException($"Invalid radio type: {Station.Type} (expected {RadioType.InternetRadio})");
+            throw new InvalidOperationException($"Invalid radio type: {Station.Type} (expected {RadioType.YtDlp})");
 
         if (Station.Urls is null or { Length: 0 })
             throw new ArgumentException("YtDlp radio station has no URLs");
 
         RadioSyncManager.Instance.OnStateReceived += OnStateReceived;
-        RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration + 1));
+        Host.OnStreamStartRequested += OnHostStreamStartRequested;
+        Host.OnStreamStopped += OnHostStreamStopped;
+    }
+
+    private void OnHostStreamStartRequested(EventRefData<bool> preventStart)
+    {
+        var state = RadioSyncManager.Instance.GetLocalState(Station);
+
+        if (Host.AudioStream == null)
+            preventStart.Value = true;
+
+        if (state == null || !state.IsValid())
+        {
+            preventStart.Value = true;
+            RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration));
+        }
+        else if (state.SongIteration != currentSongIteration)
+        {
+            PlayState(state);
+        }
+    }
+
+    private void OnHostStreamStopped()
+    {
+        currentSongIteration = null;
     }
 
     private void OnStateReceived(RadioStation station, RadioStationState state)
@@ -43,9 +89,7 @@ public class YtDlpHostController : HostController
             return;
 
         Plugin.Logger.LogInfo($"Received song state: {state}");
-
-        currentSongIteration = state.SongIteration!.Value;
-        Play(Station.Urls![state.SongIndex!.Value], state.CurrentTime!.Value);
+        PlayState(state);
     }
 
     private IEnumerator DownloadAndPlayAudioFile(string url, float startTime)
@@ -61,6 +105,9 @@ public class YtDlpHostController : HostController
 
         var filePathUrl = GetFileUrl(task.Result);
 
+        // we need to save and restore the current iteration because it's set to null when the stream is stopped
+        var songIteration = currentSongIteration;
+
         Host.StopAudioStream();
         yield return new WaitUntil(() => Host.AudioStream == null || !Host.AudioStream.Started);
 
@@ -70,6 +117,9 @@ public class YtDlpHostController : HostController
         {
             ResampleFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate: AudioSettings.GetSampleRate(), channels: 2),
         };
+
+        // restore song iteration
+        currentSongIteration = songIteration;
 
         Host.StartAudioStream();
 
@@ -89,7 +139,7 @@ public class YtDlpHostController : HostController
         return $"file:///{filePath}";
     }
 
-    private RadioStationState GetRandomRadioStationState(uint iteration)
+    private RadioStationState GetRandomRadioStationState(uint? iteration)
     {
         var result = new RadioStationState();
         ushort index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);

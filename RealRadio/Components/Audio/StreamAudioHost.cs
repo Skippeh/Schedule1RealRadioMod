@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AudioStreamer;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using RealRadio.Events;
 using ScheduleOne.NPCs.CharacterClasses;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class StreamAudioHost : MonoBehaviour
 
     public Action? OnStreamStarted;
     public Action? OnStreamStopped;
+    public Action<EventRefData<bool>>? OnStreamStartRequested;
 
     public AudioStream? AudioStream;
 
@@ -158,8 +160,21 @@ public class StreamAudioHost : MonoBehaviour
         bool startRequested = this.startRequested;
         bool stopRequested = this.stopRequested;
 
-        if (startRequested && !stopRequested && AudioStream != null)
+        if (startRequested && !stopRequested)
         {
+            if (startStreamTask == null && AudioStream?.Started is false or null)
+            {
+                var preventStartRefData = new EventRefData<bool>(false);
+                OnStreamStartRequested?.Invoke(preventStartRefData);
+
+                if (preventStartRefData.Value)
+                {
+                    Plugin.Logger.LogInfo("Prevented audio stream start");
+                    this.startRequested = false;
+                    return;
+                }
+            }
+
             StartAudioStreamNow();
         }
 
