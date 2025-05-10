@@ -85,7 +85,10 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         else if (newPosition < 0)
             newPosition = 0;
 
-        reader.Position = newPosition;
+        // align position with block size
+        newPosition = newPosition / reader.WaveFormat.BlockAlign * reader.WaveFormat.BlockAlign;
+
+        reader.Seek(newPosition, System.IO.SeekOrigin.Begin);
     }
 
     private MediaFoundationReader CreateMFReader()
