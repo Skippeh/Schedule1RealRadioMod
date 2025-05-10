@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: -1975342492, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
   m_Name: YtDlp Test Station
   m_EditorClassIdentifier: 
+  Id: ytdlp-test-station
   Name: YtDlp Test Station
   Abbreviation: YtDLP
   Type: 1

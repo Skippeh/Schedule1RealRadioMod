@@ -1,4 +1,8 @@
 using System;
+using FishNet.Serializing;
+using GameKit.Utilities;
+using HashUtility;
+using RealRadio.Components.Radio;
 using UnityEngine;
 
 namespace RealRadio.Data;
@@ -7,6 +11,10 @@ namespace RealRadio.Data;
 [CreateAssetMenu(fileName = "RadioStation", menuName = "RealRadio/ScriptableObjects/RadioStation")]
 public class RadioStation : ScriptableObject
 {
+    /// <summary>
+    /// The unique id of this radio station.
+    /// </summary>
+    public string? Id;
     public string? Name;
 
     /// <summary>
@@ -66,5 +74,29 @@ public class RadioStation : ScriptableObject
             RadioType.InternetRadio => Url ?? string.Empty,
             _ => throw new NotImplementedException($"Unknown type: {Type}"),
         };
+    }
+}
+
+public static class RadioStationNetworkExtensions
+{
+    public static void WriteRadioStation(this Writer writer, RadioStation value)
+    {
+        if (value.Id == null)
+            throw new ArgumentNullException(nameof(value.Id), "Station id cannot be null");
+
+        writer.Write(value.Id.GetStableHashCode());
+    }
+
+    public static RadioStation? ReadRadioStation(this Reader reader)
+    {
+        uint hashedId = reader.ReadUInt32();
+
+        if (!RadioStationManager.InstanceExists)
+            throw new InvalidOperationException("RadioStationManager does not exist at the time of reading a radio station from the network");
+
+        if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(hashedId, out var station))
+            throw new InvalidOperationException($"Could not find radio station with id {hashedId}");
+
+        return station;
     }
 }

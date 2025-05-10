@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: -1975342492, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
   m_Name: TruckersFM
   m_EditorClassIdentifier: 
+  Id: truckersfm
   Name: TruckersFM
   Abbreviation: 
   Type: 0
   Url: https://live.truckers.fm
-  DirectoryPath: 
+  Urls: []
   CanBePlayedByNPCs: 1
   Icon: {fileID: 21300000, guid: c185619007a124d4fad4095928ee983f, type: 3}
   BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
