@@ -15,6 +15,10 @@ public class RadioStation : ScriptableObject
     /// The unique id of this radio station.
     /// </summary>
     public string? Id;
+
+    /// <summary>
+    /// The name of this radio station.
+    /// </summary>
     public string? Name;
 
     /// <summary>
@@ -22,6 +26,9 @@ public class RadioStation : ScriptableObject
     /// </summary>
     public string? Abbreviation;
 
+    /// <summary>
+    /// The type of this radio station. Determines which <see cref="Components.Audio.HostControllers.HostController" /> is used to play this radio station.
+    /// </summary>
     public RadioType Type;
 
     /// <summary>
