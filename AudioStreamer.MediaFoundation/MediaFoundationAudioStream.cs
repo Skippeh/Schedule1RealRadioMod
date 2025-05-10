@@ -70,6 +70,24 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         }
     }
 
+    public override void SeekToTime(TimeSpan time)
+    {
+        if (reader == null)
+            throw new InvalidOperationException("The stream has not been started.");
+
+        if (!CanSeek)
+            throw new InvalidOperationException("The stream cannot be seeked.");
+
+        int newPosition = (int)(reader.WaveFormat.AverageBytesPerSecond * time.TotalSeconds);
+
+        if (newPosition > reader.Length)
+            newPosition = (int)reader.Length;
+        else if (newPosition < 0)
+            newPosition = 0;
+
+        reader.Position = newPosition;
+    }
+
     private MediaFoundationReader CreateMFReader()
     {
         return new MediaFoundationReader(url, new MediaFoundationReader.MediaFoundationReaderSettings

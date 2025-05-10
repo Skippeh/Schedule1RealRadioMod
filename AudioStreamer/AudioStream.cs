@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using NAudio.Wave;
 
 namespace AudioStreamer;
@@ -83,4 +84,6 @@ public abstract class AudioStream : IDisposable, IWaveProvider, ISampleProvider
             throw new NotImplementedException("Only IEEE float streams are supported");
         }
     }
+
+    public abstract void SeekToTime(TimeSpan time);
 }
