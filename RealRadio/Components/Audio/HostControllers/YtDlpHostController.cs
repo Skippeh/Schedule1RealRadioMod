@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using RealRadio.Components.YoutubeDL;
+using RealRadio.Data;
 using ScheduleOne;
 using UnityEngine;
 
@@ -12,9 +13,11 @@ namespace RealRadio.Components.Audio.HostControllers;
 
 public class YtDlpHostController : HostController
 {
-    public void Play(string url)
+    private uint currentSongIteration;
+
+    public void Play(string url, float startTime)
     {
-        StartCoroutine(DownloadAndPlayAudioFile(url));
+        StartCoroutine(DownloadAndPlayAudioFile(url, startTime));
     }
 
     protected override void Awake()
@@ -27,10 +30,25 @@ public class YtDlpHostController : HostController
         if (Station.Urls is null or { Length: 0 })
             throw new ArgumentException("YtDlp radio station has no URLs");
 
-        Play(Station.Urls[0]);
+        RadioSyncManager.Instance.OnStateReceived += OnStateReceived;
+        RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration + 1));
     }
 
-    private IEnumerator DownloadAndPlayAudioFile(string url)
+    private void OnStateReceived(RadioStation station, RadioStationState state)
+    {
+        if (station != Station)
+            return;
+
+        if (state.SongIteration == currentSongIteration)
+            return;
+
+        Plugin.Logger.LogInfo($"Received song state: {state}");
+
+        currentSongIteration = state.SongIteration!.Value;
+        Play(Station.Urls![state.SongIndex!.Value], state.CurrentTime!.Value);
+    }
+
+    private IEnumerator DownloadAndPlayAudioFile(string url, float startTime)
     {
         var task = YtDlpManager.Instance.DownloadAudioFile(url);
         yield return new WaitUntil(() => task.IsCompleted);
@@ -52,11 +70,34 @@ public class YtDlpHostController : HostController
         {
             ResampleFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate: AudioSettings.GetSampleRate(), channels: 2),
         };
+
         Host.StartAudioStream();
+
+        if (startTime > 0)
+        {
+            yield return new WaitUntil(() => Host.AudioStream != null && Host.AudioStream.Started);
+
+            if (Host.AudioStream.CanSeek)
+                Host.AudioStream.SeekToTime(TimeSpan.FromSeconds(startTime));
+            else
+                Plugin.Logger.LogWarning($"Audio stream '{filePathUrl}' does not support seeking");
+        }
     }
 
     private string GetFileUrl(string filePath)
     {
         return $"file:///{filePath}";
+    }
+
+    private RadioStationState GetRandomRadioStationState(uint iteration)
+    {
+        var result = new RadioStationState();
+        ushort index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
+
+        result.SongIndex = index;
+        result.SongIteration = iteration;
+        result.CurrentTime = 0; // todo: get random value limited by song duration in seconds
+
+        return result;
     }
 }
