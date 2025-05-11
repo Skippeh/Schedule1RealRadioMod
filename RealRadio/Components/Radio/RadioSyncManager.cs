@@ -58,7 +58,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         var existingState = radioStates[station];
 
-        if (existingState != null && newState.SongIteration == existingState.SongIteration && existingState.SongIteration != null)
+        if (existingState != null && existingState.IsValid() && (newState.SongIteration == existingState.SongIteration || newState.SongIteration == null))
         {
             ReceiveSongState(conn, station, existingState);
             return;
