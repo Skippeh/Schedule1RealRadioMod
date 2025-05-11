@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using FishNet.Connection;
 using FishNet.Object;
-using RealRadio.Components.Radio;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using UnityEngine;
 
-namespace RealRadio.Components.Audio;
+namespace RealRadio.Components.Radio;
 
 public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 {

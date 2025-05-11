@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
+using RealRadio.Components.Radio;
 using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using RealRadio.Events;
