@@ -20,6 +20,7 @@ public class StreamAudioHost : MonoBehaviour
 
     public Action? OnStreamStarted;
     public Action? OnStreamStopped;
+    public Action? OnStreamEnded;
     public Action<EventRefData<bool>>? OnStreamStartRequested;
 
     public AudioStream? AudioStream;
@@ -27,7 +28,10 @@ public class StreamAudioHost : MonoBehaviour
     public float[]? AudioData { get; private set; }
     public int AudioDataLength { get; private set; }
 
-    public bool StreamEnded => AudioStream?.CanSeek == true && AudioStream.Position >= AudioStream.Length;
+    /// <summary>
+    /// True if the audio stream is started and has read to the end.
+    /// </summary>
+    public bool StreamEnded => streamEnded == true;
 
     private AudioSource audioSource = null!;
     private Task? startStreamTask;
@@ -40,6 +44,7 @@ public class StreamAudioHost : MonoBehaviour
     private bool stopRequested;
     private bool readingAudioData;
     private bool waitingForWarmup;
+    private bool? streamEnded;
 
     public StreamAudioClient CreateClient(Transform? parent = null, Vector3? localPosition = null)
     {
@@ -152,6 +157,13 @@ public class StreamAudioHost : MonoBehaviour
                 Plugin.Logger.LogInfo("Stopping audio stream host due to inactivity");
                 StopAudioStream();
             }
+        }
+
+        if (streamEnded == true)
+        {
+            OnStreamEnded?.Invoke();
+            streamEnded = null;
+            StopAudioStreamNow();
         }
     }
 
@@ -300,6 +312,7 @@ public class StreamAudioHost : MonoBehaviour
             OnStreamStopped?.Invoke();
 
         stopRequested = false;
+        streamEnded = null;
     }
 
     private void CheckStartStreamTask()
@@ -323,6 +336,7 @@ public class StreamAudioHost : MonoBehaviour
         startStreamCts?.Dispose();
         startStreamCts = null;
 
+        streamEnded = false;
         OnStreamStarted?.Invoke();
     }
 
@@ -330,7 +344,7 @@ public class StreamAudioHost : MonoBehaviour
     {
         readingAudioData = true;
 
-        if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || inactiveTimer >= MaxClientInactivityTime)
+        if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || streamEnded == true || inactiveTimer >= MaxClientInactivityTime)
         {
             readingAudioData = false;
             return;
@@ -351,6 +365,10 @@ public class StreamAudioHost : MonoBehaviour
 
         var numFloatsRead = AudioStream.Read(AudioData, 0, data.Length);
         AudioDataLength = numFloatsRead;
+
+        if (streamEnded != null)
+            streamEnded = numFloatsRead == 0;
+
         readingAudioData = false;
     }
 
