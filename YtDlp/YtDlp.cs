@@ -97,6 +97,7 @@ public class YtDlp
                     AudioQuality = 5,
                     Output = Path.Combine(audioFilesPath, filePath),
                     Progress = true,
+                    Format = "ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b",
                 };
 
                 RunResult<string> result = await youtubeDL.RunAudioDownload(url, AudioConversionFormat.M4a, cancellationToken, progress, output, options);
