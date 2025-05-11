@@ -89,6 +89,7 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         newPosition = newPosition / reader.WaveFormat.BlockAlign * reader.WaveFormat.BlockAlign;
 
         reader.Seek(newPosition, System.IO.SeekOrigin.Begin);
+        resampler?.Reposition();
     }
 
     private MediaFoundationReader CreateMFReader()
@@ -115,7 +116,7 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         if (reader == null)
             throw new InvalidOperationException("The stream has not been started.");
 
-        Span<byte> buffer = new byte[WaveFormat.BitsPerSample / 8 * WaveFormat.Channels];
+        Span<byte> buffer = new byte[reader.BlockAlign];
         reader.Read(buffer);
         hasReadOnce = true;
     }
