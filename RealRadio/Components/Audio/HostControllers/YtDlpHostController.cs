@@ -129,7 +129,7 @@ public class YtDlpHostController : HostController
             yield return new WaitUntil(() => Host.AudioStream != null && Host.AudioStream.Started);
 
             if (Host.AudioStream.CanSeek)
-                Host.AudioStream.SeekToTime(TimeSpan.FromSeconds(startTime));
+                Host.AudioStream.CurrentTime = TimeSpan.FromSeconds(startTime);
             else
                 Plugin.Logger.LogWarning($"Audio stream '{filePathUrl}' does not support seeking");
         }

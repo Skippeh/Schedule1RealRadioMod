@@ -85,5 +85,5 @@ public abstract class AudioStream : IDisposable, IWaveProvider, ISampleProvider
         }
     }
 
-    public abstract void SeekToTime(TimeSpan time);
+    public abstract TimeSpan CurrentTime { get; set; }
 }

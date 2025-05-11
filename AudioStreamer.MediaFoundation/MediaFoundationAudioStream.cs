@@ -70,26 +70,20 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         }
     }
 
-    public override void SeekToTime(TimeSpan time)
+    public override TimeSpan CurrentTime
     {
-        if (reader == null)
-            throw new InvalidOperationException("The stream has not been started.");
+        get => reader?.CurrentTime ?? throw new InvalidOperationException("The stream has not been started.");
+        set
+        {
+            if (reader == null)
+                throw new InvalidOperationException("The stream has not been started.");
 
-        if (!CanSeek)
-            throw new InvalidOperationException("The stream cannot be seeked.");
+            if (!reader.CanSeek)
+                throw new InvalidOperationException("The stream does not support seeking.");
 
-        int newPosition = (int)(reader.WaveFormat.AverageBytesPerSecond * time.TotalSeconds);
-
-        if (newPosition > reader.Length)
-            newPosition = (int)reader.Length;
-        else if (newPosition < 0)
-            newPosition = 0;
-
-        // align position with block size
-        newPosition = newPosition / reader.WaveFormat.BlockAlign * reader.WaveFormat.BlockAlign;
-
-        reader.Seek(newPosition, System.IO.SeekOrigin.Begin);
-        resampler?.Reposition();
+            reader.CurrentTime = value;
+            resampler?.Reposition();
+        }
     }
 
     private MediaFoundationReader CreateMFReader()
