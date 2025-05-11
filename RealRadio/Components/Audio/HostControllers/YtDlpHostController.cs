@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using RealRadio.Components.Radio;
@@ -9,6 +10,7 @@ using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using RealRadio.Events;
 using ScheduleOne;
+using ScheduleOne.Interaction;
 using UnityEngine;
 
 namespace RealRadio.Components.Audio.HostControllers;
@@ -16,11 +18,8 @@ namespace RealRadio.Components.Audio.HostControllers;
 public class YtDlpHostController : HostController
 {
     private uint? currentSongIteration;
-
-    public void Play(string url, float startTime)
-    {
-        StartCoroutine(DownloadAndPlayAudioFile(url, startTime));
-    }
+    private ushort? lastSongIndex;
+    private Coroutine? downloadAndPlayAudioFileCoroutine;
 
     private bool PlayState(RadioStationState state)
     {
@@ -39,7 +38,13 @@ public class YtDlpHostController : HostController
         Plugin.Logger.LogInfo($"Play state: {state}");
 
         currentSongIteration = state.SongIteration.Value;
-        Play(Station.Urls![state.SongIndex.Value], state.CurrentTime.Value);
+        lastSongIndex = state.SongIndex.Value;
+
+        if (downloadAndPlayAudioFileCoroutine != null)
+            StopCoroutine(downloadAndPlayAudioFileCoroutine);
+
+        downloadAndPlayAudioFileCoroutine = StartCoroutine(DownloadAndPlayAudioFile(Station.Urls[state.SongIndex.Value], state.CurrentTime.Value));
+
         return true;
     }
 
@@ -56,6 +61,12 @@ public class YtDlpHostController : HostController
         RadioSyncManager.Instance.OnStateReceived += OnStateReceived;
         Host.OnStreamStartRequested += OnHostStreamStartRequested;
         Host.OnStreamStopped += OnHostStreamStopped;
+        Host.OnStreamEnded += OnHostStreamEnded;
+    }
+
+    private void OnHostStreamEnded()
+    {
+        RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration + 1, startTime: 0));
     }
 
     private void OnHostStreamStartRequested(EventRefData<bool> preventStart)
@@ -90,7 +101,9 @@ public class YtDlpHostController : HostController
             return;
 
         Plugin.Logger.LogInfo($"Received song state: {state}");
-        PlayState(state);
+
+        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null)
+            PlayState(state);
     }
 
     private IEnumerator DownloadAndPlayAudioFile(string url, float startTime)
@@ -101,6 +114,7 @@ public class YtDlpHostController : HostController
         if (task.IsFaulted)
         {
             Plugin.Logger.LogError($"Failed to download audio file '{url}':\n{task.Exception}");
+            downloadAndPlayAudioFileCoroutine = null;
             yield break;
         }
 
@@ -133,6 +147,8 @@ public class YtDlpHostController : HostController
             else
                 Plugin.Logger.LogWarning($"Audio stream '{filePathUrl}' does not support seeking");
         }
+
+        downloadAndPlayAudioFileCoroutine = null;
     }
 
     private string GetFileUrl(string filePath)
@@ -140,14 +156,22 @@ public class YtDlpHostController : HostController
         return $"file:///{filePath}";
     }
 
-    private RadioStationState GetRandomRadioStationState(uint? iteration)
+    private RadioStationState GetRandomRadioStationState(uint? iteration, float? startTime = null)
     {
         var result = new RadioStationState();
-        ushort index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
+        ushort index;
+
+        while (true)
+        {
+            index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
+
+            if (lastSongIndex != index || Station.Urls.Length <= 1)
+                break;
+        }
 
         result.SongIndex = index;
         result.SongIteration = iteration;
-        result.CurrentTime = 0; // todo: get random value limited by song duration in seconds
+        result.CurrentTime = startTime ?? 0; // todo: get random start time if startTime is null
 
         return result;
     }
