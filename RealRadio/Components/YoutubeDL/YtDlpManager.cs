@@ -22,6 +22,8 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
     public readonly IReadOnlyDictionary<string, string> AudioFilePaths;
     public readonly IReadOnlyDictionary<string, DownloadProgress> DownloadProgresses;
 
+    public Action<string, DownloadProgress>? OnDownloadProgress;
+
     private YtDlp ytDlp = null!;
     private Task downloadBinariesTask = null!;
     private readonly CancellationTokenSource ytDlpCts = new();
@@ -75,6 +77,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
             foreach (var (url, progress) in downloadProgressUpdates)
             {
                 downloadProgresses[url] = progress;
+                OnDownloadProgress?.Invoke(url, progress);
             }
 
             downloadProgressUpdates.Clear();
