@@ -76,10 +76,20 @@ public class YtDlpHostController : HostController
         if (Host.AudioStream == null)
             preventStart.Value = true;
 
+        float? currentSongDuration = null;
+
+        if (state?.IsValid() == true && YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls![state.SongIndex.Value], out var metaData))
+            currentSongDuration = metaData.Duration;
+
         if (state == null || !state.IsValid())
         {
             preventStart.Value = true;
             RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration));
+        }
+        else if (currentSongDuration != null && state.CurrentTime >= currentSongDuration.Value)
+        {
+            preventStart.Value = true;
+            RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(state.SongIteration + 1));
         }
         else if (state.SongIteration != currentSongIteration)
         {
@@ -171,7 +181,14 @@ public class YtDlpHostController : HostController
 
         result.SongIndex = index;
         result.SongIteration = iteration;
-        result.CurrentTime = startTime ?? 0; // todo: get random start time if startTime is null
+
+        if (startTime == null)
+        {
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls[index], out var metaData) && metaData.Duration.HasValue)
+                startTime = UnityEngine.Random.Range(0, metaData.Duration.Value);
+        }
+
+        result.CurrentTime = startTime ?? 0;
 
         return result;
     }
