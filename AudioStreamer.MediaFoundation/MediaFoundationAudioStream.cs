@@ -86,6 +86,8 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         }
     }
 
+    public override TimeSpan TotalTime => reader?.TotalTime ?? throw new InvalidOperationException("The stream has not been started.");
+
     private MediaFoundationReader CreateMFReader()
     {
         return new MediaFoundationReader(url, new MediaFoundationReader.MediaFoundationReaderSettings

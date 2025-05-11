@@ -86,4 +86,5 @@ public abstract class AudioStream : IDisposable, IWaveProvider, ISampleProvider
     }
 
     public abstract TimeSpan CurrentTime { get; set; }
+    public abstract TimeSpan TotalTime { get; }
 }
