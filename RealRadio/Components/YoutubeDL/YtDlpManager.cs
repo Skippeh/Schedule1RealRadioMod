@@ -33,6 +33,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
     private readonly Dictionary<string, DownloadProgress> downloadProgresses = new();
     private readonly Dictionary<string, DownloadProgress> downloadProgressUpdates = new(); // mutated by ReportDownloadProgress from a different thread
     private readonly object downloadProgressUpdatesLock = new();
+    private readonly HashSet<string> finishedDownloads = new();
 
     public YtDlpManager()
     {
@@ -57,16 +58,16 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
     private void LateUpdate()
     {
-        // remove successful downloads
-        var finishedUrls = new HashSet<string>();
+        finishedDownloads.Clear();
 
+        // remove successful downloads
         foreach (var (url, progress) in downloadProgresses)
         {
             if (progress.State == DownloadState.Success)
-                finishedUrls.Add(url);
+                finishedDownloads.Add(url);
         }
 
-        foreach (var url in finishedUrls)
+        foreach (var url in finishedDownloads)
         {
             downloadProgresses.Remove(url);
         }
