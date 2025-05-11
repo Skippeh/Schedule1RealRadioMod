@@ -23,12 +23,12 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
     private Task downloadBinariesTask = null!;
     private readonly CancellationTokenSource ytDlpCts = new();
 
-    private readonly Dictionary<string, VideoData> metaDataPaths = new();
+    private readonly Dictionary<string, VideoData> metaData = new();
     private readonly Dictionary<string, string> audioFilePaths = new();
 
     public YtDlpManager()
     {
-        AudioMetaData = new ReadOnlyDictionary<string, VideoData>(metaDataPaths);
+        AudioMetaData = new ReadOnlyDictionary<string, VideoData>(metaData);
         AudioFilePaths = new ReadOnlyDictionary<string, string>(audioFilePaths);
     }
 
@@ -93,14 +93,14 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
     public async Task<VideoData> FetchMetaData(string url)
     {
-        if (metaDataPaths.TryGetValue(url, out var metaData))
+        if (this.metaData.TryGetValue(url, out var metaData))
             return metaData;
 
         if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? _))
             throw new UriFormatException($"Invalid URL '{url}'");
 
         metaData = await ytDlp.DownloadMetaData(url, ytDlpCts.Token);
-        metaDataPaths[url] = metaData;
+        this.metaData[url] = metaData;
         return metaData;
     }
 
