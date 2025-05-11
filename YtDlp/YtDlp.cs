@@ -96,6 +96,7 @@ public class YtDlp
                     CacheDir = ytDlpCachePath,
                     AudioQuality = 5,
                     Output = Path.Combine(audioFilesPath, filePath),
+                    Progress = true,
                 };
 
                 RunResult<string> result = await youtubeDL.RunAudioDownload(url, AudioConversionFormat.M4a, cancellationToken, progress, output, options);

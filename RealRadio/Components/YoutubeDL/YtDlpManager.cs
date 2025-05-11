@@ -5,10 +5,12 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using UnityEngine;
+using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
 
 // todo: rename to something else since it supports more than youtube (but not YtDlp because that conflicts with the YtDlp class)
@@ -18,6 +20,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 {
     public readonly IReadOnlyDictionary<string, VideoData> AudioMetaData;
     public readonly IReadOnlyDictionary<string, string> AudioFilePaths;
+    public readonly IReadOnlyDictionary<string, DownloadProgress> DownloadProgresses;
 
     private YtDlp ytDlp = null!;
     private Task downloadBinariesTask = null!;
@@ -25,11 +28,15 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
     private readonly Dictionary<string, VideoData> metaData = new();
     private readonly Dictionary<string, string> audioFilePaths = new();
+    private readonly Dictionary<string, DownloadProgress> downloadProgresses = new();
+    private readonly Dictionary<string, DownloadProgress> downloadProgressUpdates = new(); // mutated by ReportDownloadProgress from a different thread
+    private readonly object downloadProgressUpdatesLock = new();
 
     public YtDlpManager()
     {
         AudioMetaData = new ReadOnlyDictionary<string, VideoData>(metaData);
         AudioFilePaths = new ReadOnlyDictionary<string, string>(audioFilePaths);
+        DownloadProgresses = new ReadOnlyDictionary<string, DownloadProgress>(downloadProgresses);
     }
 
     public override void Awake()
@@ -44,6 +51,34 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         foreach (var station in RadioStationManager.Instance.Stations)
             OnRadioStationAdded(station);
+    }
+
+    private void LateUpdate()
+    {
+        // remove successful downloads
+        var finishedUrls = new HashSet<string>();
+
+        foreach (var (url, progress) in downloadProgresses)
+        {
+            if (progress.State == DownloadState.Success)
+                finishedUrls.Add(url);
+        }
+
+        foreach (var url in finishedUrls)
+        {
+            downloadProgresses.Remove(url);
+        }
+
+        // add updates from other threads
+        lock (downloadProgressUpdatesLock)
+        {
+            foreach (var (url, progress) in downloadProgressUpdates)
+            {
+                downloadProgresses[url] = progress;
+            }
+
+            downloadProgressUpdates.Clear();
+        }
     }
 
     private static string GetCachePath()
@@ -115,7 +150,6 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         Plugin.Logger.LogInfo($"Downloading (if not cached) audio file '{url}'...");
 
         var metaDataTask = FetchMetaData(url);
-        var audioTask = ytDlp.DownloadAudioFile(url, ytDlpCts.Token);
 
         var metaData = await metaDataTask;
 
@@ -124,7 +158,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
             throw new ArgumentException("Live streams are not supported");
         }
 
-        var filePath = await audioTask;
+        string filePath = await ytDlp.DownloadAudioFile(url, ytDlpCts.Token, progress: new ReportDownloadProgress(this, url));
         audioFilePaths[url] = filePath;
         return filePath;
     }
@@ -141,5 +175,14 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         }
 
         Plugin.Logger.LogInfo($"Audio file '{url}' downloaded: {task.Result}");
+    }
+
+    private class ReportDownloadProgress(YtDlpManager manager, string url) : IProgress<DownloadProgress>
+    {
+        public void Report(DownloadProgress value)
+        {
+            lock (manager.downloadProgressUpdatesLock)
+                manager.downloadProgressUpdates[url] = value;
+        }
     }
 }
