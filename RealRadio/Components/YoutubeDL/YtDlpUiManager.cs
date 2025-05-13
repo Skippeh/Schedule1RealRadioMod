@@ -15,6 +15,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
     private VisualElement downloadIndicator = null!;
     private VisualElement downloadIndicatorSpinIcon = null!;
+    private Label noActiveDownloadsLabel = null!;
 
     public bool DownloadIndicatorVisible
     {
@@ -28,6 +29,18 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         }
     }
 
+    public bool NoActiveDownloadsLabelVisible
+    {
+        get => noActiveDownloadsLabel.classList.Contains("visible");
+        set
+        {
+            if (value && !NoActiveDownloadsLabelVisible)
+                noActiveDownloadsLabel.AddToClassList("visible");
+            else if (!value && NoActiveDownloadsLabelVisible)
+                noActiveDownloadsLabel.RemoveFromClassList("visible");
+        }
+    }
+
     public override void Awake()
     {
         base.Awake();
@@ -35,6 +48,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         Document = GetComponent<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object");
         downloadIndicator = Document.rootVisualElement.Query(name: "DownloadIndicator").First() ?? throw new InvalidOperationException("Could not find download indicator ui element");
         downloadIndicatorSpinIcon = downloadIndicator.Query(className: "icon-spinning").First() ?? throw new InvalidOperationException("Could not find download indicator's spin icon ui element");
+        noActiveDownloadsLabel = Document.rootVisualElement.Query<Label>(name: "NoActiveDownloadsLabel").First() ?? throw new InvalidOperationException("Could not find no active downloads label ui element");
 
         foreach (var (url, progress) in YtDlpManager.Instance.DownloadProgresses)
             OnDownloadProgressUpdate(url, progress);
@@ -48,8 +62,9 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
     private void Update()
     {
-        bool visible = YtDlpManager.Instance.DownloadProgresses.Count > 0;
-        DownloadIndicatorVisible = visible;
+        bool downloadsInProgress = YtDlpManager.Instance.DownloadProgresses.Count > 0;
+        DownloadIndicatorVisible = downloadsInProgress;
+        NoActiveDownloadsLabelVisible = !downloadsInProgress;
         downloadIndicatorSpinIcon.style.rotate = new StyleRotate(new UnityEngine.UIElements.Rotate(new Angle((float)(Time.realtimeSinceStartupAsDouble * LoadingIconSpinDegreesPerSecond % 360d), AngleUnit.Degree)));
     }
 }

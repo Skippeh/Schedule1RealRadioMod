@@ -4,9 +4,6 @@
 }
 
 #DownloadIndicator {
-    position: absolute;
-    left: 0;
-    top: 0;
     width: 50px;
     height: 50px;
     margin: 20px;
@@ -37,4 +34,45 @@
     height: 100%;
     position: absolute;
     background-image: url("project://database/Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/LoadingIcon.psd?fileID=-2039952054629986669&guid=71e7d8900a058cc45bda1d493f219f29&type=3#Circle")
+}
+
+#DownloadList {
+    width: 500px;
+    display: none;
+    margin: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#DownloadList.visible {
+    display: flex;
+}
+
+#DownloadList > .header {
+    background-color:rgba(23, 105, 16, 0.8);
+    font-weight: bold;
+    color: #fff;
+}
+
+#DownloadList > .header > Label {
+    margin: 10px 10px;
+    -unity-font-style: bold;
+}
+
+#DownloadList > .contents {
+    background-color:rgba(200, 200, 200, 0.6);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    flex: 1;
+    flex-direction: column;
+    padding: 10px;
+    margin: 0 2px;
+}
+
+#NoActiveDownloadsLabel {
+    display: none;
+}
+
+#NoActiveDownloadsLabel.visible {
+    display: flex;
 }

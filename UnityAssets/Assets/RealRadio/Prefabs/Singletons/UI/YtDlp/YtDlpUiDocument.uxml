@@ -5,5 +5,13 @@
             <ui:VisualElement class="icon" />
             <ui:VisualElement class="icon-spinning" />
         </ui:VisualElement>
+        <ui:VisualElement name="DownloadList" class="visible">
+            <ui:VisualElement class="header">
+                <ui:Label text="Active YtDlp Downloads" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            </ui:VisualElement>
+            <ui:VisualElement class="contents">
+                <ui:Label text="There are no active downloads." name="NoActiveDownloadsLabel" class="visible" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
