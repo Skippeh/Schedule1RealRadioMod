@@ -41,6 +41,10 @@
     border-radius: 3px;
 }
 
+#ProgressBar.error .unity-progress-bar__progress {
+    background-color:rgb(255, 20, 20);
+}
+
 .unity-progress-bar__title {
     display: none;
 }
