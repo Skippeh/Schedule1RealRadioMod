@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/SubElements/ListItemStyle.uss?fileID=7433441132597879392&amp;guid=be8d7cb4c5b3dd145ae94815e79927f5&amp;type=3#ListItemStyle" />
     <ui:VisualElement name="Root">
         <ui:VisualElement class="name-and-buttons" style="flex-grow: 1;">
-            <ui:Label text="Really long name of a video that&apos;s being downloaded that will be cut off due to being so long" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Name" />
+            <ui:Label text="Really long name of a video that&apos;s being downloaded that will be cut off due to being so long" parse-escape-sequences="false" display-tooltip-when-elided="true" name="Name" enable-rich-text="false" />
             <ui:VisualElement name="ButtonsContainer" class="buttons-container" style="flex-grow: 1;">
                 <ui:Button text="Button 1" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="false" />
                 <ui:Button text="Button 2" parse-escape-sequences="true" display-tooltip-when-elided="true" focusable="false" />
