@@ -77,12 +77,12 @@ Label {
     overflow-x: hidden;
     flex: 1;
     flex-direction: column;
-    padding: 10px;
     margin: 0 2px;
 }
 
 #NoActiveDownloadsLabel {
     display: none;
+    padding: 14px;
 }
 
 #NoActiveDownloadsLabel.visible {
