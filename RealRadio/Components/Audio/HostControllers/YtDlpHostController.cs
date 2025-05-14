@@ -43,7 +43,7 @@ public class YtDlpHostController : HostController
         if (downloadAndPlayAudioFileCoroutine != null)
             StopCoroutine(downloadAndPlayAudioFileCoroutine);
 
-        downloadAndPlayAudioFileCoroutine = StartCoroutine(DownloadAndPlayAudioFile(Station.Urls[state.SongIndex.Value], state.CurrentTime.Value));
+        downloadAndPlayAudioFileCoroutine = StartCoroutine(DownloadAndPlayAudioFile(Station.Urls[state.SongIndex.Value], () => state.CurrentTime.Value));
 
         return true;
     }
@@ -116,7 +116,7 @@ public class YtDlpHostController : HostController
             PlayState(state);
     }
 
-    private IEnumerator DownloadAndPlayAudioFile(string url, float startTime)
+    private IEnumerator DownloadAndPlayAudioFile(string url, Func<float>? getStartTime = null)
     {
         var task = YtDlpManager.Instance.DownloadAudioFile(url);
         yield return new WaitUntil(() => task.IsCompleted);
@@ -148,6 +148,7 @@ public class YtDlpHostController : HostController
 
         Host.StartAudioStream();
 
+        float startTime = getStartTime?.Invoke() ?? 0f;
         if (startTime > 0)
         {
             yield return new WaitUntil(() => Host.AudioStream != null && Host.AudioStream.Started);
