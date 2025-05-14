@@ -1,4 +1,8 @@
 using System;
+using FishNet.Serializing;
+using GameKit.Utilities;
+using HashUtility;
+using RealRadio.Components.Radio;
 using UnityEngine;
 
 namespace RealRadio.Data;
@@ -7,6 +11,14 @@ namespace RealRadio.Data;
 [CreateAssetMenu(fileName = "RadioStation", menuName = "RealRadio/ScriptableObjects/RadioStation")]
 public class RadioStation : ScriptableObject
 {
+    /// <summary>
+    /// The unique id of this radio station.
+    /// </summary>
+    public string? Id;
+
+    /// <summary>
+    /// The name of this radio station.
+    /// </summary>
     public string? Name;
 
     /// <summary>
@@ -14,12 +26,23 @@ public class RadioStation : ScriptableObject
     /// </summary>
     public string? Abbreviation;
 
+    /// <summary>
+    /// The type of this radio station. Determines which <see cref="Components.Audio.HostControllers.HostController" /> is used to play this radio station.
+    /// </summary>
     public RadioType Type;
 
     /// <summary>
     /// If <see cref="Type"/> is <see cref="RadioType.InternetRadio"/>, this is the url of the internet radio.
     /// </summary>
     public string? Url;
+
+    /// <summary>
+    /// If <see cref="Type"/> is <see cref="RadioType.YtDlp"/>, this is the urls of all the video/audio files to play on this station.
+    /// The files will be played in a random order.
+    ///
+    /// The files are downloaded and converted to an audio file using yt-dlp.
+    /// </summary>
+    public string[]? Urls;
 
     /// <summary>
     /// Whether or not this radio station can be played by NPCs. This applies for vehicles driven by NPCs and random houses around the map.
@@ -58,5 +81,29 @@ public class RadioStation : ScriptableObject
             RadioType.InternetRadio => Url ?? string.Empty,
             _ => throw new NotImplementedException($"Unknown type: {Type}"),
         };
+    }
+}
+
+public static class RadioStationNetworkExtensions
+{
+    public static void WriteRadioStation(this Writer writer, RadioStation value)
+    {
+        if (value.Id == null)
+            throw new ArgumentNullException(nameof(value.Id), "Station id cannot be null");
+
+        writer.Write(value.Id.GetStableHashCode());
+    }
+
+    public static RadioStation? ReadRadioStation(this Reader reader)
+    {
+        uint hashedId = reader.ReadUInt32();
+
+        if (!RadioStationManager.InstanceExists)
+            throw new InvalidOperationException("RadioStationManager does not exist at the time of reading a radio station from the network");
+
+        if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(hashedId, out var station))
+            throw new InvalidOperationException($"Could not find radio station with id {hashedId}");
+
+        return station;
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using NAudio.Wave;
 
 namespace AudioStreamer;
@@ -23,6 +24,12 @@ public abstract class AudioStream : IDisposable, IWaveProvider, ISampleProvider
     public abstract void WarmupReader();
 
     protected abstract int ReadInternal(byte[] buffer, int offset, int count);
+
+    public abstract bool CanSeek { get; }
+
+    public abstract long Position { get; set; }
+
+    public abstract long Length { get; }
 
     /// <summary>
     /// Used when reading floats but they need to be converted to bytes
@@ -77,4 +84,7 @@ public abstract class AudioStream : IDisposable, IWaveProvider, ISampleProvider
             throw new NotImplementedException("Only IEEE float streams are supported");
         }
     }
+
+    public abstract TimeSpan CurrentTime { get; set; }
+    public abstract TimeSpan TotalTime { get; }
 }

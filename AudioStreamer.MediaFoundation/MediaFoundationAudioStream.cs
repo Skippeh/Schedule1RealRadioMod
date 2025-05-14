@@ -30,6 +30,64 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
     /// </summary>
     public override WaveFormat WaveFormat => resampler?.WaveFormat ?? reader?.WaveFormat ?? throw new InvalidOperationException("The stream has not been started.");
 
+    public override bool CanSeek
+    {
+        get
+        {
+            if (reader == null)
+                throw new InvalidOperationException("The stream has not been started.");
+
+            return reader.CanSeek;
+        }
+    }
+
+    public override long Position
+    {
+        get
+        {
+            if (reader == null)
+                throw new InvalidOperationException("The stream has not been started.");
+
+            return reader.Position;
+        }
+        set
+        {
+            if (reader == null)
+                throw new InvalidOperationException("The stream has not been started.");
+
+            reader.Position = value;
+        }
+    }
+
+    public override long Length
+    {
+        get
+        {
+            if (reader == null)
+                throw new InvalidOperationException("The stream has not been started.");
+
+            return reader.Length;
+        }
+    }
+
+    public override TimeSpan CurrentTime
+    {
+        get => reader?.CurrentTime ?? throw new InvalidOperationException("The stream has not been started.");
+        set
+        {
+            if (reader == null)
+                throw new InvalidOperationException("The stream has not been started.");
+
+            if (!reader.CanSeek)
+                throw new InvalidOperationException("The stream does not support seeking.");
+
+            reader.CurrentTime = value;
+            resampler?.Reposition();
+        }
+    }
+
+    public override TimeSpan TotalTime => reader?.TotalTime ?? throw new InvalidOperationException("The stream has not been started.");
+
     private MediaFoundationReader CreateMFReader()
     {
         return new MediaFoundationReader(url, new MediaFoundationReader.MediaFoundationReaderSettings
@@ -54,7 +112,7 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
         if (reader == null)
             throw new InvalidOperationException("The stream has not been started.");
 
-        Span<byte> buffer = new byte[WaveFormat.BitsPerSample / 8 * WaveFormat.Channels];
+        Span<byte> buffer = new byte[reader.BlockAlign];
         reader.Read(buffer);
         hasReadOnce = true;
     }

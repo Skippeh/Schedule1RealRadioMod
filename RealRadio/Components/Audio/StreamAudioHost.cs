@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AudioStreamer;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using RealRadio.Events;
 using ScheduleOne.NPCs.CharacterClasses;
 using UnityEngine;
 
@@ -19,11 +20,18 @@ public class StreamAudioHost : MonoBehaviour
 
     public Action? OnStreamStarted;
     public Action? OnStreamStopped;
+    public Action? OnStreamEnded;
+    public Action<EventRefData<bool>>? OnStreamStartRequested;
 
     public AudioStream? AudioStream;
 
     public float[]? AudioData { get; private set; }
     public int AudioDataLength { get; private set; }
+
+    /// <summary>
+    /// True if the audio stream is started and has read to the end.
+    /// </summary>
+    public bool StreamEnded => streamEnded == true;
 
     private AudioSource audioSource = null!;
     private Task? startStreamTask;
@@ -36,6 +44,7 @@ public class StreamAudioHost : MonoBehaviour
     private bool stopRequested;
     private bool readingAudioData;
     private bool waitingForWarmup;
+    private bool? streamEnded;
 
     public StreamAudioClient CreateClient(Transform? parent = null, Vector3? localPosition = null)
     {
@@ -126,6 +135,7 @@ public class StreamAudioHost : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>() ?? throw new InvalidOperationException("No AudioSource component found on game object");
+        audioSource.mute = true;
     }
 
     private void Start()
@@ -148,6 +158,13 @@ public class StreamAudioHost : MonoBehaviour
                 StopAudioStream();
             }
         }
+
+        if (streamEnded == true)
+        {
+            OnStreamEnded?.Invoke();
+            streamEnded = null;
+            StopAudioStreamNow();
+        }
     }
 
     private void LateUpdate()
@@ -157,6 +174,19 @@ public class StreamAudioHost : MonoBehaviour
 
         if (startRequested && !stopRequested)
         {
+            if (startStreamTask == null && AudioStream?.Started is false or null)
+            {
+                var preventStartRefData = new EventRefData<bool>(false);
+                OnStreamStartRequested?.Invoke(preventStartRefData);
+
+                if (preventStartRefData.Value)
+                {
+                    Plugin.Logger.LogInfo("Prevented audio stream start");
+                    this.startRequested = false;
+                    return;
+                }
+            }
+
             StartAudioStreamNow();
         }
 
@@ -187,19 +217,23 @@ public class StreamAudioHost : MonoBehaviour
     {
         foreach (var client in spawnedClients)
             Destroy(client.gameObject);
+
+        StopAudioStreamNow();
     }
 
     public void StartAudioStream()
     {
         startRequested = true;
+        stopRequested = false;
     }
 
     public void StopAudioStream()
     {
         stopRequested = true;
+        startRequested = false;
     }
 
-    public void StartAudioStreamNow()
+    private void StartAudioStreamNow()
     {
         startRequested = false;
 
@@ -278,6 +312,7 @@ public class StreamAudioHost : MonoBehaviour
             OnStreamStopped?.Invoke();
 
         stopRequested = false;
+        streamEnded = null;
     }
 
     private void CheckStartStreamTask()
@@ -301,6 +336,7 @@ public class StreamAudioHost : MonoBehaviour
         startStreamCts?.Dispose();
         startStreamCts = null;
 
+        streamEnded = false;
         OnStreamStarted?.Invoke();
     }
 
@@ -308,9 +344,8 @@ public class StreamAudioHost : MonoBehaviour
     {
         readingAudioData = true;
 
-        if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || inactiveTimer >= MaxClientInactivityTime)
+        if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || streamEnded == true || inactiveTimer >= MaxClientInactivityTime)
         {
-            Array.Fill(data, 0);
             readingAudioData = false;
             return;
         }
@@ -330,6 +365,10 @@ public class StreamAudioHost : MonoBehaviour
 
         var numFloatsRead = AudioStream.Read(AudioData, 0, data.Length);
         AudioDataLength = numFloatsRead;
+
+        if (streamEnded != null)
+            streamEnded = numFloatsRead == 0;
+
         readingAudioData = false;
     }
 

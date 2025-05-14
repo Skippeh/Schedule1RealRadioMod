@@ -95,7 +95,7 @@ public abstract class RadioProxy : NetworkBehaviour
 
         if (audioClient == null)
         {
-            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation.Url).AddClient(audioClientObject);
+            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
         }
     }
 
@@ -109,7 +109,7 @@ public abstract class RadioProxy : NetworkBehaviour
 
         if (audioClient != null)
         {
-            AudioStreamManager.Instance.GetOrCreateHost(RadioStation.Url).DetachClient(audioClientObject);
+            AudioStreamManager.Instance.GetOrCreateHost(RadioStation).DetachClient(audioClientObject);
             audioClient = null;
         }
     }

@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Linq;
 using AudioStreamer;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using RealRadio.Components.Audio;
+using RealRadio.Components.Radio;
 using ScheduleOne.NPCs;
 using UnityEngine;
 
@@ -50,7 +52,7 @@ public class RadioSpawner : MonoBehaviour
     {
         if (audioHost == null)
         {
-            audioHost = AudioStreamManager.Instance.GetOrCreateHost("https://stream.simulatorradio.com");
+            audioHost = AudioStreamManager.Instance.GetOrCreateHost(RadioStationManager.Instance.Stations.First());
         }
 
         return audioHost;

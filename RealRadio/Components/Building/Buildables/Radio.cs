@@ -244,7 +244,7 @@ public class Radio : TogglableOffGridItem, IUsable
 
         if (audioClient == null)
         {
-            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation.Url).AddClient(AudioClientObject);
+            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(AudioClientObject);
             audioClient.ConvertToMono = true;
             return;
         }
@@ -257,7 +257,7 @@ public class Radio : TogglableOffGridItem, IUsable
 
         if (audioClient != null)
         {
-            AudioStreamManager.Instance.GetOrCreateHost(RadioStation.Url).DetachClient(AudioClientObject);
+            AudioStreamManager.Instance.GetOrCreateHost(RadioStation).DetachClient(AudioClientObject);
             audioClient = null;
         }
     }

@@ -152,5 +152,7 @@ public class Plugin : BaseUnityPlugin
 
         Logger.LogInfo("Creating persistent singletons");
         Instantiate(Assets.Singletons.RadioStationManager);
+        Instantiate(Assets.Singletons.YtDlpManager);
+        Instantiate(Assets.Singletons.YtDlpUiManager);
     }
 }

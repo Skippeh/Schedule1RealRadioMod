@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HashUtility;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.Persistence;
@@ -10,7 +11,9 @@ namespace RealRadio.Components.Radio;
 
 public class RadioStationManager : PersistentSingleton<RadioStationManager>
 {
+    public Action<RadioStation>? StationAdded;
     public Action? OnStationsChanged;
+    public Dictionary<uint, RadioStation> StationsByHashedId { get; private set; } = [];
     public IReadOnlyList<RadioStation> Stations => stations;
     public IReadOnlyList<RadioStation> SortedStations { get; private set; } = null!;
 
@@ -35,18 +38,35 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
     public void AddRadioStation(RadioStation station)
     {
+        if (station.Id == null)
+            throw new ArgumentNullException(nameof(station.Id));
+
+        uint hashedId = station.Id.GetStableHashCode();
+
+        if (StationsByHashedId.ContainsKey(hashedId))
+        {
+            Plugin.Logger.LogWarning($"Radio station with ID '{station.Id}' already exists");
+            return;
+        }
+
         stations.Add(station);
+        StationsByHashedId[hashedId] = station;
 
         if (station.CanBePlayedByNPCs)
             npcStations.Add(stations.Count - 1, station);
 
         stationsChanged = true;
+        StationAdded?.Invoke(station);
     }
 
     public void RemoveRadioStation(RadioStation station)
     {
+        if (station.Id == null)
+            throw new ArgumentNullException(nameof(station.Id));
+
         npcStations.Remove(stations.IndexOf(station));
         stations.Remove(station);
+        StationsByHashedId.Remove(station.Id.GetStableHashCode());
         stationsChanged = true;
     }
 

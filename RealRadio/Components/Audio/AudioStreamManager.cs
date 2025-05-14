@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
+using RealRadio.Components.Audio.HostControllers;
+using RealRadio.Components.Radio;
+using RealRadio.Data;
 using UnityEngine;
 
 namespace RealRadio.Components.Audio;
@@ -13,7 +16,7 @@ public class AudioStreamManager : MonoBehaviour
 
     public int NumActiveHosts => hosts.Count(host => host.Value.AudioStream?.Started == true);
 
-    private Dictionary<string, StreamAudioHost> hosts = new();
+    private Dictionary<RadioStation, StreamAudioHost> hosts = new();
     private LinkedList<StreamAudioHost> activeHosts = new();
     private StreamAudioHost[]? activeHostsBuffer;
 
@@ -29,13 +32,13 @@ public class AudioStreamManager : MonoBehaviour
         return cachedInstance;
     }
 
-    public StreamAudioHost GetOrCreateHost(string url)
+    public StreamAudioHost GetOrCreateHost(RadioStation station)
     {
-        if (hosts.TryGetValue(url, out var host))
+        if (hosts.TryGetValue(station, out var host))
             return host;
 
-        host = CreateHost(url);
-        hosts.Add(url, host);
+        host = CreateHost(station);
+        hosts.Add(station, host);
         return host;
     }
 
@@ -48,25 +51,40 @@ public class AudioStreamManager : MonoBehaviour
     public void RemoveHost(StreamAudioHost host)
     {
         // optimize this? probably not necessary...
-        string? key = hosts.FirstOrDefault(x => x.Value == host).Key;
+        RadioStation? key = hosts.FirstOrDefault(x => x.Value == host).Key;
 
         if (key != null)
             hosts.Remove(key);
     }
 
-    private StreamAudioHost CreateHost(string url)
+    private StreamAudioHost CreateHost(RadioStation station)
     {
         var go = new GameObject("AudioStreamHost");
+        go.SetActive(false);
         go.transform.SetParent(transform);
 
         var host = go.AddComponent<StreamAudioHost>();
-        host.AudioStream = new MediaFoundationAudioStream(url, resetReaderAtEof: false)
+
+        HostController controller;
+
+        switch (station.Type)
         {
-            ResampleFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate: AudioSettings.GetSampleRate(), channels: 2),
-        };
+            case RadioType.InternetRadio:
+                controller = go.AddComponent<InternetRadioHostController>();
+                break;
+            case RadioType.YtDlp:
+                controller = go.AddComponent<YtDlpHostController>();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(station.Type), station.Type, "Unknown radio type");
+        }
+
+        controller.Station = station;
 
         host.OnStreamStarted += () => OnHostStreamToggled(host, true);
         host.OnStreamStopped += () => OnHostStreamToggled(host, false);
+
+        go.SetActive(true);
 
         return host;
     }
