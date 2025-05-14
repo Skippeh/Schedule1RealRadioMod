@@ -83,3 +83,7 @@
 #NoActiveDownloadsLabel.visible {
     display: flex;
 }
+
+#ListItemsContainer {
+    max-height: 350px;
+}
