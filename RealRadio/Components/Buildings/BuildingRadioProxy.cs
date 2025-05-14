@@ -104,7 +104,7 @@ public class BuildingRadioProxy : RadioProxy
     }
 
     [TargetRpc]
-    private void ReceiveBuildingInfo(NetworkConnection conn, int buildingHash)
+    private void ReceiveBuildingInfo(NetworkConnection conn, uint buildingHash)
     {
         if (Building != null && IsClientOnly)
         {

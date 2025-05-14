@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HashUtility;
 using RealRadio.Components.Buildings;
 using RealRadio.Components.NPCs;
 using ScheduleOne.DevUtilities;
@@ -16,7 +17,7 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
     [field: SerializeField]
     public GameObject RadioProxyPrefab { get; private set; } = null!;
 
-    public Dictionary<int, NPCEnterableBuilding> Buildings { get; private set; } = null!;
+    public Dictionary<uint, NPCEnterableBuilding> Buildings { get; private set; } = null!;
     public Dictionary<NPCEnterableBuilding, BuildingRadioProxy> Proxies { get; } = [];
     public Dictionary<NPCEnterableBuilding, HashSet<NPC>> Residents { get; } = [];
 
@@ -60,13 +61,13 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
             throw new InvalidOperationException("RadioProxyPrefab is null");
     }
 
-    public static int GetBuildingHash(NPCEnterableBuilding building)
+    public static uint GetBuildingHash(NPCEnterableBuilding building)
     {
-        int hash;
+        uint hash;
 
         unchecked
         {
-            hash = building.GUID.GetHashCode() * 31 * building.BuildingName.GetHashCode();
+            hash = (uint)(building.GUID.GetHashCode() * 31 * building.BuildingName.GetStableHashCode());
         }
 
         return hash;
