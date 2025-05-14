@@ -1,3 +1,10 @@
+@import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
+
+Label {
+    font-size: 14px;
+    color: #000;
+}
+
 #Root {
     width: 100%;
     height: 100%;
@@ -7,16 +14,19 @@
     width: 50px;
     height: 50px;
     margin: 20px;
-
     justify-content: center;
     align-items: center;
-
     opacity: 0;
+    display: none;
     transition: opacity 0.2s ease-in-out;
 }
 
 #DownloadIndicator.visible {
     opacity: 1;
+}
+
+#DownloadIndicator.enabled {
+    display: flex;
 }
 
 #DownloadIndicator > * {
@@ -26,14 +36,14 @@
 #DownloadIndicator .icon {
     width: 17px;
     height: 22px;
-    background-image: url("project://database/Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/LoadingIcon.psd?fileID=-4823419286697373636&guid=71e7d8900a058cc45bda1d493f219f29&type=3#Hourglass");
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/loading.psd?fileID=-4823419286697373636&guid=71e7d8900a058cc45bda1d493f219f29&type=3#Hourglass");
 }
 
 #DownloadIndicator .icon-spinning {
     width: 100%;
     height: 100%;
     position: absolute;
-    background-image: url("project://database/Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/LoadingIcon.psd?fileID=-2039952054629986669&guid=71e7d8900a058cc45bda1d493f219f29&type=3#Circle")
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/loading.psd?fileID=-2039952054629986669&guid=71e7d8900a058cc45bda1d493f219f29&type=3#Circle");
 }
 
 #DownloadList {
@@ -44,23 +54,25 @@
     overflow: hidden;
 }
 
-#DownloadList.visible {
+#DownloadList.enabled {
     display: flex;
 }
 
 #DownloadList > .header {
-    background-color:rgba(23, 105, 16, 0.8);
-    font-weight: bold;
-    color: #fff;
+    background-color: rgba(23, 105, 16, 0.8);
+    color: rgb(255, 255, 255);
 }
 
 #DownloadList > .header > Label {
     margin: 10px 10px;
     -unity-font-style: bold;
+    color: #fff;
+    font-size: 15px;
 }
 
 #DownloadList > .contents {
-    background-color:rgba(200, 200, 200, 0.6);
+    background-color: rgba(200, 200, 200, 0.6);
+    color: black;
     overflow-y: scroll;
     overflow-x: hidden;
     flex: 1;

@@ -1,5 +1,6 @@
 using System;
 using ScheduleOne.DevUtilities;
+using ScheduleOne.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using YoutubeDLSharp;
@@ -26,6 +27,18 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
                 downloadIndicator.AddToClassList("visible");
             else if (!value && DownloadIndicatorVisible)
                 downloadIndicator.RemoveFromClassList("visible");
+        }
+    }
+
+    public bool DownloadIndicatorEnabled
+    {
+        get => downloadIndicator.classList.Contains("enabled");
+        set
+        {
+            if (value && !DownloadIndicatorEnabled)
+                downloadIndicator.AddToClassList("enabled");
+            else if (!value && DownloadIndicatorEnabled)
+                downloadIndicator.RemoveFromClassList("enabled");
         }
     }
 
@@ -62,9 +75,15 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
     private void Update()
     {
+        bool inGameAndNotPaused = PauseMenu.InstanceExists && !PauseMenu.Instance.IsPaused;
         bool downloadsInProgress = YtDlpManager.Instance.DownloadProgresses.Count > 0;
         DownloadIndicatorVisible = downloadsInProgress;
+        DownloadIndicatorEnabled = inGameAndNotPaused;
         NoActiveDownloadsLabelVisible = !downloadsInProgress;
-        downloadIndicatorSpinIcon.style.rotate = new StyleRotate(new UnityEngine.UIElements.Rotate(new Angle((float)(Time.realtimeSinceStartupAsDouble * LoadingIconSpinDegreesPerSecond % 360d), AngleUnit.Degree)));
+
+        if (inGameAndNotPaused)
+        {
+            downloadIndicatorSpinIcon.style.rotate = new StyleRotate(new UnityEngine.UIElements.Rotate(new Angle((float)(Time.realtimeSinceStartupAsDouble * LoadingIconSpinDegreesPerSecond % 360d), AngleUnit.Degree)));
+        }
     }
 }

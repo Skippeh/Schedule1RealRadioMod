@@ -1,11 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/YtDlpUiStyle.uss?fileID=7433441132597879392&amp;guid=3f69b100ed47e60449cd9b5ef78c4ec8&amp;type=3#YtDlpUiStyle" />
     <ui:VisualElement name="Root" picking-mode="Ignore">
-        <ui:VisualElement name="DownloadIndicator" class="visible">
+        <ui:VisualElement name="DownloadIndicator" class="visible enabled">
             <ui:VisualElement class="icon" />
             <ui:VisualElement class="icon-spinning" />
         </ui:VisualElement>
-        <ui:VisualElement name="DownloadList" class="visible">
+        <ui:VisualElement name="DownloadList" class="enabled">
             <ui:VisualElement class="header">
                 <ui:Label text="Active YtDlp Downloads" parse-escape-sequences="true" display-tooltip-when-elided="true" />
             </ui:VisualElement>
