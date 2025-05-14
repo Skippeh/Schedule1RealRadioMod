@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using YoutubeDLSharp;
 
@@ -20,6 +21,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
     private VisualElement downloadIndicator = null!;
     private VisualElement downloadIndicatorSpinIcon = null!;
+    private VisualElement downloadList = null!;
     private Label noActiveDownloadsLabel = null!;
     private ScrollView itemsContainer = null!;
 
@@ -61,6 +63,18 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         }
     }
 
+    public bool DownloadListEnabled
+    {
+        get => downloadList.classList.Contains("enabled");
+        set
+        {
+            if (value && !DownloadListEnabled)
+                downloadList.AddToClassList("enabled");
+            else if (!value && DownloadListEnabled)
+                downloadList.RemoveFromClassList("enabled");
+        }
+    }
+
     public override void Awake()
     {
         base.Awake();
@@ -68,6 +82,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         Document = GetComponent<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object");
         downloadIndicator = Document.rootVisualElement.Query(name: "DownloadIndicator").First() ?? throw new InvalidOperationException("Could not find download indicator ui element");
         downloadIndicatorSpinIcon = downloadIndicator.Query(className: "icon-spinning").First() ?? throw new InvalidOperationException("Could not find download indicator's spin icon ui element");
+        downloadList = Document.rootVisualElement.Query(name: "DownloadList").First() ?? throw new InvalidOperationException("Could not find download list ui element");
         noActiveDownloadsLabel = Document.rootVisualElement.Query<Label>(name: "NoActiveDownloadsLabel").First() ?? throw new InvalidOperationException("Could not find no active downloads label ui element");
         itemsContainer = Document.rootVisualElement.Query<ScrollView>(name: "ListItemsContainer").First() ?? throw new InvalidOperationException("Could not find item list container ui element");
 
@@ -132,6 +147,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         DownloadIndicatorVisible = downloadsInProgress;
         DownloadIndicatorEnabled = inGameAndNotPaused;
         NoActiveDownloadsLabelVisible = !downloadsInProgress;
+        DownloadListEnabled = !inGameAndNotPaused;
 
         if (inGameAndNotPaused)
         {
