@@ -94,6 +94,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         }
 
         item.StateText = progress.State.ToString();
+        item.ProgressBarErrorState = progress.State == DownloadState.Error;
 
         switch (progress.State)
         {
@@ -155,6 +156,18 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         {
             get => state.text;
             set => state.text = value;
+        }
+
+        public bool ProgressBarErrorState
+        {
+            get => progressBar.classList.Contains("error");
+            set
+            {
+                if (value && !ProgressBarErrorState)
+                    progressBar.AddToClassList("error");
+                else if (!value && ProgressBarErrorState)
+                    progressBar.RemoveFromClassList("error");
+            }
         }
 
         public VisualElement Element { get; private set; }
