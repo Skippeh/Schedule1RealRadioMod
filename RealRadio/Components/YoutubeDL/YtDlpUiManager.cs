@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.UI;
 using UnityEngine;
@@ -101,7 +102,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         {
             VisualElement element = ListItemAsset.Instantiate();
             itemsContainer.Add(element);
-            item = new ListItem(element);
+            item = new ListItem(this, element);
             items.Add(url, item);
 
             var metaData = YtDlpManager.Instance.AudioMetaData[url];
@@ -110,6 +111,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
         item.StateText = progress.State.ToString();
         item.ProgressBarErrorState = progress.State == DownloadState.Error;
+        item.RemoveButtonEnabled = progress.State == DownloadState.Error;
 
         switch (progress.State)
         {
@@ -187,20 +189,48 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
             }
         }
 
+        public bool RemoveButtonEnabled
+        {
+            get => removeButton.classList.Contains("enabled");
+            set
+            {
+                if (value && !RemoveButtonEnabled)
+                    removeButton.AddToClassList("enabled");
+                else if (!value && RemoveButtonEnabled)
+                    removeButton.RemoveFromClassList("enabled");
+            }
+        }
+
         public VisualElement Element { get; private set; }
 
+        private readonly YtDlpUiManager parent;
         private Label name;
         private Label state;
         private ProgressBar progressBar;
+        private Button removeButton;
 
-        public ListItem(VisualElement element)
+        public ListItem(YtDlpUiManager parent, VisualElement element)
         {
+            this.parent = parent;
             Element = element;
 
             name = element.Query<Label>(name: "Name").First() ?? throw new InvalidOperationException("Could not find name ui element");
             state = element.Query<Label>(name: "State").First() ?? throw new InvalidOperationException("Could not find state ui element");
             progressBar = element.Query<ProgressBar>(name: "ProgressBar").First() ?? throw new InvalidOperationException("Could not find progress bar ui element");
             progressBar.value = 0f;
+
+            removeButton = element.Query<Button>(name: "RemoveButton").First() ?? throw new InvalidOperationException("Could not find remove button ui element");
+            removeButton.RegisterCallback<ClickEvent>(OnRemoveButtonClicked);
+            RemoveButtonEnabled = false;
+        }
+
+        private void OnRemoveButtonClicked(ClickEvent evt)
+        {
+            if (!removeButton.enabledSelf)
+                return;
+
+            parent.itemsContainer.Remove(Element);
+            parent.items.Remove(parent.items.FirstOrDefault(x => x.Value.Element == Element).Key);
         }
     }
 }

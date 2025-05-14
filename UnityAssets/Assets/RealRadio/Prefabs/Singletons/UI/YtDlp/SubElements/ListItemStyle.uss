@@ -25,6 +25,13 @@
     flex-shrink: 0;
 }
 
+.buttons-container > * {
+    width: 20px;
+    height: 20px;
+    margin-right: 0;
+    padding: 0;
+}
+
 .unity-progress-bar__container {
     height: 15px;
     min-height: unset;
@@ -53,4 +60,24 @@
     font-size: 12px;
     margin: 0;
     padding: 0;
+}
+
+#RemoveButton {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/x-mark.png?fileID=21300000&amp;guid=02133f80feb5c5a418ddc49b200d8f74&amp;type=3#x-mark");
+    -unity-background-image-tint-color:rgb(0, 0, 0);
+    display: none;
+
+    transition: all 0.1s ease-out;
+}
+
+#RemoveButton.enabled {
+    display: flex;
+}
+
+#RemoveButton:hover {
+    scale: 1.1;
+}
+
+#RemoveButton:active {
+    scale: 0.9;
 }

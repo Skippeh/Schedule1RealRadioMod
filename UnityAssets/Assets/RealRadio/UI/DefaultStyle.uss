@@ -2,3 +2,13 @@ Label {
     font-size: 14px;
     -unity-font-definition: url("/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght SDF.asset");
 }
+
+.image-button {
+    -unity-background-scale-mode: scale-and-crop;
+    background-color: transparent;
+    border-width: 0;
+}
+
+.image-button:disabled {
+    opacity: 0.5;
+}
