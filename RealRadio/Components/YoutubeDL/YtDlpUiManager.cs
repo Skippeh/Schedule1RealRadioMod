@@ -106,7 +106,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
             items.Add(url, item);
 
             var metaData = YtDlpManager.Instance.AudioMetaData[url];
-            item.Name = $"{metaData.Title} ({metaData.Uploader})";
+            item.Name = $"{metaData.Title ?? url} ({metaData.Uploader ?? "Unknown uploader"})";
         }
 
         item.StateText = progress.State.ToString();
