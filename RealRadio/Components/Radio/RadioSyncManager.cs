@@ -100,12 +100,12 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         OnStateReceived?.Invoke(station, state);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         foreach (var (_, state) in radioStates)
         {
             if (state.CurrentTime != null)
-                state.CurrentTime += Time.deltaTime;
+                state.CurrentTime += Time.fixedUnscaledDeltaTime;
         }
     }
 }
