@@ -111,6 +111,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
                 break;
             case DownloadState.Error:
                 item.Progress = 1f;
+                item.StateText = "Failed - check the log for more info";
                 break;
             default:
                 item.Progress = 0.9f;
