@@ -29,3 +29,8 @@
     right: 0;
     bottom: 0;
 }
+
+#SelectedOptionLabel {
+    font-size: 24px;
+    color: #fff;
+}

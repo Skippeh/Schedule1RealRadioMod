@@ -1,5 +1,4 @@
 Label {
-    font-size: 24px;
-    color: #fff;
+    font-size: 14px;
     -unity-font-definition: url("/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght SDF.asset");
 }
