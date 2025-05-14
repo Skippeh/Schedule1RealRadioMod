@@ -148,7 +148,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         bool downloadsInProgress = YtDlpManager.Instance.DownloadProgresses.Count > 0;
         DownloadIndicatorVisible = downloadsInProgress;
         DownloadIndicatorEnabled = inGameAndNotPaused;
-        NoActiveDownloadsLabelVisible = !downloadsInProgress;
+        NoActiveDownloadsLabelVisible = items.Count == 0;
         DownloadListEnabled = !inGameAndNotPaused;
 
         if (inGameAndNotPaused)
