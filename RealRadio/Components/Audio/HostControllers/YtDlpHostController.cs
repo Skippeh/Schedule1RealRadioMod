@@ -186,12 +186,12 @@ public class YtDlpHostController : HostController
         if (startTime == null)
         {
             if (YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls[index], out var metaData) && metaData.Duration.HasValue)
-                startTime = UnityEngine.Random.Range(0, metaData.Duration.Value);
+                startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
             else
             {
                 // if we don't have metadata, assume the song is atleast 30 seconds long and pick a random time in that range.
                 // if the song is shorter than 30 seconds it'll effectively be skipped, but that's fine for this rare case where the song is short AND the song isn't downloaded yet
-                startTime = UnityEngine.Random.Range(0, 30f);
+                startTime = UnityEngine.Random.Range(10f, 30f);
             }
         }
 
