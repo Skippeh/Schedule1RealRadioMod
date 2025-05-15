@@ -16,6 +16,8 @@ public class APIManager : PersistentSingleton<APIManager>
 
         string stationsRootDirectory = Path.Combine(Application.dataPath, "..", "RealRadio", "Stations");
         RadioStations = new(stationsRootDirectory);
+
+        StartCoroutine(LoadDataCoroutine());
     }
 
     public IEnumerator LoadDataCoroutine()
@@ -38,5 +40,7 @@ public class APIManager : PersistentSingleton<APIManager>
             Plugin.Logger.LogInfo($"Registering custom radio station: {station.Name} ({station.Id})");
             RadioStationManager.Instance.AddRadioStation(station);
         }
+
+        Plugin.Logger.LogInfo($"Loaded {stations.Count} custom radio station(s)");
     }
 }
