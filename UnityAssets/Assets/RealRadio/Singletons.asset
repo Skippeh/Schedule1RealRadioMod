@@ -20,3 +20,4 @@ MonoBehaviour:
   RadialMenu: {fileID: 8057417580075597099, guid: 49ed30c016b04eb40a0c2f148a98c93e, type: 3}
   YtDlpManager: {fileID: 3842093474929390418, guid: 1a10d02fbca21e84d989b9eba372ec5b, type: 3}
   YtDlpUiManager: {fileID: 4106068969832939728, guid: 1f84cd3bd54437e4797f4ea82456e4be, type: 3}
+  APIManager: {fileID: 2987140776399028811, guid: 31dfa3af63ccc6644aca5000f04ae2ae, type: 3}
