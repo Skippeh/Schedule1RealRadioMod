@@ -46,6 +46,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
     private InteractableOption[] CreateRadialMenuOptions()
     {
         var options = new InteractableOption[RadioStationManager.Instance.Stations.Count + 1];
+        var options = new InteractableOption[RadioStationManager.Instance.SortedStations.Count + 1];
 
         options[0] = InteractableOption.CreateOption(
             id: "-1",
@@ -53,11 +54,11 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
             sprite: TurnOffIcon
         );
 
-        for (int i = 0; i < RadioStationManager.Instance.Stations.Count; ++i)
+        for (int i = 0; i < RadioStationManager.Instance.SortedStations.Count; ++i)
         {
-            var station = RadioStationManager.Instance.Stations[i];
+            var station = RadioStationManager.Instance.SortedStations[i];
             options[i + 1] = InteractableOption.CreateOption(
-                id: i.ToString(CultureInfo.InvariantCulture),
+                id: RadioStationManager.Instance.IndexOfSortedStation(i).ToString(CultureInfo.InvariantCulture),
                 name: station.Name!,
                 sprite: station.Icon,
                 abbreviation: station.Abbreviation,
@@ -121,7 +122,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         }
 
         // +1 because the first option is "turn off"
-        var selectedOption = radialMenuOptions[proxyRef.Proxy!.RadioStationIndex + 1];
+        var selectedOption = radialMenuOptions[RadioStationManager.Instance.IndexOfUnsortedStation(proxyRef.Proxy!.RadioStationIndex) + 1];
 
         radialMenuOpen = true;
         RadialMenu.Instance.Show(radialMenuOptions, onOptionSelected: OnRadialOptionSelected, selectedOption: selectedOption);

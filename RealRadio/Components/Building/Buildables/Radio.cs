@@ -165,8 +165,8 @@ public class Radio : TogglableOffGridItem, IUsable
 
     protected virtual void OnStationChanged(int prev, int next, bool asServer)
     {
-        var prevStation = prev == -1 ? null : RadioStationManager.Instance.Stations.ElementAtOrDefault(prev);
-        var nextStation = next == -1 ? null : RadioStationManager.Instance.Stations.ElementAtOrDefault(next);
+        var prevStation = prev == -1 ? null : RadioStationManager.Instance.SortedStations.ElementAtOrDefault(prev);
+        var nextStation = next == -1 ? null : RadioStationManager.Instance.SortedStations.ElementAtOrDefault(next);
 
         if (nextStation == RadioStation)
             return;

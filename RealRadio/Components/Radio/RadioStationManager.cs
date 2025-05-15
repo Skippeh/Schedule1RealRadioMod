@@ -15,9 +15,10 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
     public Action? OnStationsChanged;
     public Dictionary<uint, RadioStation> StationsByHashedId { get; private set; } = [];
     public IReadOnlyList<RadioStation> Stations => stations;
-    public IReadOnlyList<RadioStation> SortedStations { get; private set; } = null!;
+    public IReadOnlyList<RadioStation> SortedStations => sortedStations;
 
     private List<RadioStation> stations = [];
+    private List<RadioStation> sortedStations = [];
     private Dictionary<int, RadioStation> npcStations = [];
     private bool stationsChanged;
 
@@ -93,6 +94,28 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
     private void UpdateSortedStations()
     {
-        SortedStations = [.. Stations.OrderBy(x => x.Name)];
+        sortedStations = [.. Stations.OrderBy(x => x.Name)];
+    }
+
+    /// <summary>
+    /// Returns the index of the sorted station in the list of unsorted stations, or -1 if the index is out of range.
+    /// </summary>
+    public int IndexOfSortedStation(int sortedIndex)
+    {
+        if (sortedIndex < 0 || sortedIndex >= SortedStations.Count)
+            return -1;
+
+        return stations.IndexOf(SortedStations[sortedIndex]);
+    }
+
+    /// <summary>
+    /// Returns the index of the unsorted station in the list of sorted stations, or -1 if the index is out of range.
+    /// </summary>
+    internal int IndexOfUnsortedStation(int unsortedIndex)
+    {
+        if (unsortedIndex < 0 || unsortedIndex >= stations.Count)
+            return -1;
+
+        return sortedStations.IndexOf(stations[unsortedIndex]);
     }
 }
