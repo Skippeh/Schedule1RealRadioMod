@@ -7,7 +7,8 @@
 Currently in development.
 
 ## Existing features
-- Play remote audio streams (from urls). Supports all file formats that Media Foundation supports
+- Play remote audio streams (from urls). Supports all file formats that Media Foundation supports.
+- Youtube and [thousands of other sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) are also supported using [yt-dlp](https://github.com/yt-dlp/yt-dlp/) with playback synced between all players. No manual setup is required for yt-dlp to work. All required files are downloaded automatically.
 - A remote stream can be played through multiple AudioSources in Unity (using AudioStreamHost and AudioStreamClient, managed through the AudioStreamManager singleton)
 - Placeable radio object that you can put in your properties. This uses custom placement logic which allows placing the radio object on almost any surface. Persistance (saving/loading) for these are not implemented yet. Multiplayer functionality is fully working.
 - A generic radial menu singleton, currently used in vehicles (radio station selection) and placeable radio objects
