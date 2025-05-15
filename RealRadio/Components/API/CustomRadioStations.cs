@@ -63,8 +63,8 @@ public class CustomRadioStations
         result.name = apiStation.Name;
         result.Abbreviation = apiStation.Abbreviation;
         result.Type = apiStation.Type.Value;
-        result.Url = apiStation.Url;
-        result.Urls = apiStation.Urls;
+        result.Url = apiStation.Url ?? string.Empty;
+        result.Urls = apiStation.Urls ?? [];
         result.CanBePlayedByNPCs = apiStation.CanBePlayedByNPCs;
         result.RoundedBackground = apiStation.RoundedBackground;
 
