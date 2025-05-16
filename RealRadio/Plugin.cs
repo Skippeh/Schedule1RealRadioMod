@@ -154,5 +154,8 @@ public class Plugin : BaseUnityPlugin
         Instantiate(Assets.Singletons.RadioStationManager);
         Instantiate(Assets.Singletons.YtDlpManager);
         Instantiate(Assets.Singletons.YtDlpUiManager);
+
+        // This should be instantiated last
+        Instantiate(Assets.Singletons.APIManager);
     }
 }
