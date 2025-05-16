@@ -36,6 +36,8 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         }
 
         LandVehicleStartPatch.OnVehicleSpawned += (vehicle) => StartCoroutine(OnVehicleSpawned(vehicle));
+
+        RadioStationManager.Instance.OnStationsChanged += OnStationsChanged;
     }
 
     public override void Start()
@@ -43,9 +45,13 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         radialMenuOptions = CreateRadialMenuOptions();
     }
 
+    private void OnStationsChanged()
+    {
+        radialMenuOptions = CreateRadialMenuOptions();
+    }
+
     private InteractableOption[] CreateRadialMenuOptions()
     {
-        var options = new InteractableOption[RadioStationManager.Instance.Stations.Count + 1];
         var options = new InteractableOption[RadioStationManager.Instance.SortedStations.Count + 1];
 
         options[0] = InteractableOption.CreateOption(
