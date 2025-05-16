@@ -20,7 +20,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
     private List<RadioStation> stations = [];
     private List<RadioStation> sortedStations = [];
-    private Dictionary<int, RadioStation> npcStations = [];
+    private Dictionary<uint, RadioStation> npcStations = [];
     private Dictionary<uint, StationSource> stationSources = [];
     private bool stationsChanged;
 
@@ -57,7 +57,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         stationSources[hashedId] = source;
 
         if (station.CanBePlayedByNPCs)
-            npcStations.Add(stations.Count - 1, station);
+            npcStations.Add(hashedId, station);
 
         stationsChanged = true;
         StationAdded?.Invoke(station);
@@ -68,16 +68,19 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         if (station.Id == null)
             throw new ArgumentNullException(nameof(station.Id));
 
-        npcStations.Remove(stations.IndexOf(station));
+        uint hashedId = station.Id.GetStableHashCode();
+        npcStations.Remove(hashedId);
         stations.Remove(station);
-        StationsByHashedId.Remove(station.Id.GetStableHashCode());
+        StationsByHashedId.Remove(hashedId);
+        stationSources.Remove(hashedId);
         stationsChanged = true;
     }
 
     public int GetRandomNPCStationIndex()
     {
-        int index = UnityEngine.Random.Range(0, npcStations.Count);
-        return npcStations.ElementAt(index).Key;
+        var index = UnityEngine.Random.Range(0, npcStations.Count);
+        var station = npcStations.ElementAt(index).Value;
+        return stations.IndexOf(station);
     }
 
     private void LateUpdate()
