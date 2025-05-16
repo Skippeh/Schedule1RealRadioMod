@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HashUtility;
+using NAudio.SoundFont;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.Persistence;
@@ -20,6 +21,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
     private List<RadioStation> stations = [];
     private List<RadioStation> sortedStations = [];
     private Dictionary<int, RadioStation> npcStations = [];
+    private Dictionary<uint, StationSource> stationSources = [];
     private bool stationsChanged;
 
     public override void Awake()
@@ -30,14 +32,14 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         {
             foreach (var station in Plugin.Assets.DefaultRadioStations)
             {
-                AddRadioStation(station);
+                AddRadioStation(station, StationSource.DefaultStation);
             }
 
             InternalOnStationsChanged();
         }
     }
 
-    public void AddRadioStation(RadioStation station)
+    public void AddRadioStation(RadioStation station, StationSource source)
     {
         if (station.Id == null)
             throw new ArgumentNullException(nameof(station.Id));
@@ -52,6 +54,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
         stations.Add(station);
         StationsByHashedId[hashedId] = station;
+        stationSources[hashedId] = source;
 
         if (station.CanBePlayedByNPCs)
             npcStations.Add(stations.Count - 1, station);

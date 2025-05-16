@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using RealRadio.Components.Radio;
+using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using UnityEngine;
 
@@ -38,7 +39,7 @@ public class APIManager : PersistentSingleton<APIManager>
         foreach (var station in stations)
         {
             Plugin.Logger.LogInfo($"Registering custom radio station: {station.Name} ({station.Id})");
-            RadioStationManager.Instance.AddRadioStation(station);
+            RadioStationManager.Instance.AddRadioStation(station, StationSource.FileAPI);
         }
 
         Plugin.Logger.LogInfo($"Loaded {stations.Count} custom radio station(s)");
