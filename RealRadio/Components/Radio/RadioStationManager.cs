@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using HashUtility;
 using NAudio.SoundFont;
@@ -14,15 +15,23 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 {
     public Action<RadioStation>? StationAdded;
     public Action? OnStationsChanged;
-    public Dictionary<uint, RadioStation> StationsByHashedId { get; private set; } = [];
-    public IReadOnlyList<RadioStation> Stations => stations;
-    public IReadOnlyList<RadioStation> SortedStations => sortedStations;
+    public ReadOnlyDictionary<uint, RadioStation> StationsByHashedId { get; private set; }
+    public ReadOnlyCollection<RadioStation> Stations { get; private set; }
+    public ReadOnlyCollection<RadioStation> SortedStations { get; private set; }
 
     private List<RadioStation> stations = [];
     private List<RadioStation> sortedStations = [];
+    private Dictionary<uint, RadioStation> stationsByHashedId = [];
     private Dictionary<uint, RadioStation> npcStations = [];
     private Dictionary<uint, StationSource> stationSources = [];
     private bool stationsChanged;
+
+    public RadioStationManager()
+    {
+        StationsByHashedId = new ReadOnlyDictionary<uint, RadioStation>(stationsByHashedId);
+        Stations = new ReadOnlyCollection<RadioStation>(stations);
+        SortedStations = new ReadOnlyCollection<RadioStation>(sortedStations);
+    }
 
     public override void Awake()
     {
@@ -53,7 +62,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         }
 
         stations.Add(station);
-        StationsByHashedId[hashedId] = station;
+        stationsByHashedId[hashedId] = station;
         stationSources[hashedId] = source;
 
         if (station.CanBePlayedByNPCs)
@@ -71,7 +80,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         uint hashedId = station.Id.GetStableHashCode();
         npcStations.Remove(hashedId);
         stations.Remove(station);
-        StationsByHashedId.Remove(hashedId);
+        stationsByHashedId.Remove(hashedId);
         stationSources.Remove(hashedId);
         stationsChanged = true;
     }
@@ -100,7 +109,8 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
     private void UpdateSortedStations()
     {
-        sortedStations = [.. Stations.OrderBy(x => x.Name)];
+        sortedStations.Clear();
+        sortedStations.AddRange(stations.OrderBy(s => s.Name));
     }
 
     /// <summary>
