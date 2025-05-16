@@ -14,6 +14,7 @@ namespace RealRadio.Components.Radio;
 public class RadioStationManager : PersistentSingleton<RadioStationManager>
 {
     public Action<RadioStation>? StationAdded;
+    public Action<RadioStation>? StationRemoved;
     public Action? OnStationsChanged;
     public ReadOnlyDictionary<uint, RadioStation> StationsByHashedId { get; private set; }
     public ReadOnlyCollection<RadioStation> Stations { get; private set; }
@@ -83,6 +84,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         stationsByHashedId.Remove(hashedId);
         stationSources.Remove(hashedId);
         stationsChanged = true;
+        StationRemoved?.Invoke(station);
     }
 
     public int GetRandomNPCStationIndex()
