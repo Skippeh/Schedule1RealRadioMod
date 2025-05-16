@@ -66,7 +66,7 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         stationSources[hashedId] = source;
 
         if (station.CanBePlayedByNPCs)
-            npcStations.Add(hashedId, station);
+            npcStations[hashedId] = station;
 
         stationsChanged = true;
         StationAdded?.Invoke(station);
