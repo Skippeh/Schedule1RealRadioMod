@@ -97,6 +97,20 @@ public class Radio : TogglableOffGridItem, IUsable
         interactableOptions = GetComponentInChildren<InteractableOptions>() ?? throw new InvalidOperationException("No InteractableOptions component found in self or children");
         interactableOptions.OnInteract += OnInteract;
         interactableOptions.OnUpdateInteractionText += OnUpdateInteractionText;
+
+        RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+    }
+
+    private void OnRadioStationRemoved(RadioStation station)
+    {
+        if (!IsServer)
+            return;
+
+        if (RadioStation == station)
+        {
+            Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
+            SetRadioStationIndex(-1);
+        }
     }
 
     public virtual void Update()

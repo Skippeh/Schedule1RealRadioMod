@@ -27,6 +27,20 @@ public abstract class RadioProxy : NetworkBehaviour
     {
         if (AudioClientPrefab == null)
             throw new InvalidOperationException("AudioClientPrefab is null");
+
+        RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+    }
+
+    private void OnRadioStationRemoved(RadioStation station)
+    {
+        if (!IsServer)
+            return;
+
+        if (RadioStation == station)
+        {
+            Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
+            SetRadioStationIndex(-1);
+        }
     }
 
     protected virtual void OnDestroy()
