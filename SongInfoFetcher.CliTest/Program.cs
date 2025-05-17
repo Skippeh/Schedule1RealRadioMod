@@ -15,15 +15,24 @@ public static class Program
         var manager = new SongInfoFetchManager();
         manager.AddOneFMFetcher();
 
-        //if (!manager.TryGetFetcher(uri, out var fetcher))
         ISongInfoFetcher? fetcher;
 
-        if ((fetcher = await manager.TryGetFetcher(uri)) == null)
+        if ((fetcher = await manager.GetFetcher(uri)) == null)
         {
             Console.WriteLine("No fetcher found");
             return;
         }
 
         Console.WriteLine($"Got fetcher: {fetcher}");
+
+        fetcher.SubscribeToSongInfoChanges(songInfo => Console.WriteLine($"Song info changed: {songInfo}"));
+
+        var songInfo = await fetcher.RequestSongInfo();
+        Console.WriteLine($"Got song info: {songInfo}");
+
+        while (true)
+        {
+            await Task.Delay(1000);
+        }
     }
 }

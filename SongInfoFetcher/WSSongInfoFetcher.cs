@@ -14,8 +14,9 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
     public abstract bool CanRequestSongInfo { get; }
 
     protected Action<SongInfo>? SongInfoReceived { get; private set; }
-
     protected WebsocketClient Client { get; private set; }
+
+    public SongInfo? CurrentSong { get; protected set; }
 
     /// <summary>
     /// Instantiate a new WSSongInfoFetcher
@@ -40,6 +41,7 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
         Client.ErrorReconnectTimeout = TimeSpan.FromSeconds(5);
         Client.MessageReceived.Subscribe(OnMessageReceived);
         Client.ReconnectionHappened.Subscribe(OnReconnected);
+        Client.DisconnectionHappened.Subscribe(OnDisconnected);
 
         configureClient?.Invoke(Client);
     }
@@ -49,8 +51,18 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
         if (WSUri == null)
             throw new InvalidOperationException("WSUri is not set");
 
+        if (CanListenForSongInfo)
+        {
+            SongInfoReceived += OnSongInfoReceived;
+        }
+
         Client.Url = WSUri;
         await Client.Start();
+    }
+
+    private void OnSongInfoReceived(SongInfo info)
+    {
+        CurrentSong = info;
     }
 
     public Task<SongInfo> RequestSongInfo()
@@ -96,4 +108,5 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
     protected abstract void OnReconnected(ReconnectionInfo info);
     protected abstract void OnMessageReceived(ResponseMessage message);
     protected abstract Task<SongInfo> InternalRequestSongInfo();
+    protected abstract void OnDisconnected(DisconnectionInfo info);
 }

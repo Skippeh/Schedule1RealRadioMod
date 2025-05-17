@@ -40,8 +40,9 @@ public class SongInfoFetchManager
 
     /// <summary>
     /// Returns the first fetcher that matches the specified uri, if any.
+    /// If the fetcher didn't already exist it will be created and initialized before returning.
     /// </summary>
-    public async Task<ISongInfoFetcher?> TryGetFetcher(Uri uri)
+    public async Task<ISongInfoFetcher?> GetFetcher(Uri uri)
     {
         foreach (var fetcher in fetchers)
         {

@@ -1,17 +1,29 @@
 using System;
 using System.Buffers.Text;
+using System.ComponentModel;
+using System.Linq;
 using System.Net;
+using System.Net.WebSockets;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SongInfoFetcher.OneFM.Data;
 using Websocket.Client;
 
 namespace SongInfoFetcher.OneFM;
 
 public class OneFMSongInfoFetcher : WSSongInfoFetcher
 {
+    internal static readonly Regex UriRegex = new Regex(@"^https://strm\d+\.1\.fm/(?<station>[^_/?]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
     private readonly Uri uri;
+    private readonly string radioStation;
+    private int pingInterval;
+    private CancellationTokenSource? pingCancellationTokenSource;
 
     private readonly WebClient webClient = new()
     {
@@ -27,6 +39,18 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
     public OneFMSongInfoFetcher(Uri uri) : base()
     {
         this.uri = uri;
+        radioStation = ParseRadioStation(uri);
+    }
+
+    private string ParseRadioStation(Uri uri)
+    {
+        var match = UriRegex.Match(uri.ToString());
+
+        if (match.Success)
+            return match.Groups["station"].Value;
+
+        // Should not be reachable unless this fetcher was added manually by the user with a non conforming uri
+        throw new ArgumentException("Invalid uri", nameof(uri));
     }
 
     public override async Task Start()
@@ -38,6 +62,7 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
     private async Task<Uri> CreateWSUri()
     {
         var (sessionId, pingInterval) = await RequestSocketSessionInfo();
+        this.pingInterval = (int)pingInterval;
 
         var builder = new UriBuilder(uri)
         {
@@ -68,18 +93,128 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
         return (response.SessionId, response.PingInterval);
     }
 
-    protected override Task<SongInfo> InternalRequestSongInfo()
+    protected override async Task<SongInfo> InternalRequestSongInfo()
     {
-        throw new NotImplementedException();
+        string json = await webClient.DownloadStringTaskAsync($"https://www.1.fm/stplaylist/{HttpUtility.UrlEncode(radioStation)}");
+        var newsData = JsonConvert.DeserializeObject<NewsData>(json) ?? throw new ArgumentException("Deserialized JSON is null");
+
+        var currentSongData = newsData.NowPlaying.FirstOrDefault();
+        return CurrentSong = new SongInfo(currentSongData.Title!, currentSongData.Artist);
     }
 
     protected override void OnMessageReceived(ResponseMessage message)
     {
-        throw new NotImplementedException();
+        if (message.MessageType != WebSocketMessageType.Text)
+            return;
+
+        HandleMessage(message.Text!);
+    }
+
+    private void HandleMessage(string messageText)
+    {
+        if (messageText == "3probe")
+        {
+            Send("5"); // upgrade
+            SendEmit("room", radioStation); // join radio station room so we receive news when song changes
+        }
+        else if (messageText.StartsWith("4")) // event
+        {
+            messageText = messageText.Substring(1);
+
+            string msgId;
+            string? data;
+
+            if (!messageText.Contains("[", StringComparison.InvariantCulture))
+            {
+                msgId = messageText;
+                data = null;
+            }
+            else
+            {
+                msgId = messageText.Substring(0, messageText.IndexOf("[", StringComparison.InvariantCulture));
+                data = messageText.Substring(msgId.Length);
+            }
+
+            if (!int.TryParse(msgId, out int messageId))
+                return;
+
+            if (messageId == 0)
+                return;
+
+            if (messageId == 2 && data != null)
+                HandleEvent(data);
+        }
+    }
+
+    private void HandleEvent(string data)
+    {
+        JArray jArray = JArray.Parse(data);
+
+        if (jArray.Count == 0)
+            return;
+
+        string eventName = jArray[0].ToString();
+        var eventData = jArray[1];
+
+        if (eventName == "news")
+            HandleNewsEvent(eventData);
+    }
+
+    private void HandleNewsEvent(JToken eventData)
+    {
+        if (eventData.Type != JTokenType.Object)
+            return;
+
+        var newsData = eventData.ToObject<EventData<NewsData>>();
+        var currentSong = newsData?.Data?.NowPlaying.FirstOrDefault();
+
+        if (currentSong == null)
+            return;
+
+        CurrentSong = new SongInfo(currentSong.Title!, currentSong.Artist);
+        SongInfoReceived?.Invoke(CurrentSong);
     }
 
     protected override void OnReconnected(ReconnectionInfo info)
     {
-        throw new NotImplementedException();
+        if (pingCancellationTokenSource != null)
+            throw new InvalidOperationException("Ping loop is already running");
+
+        HandShake();
+
+        pingCancellationTokenSource = new();
+        Task.Run(() => PingLoop(pingCancellationTokenSource.Token));
+    }
+
+    private void HandShake()
+    {
+        Client.Send("2probe");
+    }
+
+    private async Task PingLoop(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            await Task.Delay(millisecondsDelay: pingInterval, cancellationToken);
+            Send("2");
+        }
+    }
+
+    protected override void OnDisconnected(DisconnectionInfo info)
+    {
+        if (pingCancellationTokenSource != null)
+        {
+            pingCancellationTokenSource.Cancel();
+            pingCancellationTokenSource.Dispose();
+            pingCancellationTokenSource = null;
+        }
+
+        CurrentSong = null;
+    }
+
+    private void SendEmit(string id, object data)
+    {
+        string[] message = [id, data as string ?? JsonConvert.SerializeObject(data)];
+        Send($"420{JsonConvert.SerializeObject(message)}");
     }
 }

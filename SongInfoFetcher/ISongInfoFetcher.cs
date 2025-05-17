@@ -15,6 +15,11 @@ public interface ISongInfoFetcher
     /// </summary>
     bool CanRequestSongInfo { get; }
 
+    /// <summary>
+    /// The current song info. This is only useable if <see cref="CanListenForSongInfo" /> is true.
+    /// </summary>
+    public SongInfo? CurrentSong { get; }
+
     public Task Start();
 
     /// <summary>
