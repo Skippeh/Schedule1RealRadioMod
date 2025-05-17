@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YtDlp.CliTest", "YtDlp.CliT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashUtility", "HashUtility\HashUtility.csproj", "{DCFCB846-7AC6-4F13-9C7A-3B7C333F23D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongInfoFetcher", "SongInfoFetcher\SongInfoFetcher.csproj", "{37455DF9-A806-460C-BB3A-A6AD1570B67B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,18 @@ Global
 		{DCFCB846-7AC6-4F13-9C7A-3B7C333F23D1}.Release|x64.Build.0 = Release|Any CPU
 		{DCFCB846-7AC6-4F13-9C7A-3B7C333F23D1}.Release|x86.ActiveCfg = Release|Any CPU
 		{DCFCB846-7AC6-4F13-9C7A-3B7C333F23D1}.Release|x86.Build.0 = Release|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Debug|x64.Build.0 = Debug|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Debug|x86.Build.0 = Debug|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Release|x64.ActiveCfg = Release|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Release|x64.Build.0 = Release|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Release|x86.ActiveCfg = Release|Any CPU
+		{37455DF9-A806-460C-BB3A-A6AD1570B67B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
