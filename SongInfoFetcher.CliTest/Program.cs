@@ -25,7 +25,7 @@ public static class Program
 
         Console.WriteLine($"Got fetcher: {fetcher}");
 
-        fetcher.SubscribeToSongInfoChanges(songInfo => Console.WriteLine($"Song info changed: {songInfo}"));
+        fetcher.SubscribeToSongInfoChanges(songInfo => Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Song info changed: {songInfo}"));
 
         var songInfo = await fetcher.RequestSongInfo();
         Console.WriteLine($"Got song info: {songInfo}");
