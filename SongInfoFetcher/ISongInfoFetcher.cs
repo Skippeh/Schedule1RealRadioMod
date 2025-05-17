@@ -28,7 +28,7 @@ public interface ISongInfoFetcher
     Task<SongInfo> RequestSongInfo();
 
     /// <summary>
-    /// Subscribe to song info changes. Note: This is not invoked when <see cref="RequestSongInfo"/> is called.
+    /// Subscribe to song info changes.
     /// </summary>
     /// <param name="onSongInfoChanged"></param>
     void SubscribeToSongInfoChanges(Action<SongInfo> onSongInfoChanged);

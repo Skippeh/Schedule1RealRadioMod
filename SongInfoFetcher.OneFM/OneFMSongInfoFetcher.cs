@@ -99,7 +99,10 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
         var newsData = JsonConvert.DeserializeObject<NewsData>(json) ?? throw new ArgumentException("Deserialized JSON is null");
 
         var currentSongData = newsData.NowPlaying.FirstOrDefault();
-        return CurrentSong = new SongInfo(currentSongData.Title!, currentSongData.Artist);
+        SongInfo songInfo = new SongInfo(currentSongData.Title!, currentSongData.Artist);
+        CurrentSong = songInfo;
+        SongInfoReceived?.Invoke(songInfo);
+        return songInfo;
     }
 
     protected override void OnMessageReceived(ResponseMessage message)
