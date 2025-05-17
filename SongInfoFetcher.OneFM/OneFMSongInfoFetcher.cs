@@ -53,7 +53,7 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
     private async Task<(string, uint)> RequestSocketSessionInfo()
     {
         string base64 = await webClient.DownloadStringTaskAsync(
-            new Uri($"https://socket.1.fm/socket.io/?EIO=3&transport=polling&t={DateTime.UtcNow.Ticks}-1")
+            new Uri($"https://socket.1.fm/socket.io/?EIO=3&transport=polling&t={DateTime.UtcNow.Ticks}")
         );
         string json = base64.Substring(5); // first 5 bytes are some kind of header or something, idk
 
