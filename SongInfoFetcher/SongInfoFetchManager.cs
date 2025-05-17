@@ -7,20 +7,27 @@ namespace SongInfoFetcher;
 
 public class SongInfoFetchManager
 {
-    public ReadOnlyDictionary<Regex, ISongInfoFetcher> Fetchers => new ReadOnlyDictionary<Regex, ISongInfoFetcher>(fetchers);
+    public ReadOnlyDictionary<Regex, Dictionary<Uri, ISongInfoFetcher>> Fetchers => new(fetchers);
 
-    private Dictionary<Regex, ISongInfoFetcher> fetchers = [];
+    private Dictionary<Regex, Dictionary<Uri, ISongInfoFetcher>> fetchers = [];
+    private Dictionary<Regex, Func<Uri, ISongInfoFetcher>> fetcherFactories = [];
 
-    public void AddFetcher(Regex uriRegex, ISongInfoFetcher fetcher) =>
-        fetchers.Add(
-            uriRegex ?? throw new ArgumentNullException(nameof(uriRegex)),
-            fetcher ?? throw new ArgumentNullException(nameof(fetcher))
-        );
+    public void AddFetcher(Regex uriRegex, Func<Uri, ISongInfoFetcher> fetcherFactory)
+    {
+        if (uriRegex == null)
+            throw new ArgumentNullException(nameof(uriRegex));
+
+        if (fetcherFactory == null)
+            throw new ArgumentNullException(nameof(fetcherFactory));
+
+        fetchers.Add(uriRegex, []);
+        fetcherFactories.Add(uriRegex, fetcherFactory);
+    }
 
     /// <summary>
     /// Adds a fetcher that matches the specified uri's scheme and authority (host and port) with any path.
     /// </summary>
-    public void AddFetcher(Uri uri, ISongInfoFetcher fetcher) => AddFetcher(CreateBasicRegex(uri), fetcher);
+    public void AddFetcher(Uri uri, Func<Uri, ISongInfoFetcher> fetcherFactory) => AddFetcher(CreateBasicRegex(uri), fetcherFactory);
 
     /// <summary>
     /// Creates a basic regex that matches the specified uri's scheme and authority (host and port) with any path.
@@ -31,16 +38,21 @@ public class SongInfoFetchManager
     }
 
     /// <summary>
-    /// Returns the first fetcher that matches the specified url, if any.
+    /// Returns the first fetcher that matches the specified uri, if any.
     /// </summary>
-    public bool TryGetFetcher(string url, out ISongInfoFetcher? outFetcher)
+    public bool TryGetFetcher(Uri uri, out ISongInfoFetcher? outFetcher)
     {
         foreach (var fetcher in fetchers)
         {
-            var match = fetcher.Key.Match(url);
+            var match = fetcher.Key.Match(uri.ToString());
+
             if (match.Success)
             {
-                outFetcher = fetcher.Value;
+                if (fetcher.Value.TryGetValue(uri, out outFetcher))
+                    return true;
+
+                outFetcher = fetcherFactories[fetcher.Key](uri);
+                fetcher.Value.Add(uri, outFetcher);
                 return true;
             }
         }
