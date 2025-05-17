@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SongInfoFetcher;
 
@@ -40,7 +41,7 @@ public class SongInfoFetchManager
     /// <summary>
     /// Returns the first fetcher that matches the specified uri, if any.
     /// </summary>
-    public bool TryGetFetcher(Uri uri, out ISongInfoFetcher? outFetcher)
+    public async Task<ISongInfoFetcher?> TryGetFetcher(Uri uri)
     {
         foreach (var fetcher in fetchers)
         {
@@ -48,16 +49,17 @@ public class SongInfoFetchManager
 
             if (match.Success)
             {
+                ISongInfoFetcher outFetcher;
                 if (fetcher.Value.TryGetValue(uri, out outFetcher))
-                    return true;
+                    return outFetcher;
 
                 outFetcher = fetcherFactories[fetcher.Key](uri);
                 fetcher.Value.Add(uri, outFetcher);
-                return true;
+                await outFetcher.Start();
+                return outFetcher;
             }
         }
 
-        outFetcher = null;
-        return false;
+        return null;
     }
 }

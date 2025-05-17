@@ -15,6 +15,8 @@ public interface ISongInfoFetcher
     /// </summary>
     bool CanRequestSongInfo { get; }
 
+    public Task Start();
+
     /// <summary>
     /// Request the current song info from the server.
     /// </summary>
