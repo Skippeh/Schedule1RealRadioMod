@@ -175,8 +175,7 @@ public class YtDlp
     {
         uint urlHash = HashUrl(url);
         string filePath = Path.Combine(audioFilesPath, $"{urlHash}.json");
-        string jsonPath = Path.ChangeExtension(filePath, ".json");
-        await File.WriteAllTextAsync(jsonPath, JsonConvert.SerializeObject(metaData));
+        await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(metaData));
     }
 
     private uint HashUrl(string url)
