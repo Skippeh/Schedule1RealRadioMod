@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using NAudio.Wave;
 using Newtonsoft.Json;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
@@ -164,6 +165,31 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         string filePath = await ytDlp.DownloadAudioFile(url, ytDlpCts.Token, progress: new ReportDownloadProgress(this, url));
         audioFilePaths[url] = filePath;
+
+        if (metaData.Duration == null)
+        {
+            Plugin.Logger.LogInfo($"Attempting to get duration from audio file '{filePath}'...");
+
+            try
+            {
+                metaData.Duration = await GetAudioFileDuration(filePath);
+                Plugin.Logger.LogInfo($"Duration of audio file '{filePath}' is {metaData.Duration} seconds");
+
+                try
+                {
+                    await ytDlp.UpdateCachedMetaData(url, metaData);
+                }
+                catch (Exception ex)
+                {
+                    Plugin.Logger.LogError($"Failed to update cached metadata for audio file '{filePath}': {ex}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.Logger.LogError($"Failed to get duration from audio file '{filePath}': {ex}");
+            }
+        }
+
         return filePath;
     }
 
@@ -179,6 +205,19 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         }
 
         Plugin.Logger.LogInfo($"Audio file '{url}' downloaded: {task.Result}");
+    }
+
+    /// <summary>
+    /// Get the duration of an audio file in seconds.
+    /// </summary>
+    /// <param name="filePath">The path to the audio file.</param>
+    public async Task<float> GetAudioFileDuration(string filePath)
+    {
+        return await Task.Run(() =>
+        {
+            var reader = new AudioFileReader(filePath);
+            return (float)reader.TotalTime.TotalSeconds;
+        });
     }
 
     private class ReportDownloadProgress(YtDlpManager manager, string url) : IProgress<DownloadProgress>

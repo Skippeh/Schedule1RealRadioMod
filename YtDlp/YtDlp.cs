@@ -171,6 +171,14 @@ public class YtDlp
         }
     }
 
+    public async Task UpdateCachedMetaData(string url, VideoData metaData)
+    {
+        uint urlHash = HashUrl(url);
+        string filePath = Path.Combine(audioFilesPath, $"{urlHash}.json");
+        string jsonPath = Path.ChangeExtension(filePath, ".json");
+        await File.WriteAllTextAsync(jsonPath, JsonConvert.SerializeObject(metaData));
+    }
+
     private uint HashUrl(string url)
     {
         var uri = new Uri(url);
