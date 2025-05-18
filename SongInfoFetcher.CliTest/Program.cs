@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using SongInfoFetcher.OneFM;
 using SongInfoFetcher.SimulatorRadio;
+using SongInfoFetcher.TruckersFM;
 
 namespace SongInfoFetcher.CliTest;
 
@@ -16,6 +17,7 @@ public static class Program
         var manager = new SongInfoFetchManager();
         manager.AddOneFMFetcher();
         manager.AddSimulatorRadioFetcher();
+        manager.AddTruckersFMSongInfoFetcher();
 
         ISongInfoFetcher? fetcher = await manager.GetFetcher(uri);
 

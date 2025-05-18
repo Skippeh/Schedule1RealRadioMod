@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongInfoFetcher.CliTest", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongInfoFetcher.SimulatorRadio", "SongInfoFetcher.SimulatorRadio\SongInfoFetcher.SimulatorRadio.csproj", "{50D5C9F9-F5AF-4B9F-8B77-531FE3FA88D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongInfoFetcher.TruckersFM", "SongInfoFetcher.TruckersFM\SongInfoFetcher.TruckersFM.csproj", "{5725A70C-E1C5-4AD4-93E3-452667B009E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -181,6 +183,18 @@ Global
 		{50D5C9F9-F5AF-4B9F-8B77-531FE3FA88D9}.Release|x64.Build.0 = Release|Any CPU
 		{50D5C9F9-F5AF-4B9F-8B77-531FE3FA88D9}.Release|x86.ActiveCfg = Release|Any CPU
 		{50D5C9F9-F5AF-4B9F-8B77-531FE3FA88D9}.Release|x86.Build.0 = Release|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Debug|x64.Build.0 = Debug|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Debug|x86.Build.0 = Debug|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Release|x64.ActiveCfg = Release|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Release|x64.Build.0 = Release|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{5725A70C-E1C5-4AD4-93E3-452667B009E8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
