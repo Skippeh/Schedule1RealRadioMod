@@ -258,6 +258,6 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
 
         return builder.ToString();
 
-        static bool ShouldCapitalizeNextCharacter(char ch) => !char.IsLetter(ch);
+        static bool ShouldCapitalizeNextCharacter(char ch) => !char.IsLetter(ch) && ch != '\'';
     }
 }
