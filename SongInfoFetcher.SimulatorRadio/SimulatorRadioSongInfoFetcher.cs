@@ -9,7 +9,7 @@ namespace SongInfoFetcher.SimulatorRadio;
 
 public class SimulatorRadioSongInfoFetcher : WSSongInfoFetcher
 {
-    public static Regex UriRegex { get; private set; } = new Regex(@"^(https?\://stream.simulatorradio.com(.*))|(https?\://simulatorradio.stream(.*))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    internal static Regex UriRegex { get; private set; } = new Regex(@"^(https?\://stream.simulatorradio.com(.*))|(https?\://simulatorradio.stream(.*))", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public override bool CanListenForSongInfo => true;
 
