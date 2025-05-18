@@ -67,6 +67,7 @@ public abstract class SocketIOSongInfoFetcher : ISongInfoFetcher
 
     protected virtual void OnDisconnected()
     {
+        CurrentSong = null;
     }
 
     protected virtual void OnConnected()
