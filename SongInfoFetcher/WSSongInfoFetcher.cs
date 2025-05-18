@@ -8,6 +8,8 @@ namespace SongInfoFetcher;
 
 public abstract class WSSongInfoFetcher : ISongInfoFetcher
 {
+    private SongInfo? currentSong;
+
     public Uri? WSUri { get; set; }
 
     public abstract bool CanListenForSongInfo { get; }
@@ -16,7 +18,20 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
     protected Action<SongInfo>? SongInfoReceived { get; private set; }
     protected WebsocketClient Client { get; private set; }
 
-    public SongInfo? CurrentSong { get; protected set; }
+    public SongInfo? CurrentSong
+    {
+        get => currentSong;
+        protected set
+        {
+            if (value == currentSong)
+                return;
+
+            currentSong = value;
+
+            if (value != null)
+                SongInfoReceived?.Invoke(value);
+        }
+    }
 
     /// <summary>
     /// Instantiate a new WSSongInfoFetcher

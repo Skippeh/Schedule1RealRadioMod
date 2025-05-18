@@ -8,13 +8,29 @@ namespace SongInfoFetcher;
 
 public abstract class SocketIOSongInfoFetcher : ISongInfoFetcher
 {
+
     public abstract bool CanListenForSongInfo { get; }
     public abstract bool CanRequestSongInfo { get; }
 
-    public SongInfo? CurrentSong { get; protected set; }
+    public SongInfo? CurrentSong
+    {
+        get => currentSong;
+        protected set
+        {
+            if (value == currentSong)
+                return;
+
+            currentSong = value;
+
+            if (value != null)
+                SongInfoReceived?.Invoke(value);
+        }
+    }
 
     protected Action<SongInfo>? SongInfoReceived { get; private set; }
     protected SocketIOClient.SocketIO Client { get; private set; }
+
+    private SongInfo? currentSong;
 
     public SocketIOSongInfoFetcher(Uri uri, SocketIOOptions? options = null)
     {

@@ -52,7 +52,6 @@ public class TruckersFMSongFetcher : SocketIOSongInfoFetcher
             return;
 
         CurrentSong = new SongInfo(songData.Title, songData.Artist);
-        SongInfoReceived?.Invoke(CurrentSong);
     }
 
     public override async Task<SongInfo> InternalRequestSongInfo()
@@ -73,7 +72,6 @@ public class TruckersFMSongFetcher : SocketIOSongInfoFetcher
             throw new HttpRequestException("No data in response");
 
         CurrentSong = new SongInfo(data.Data.Title, data.Data.Artist);
-        SongInfoReceived?.Invoke(CurrentSong);
         return CurrentSong;
     }
 }
