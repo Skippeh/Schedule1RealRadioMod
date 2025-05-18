@@ -95,6 +95,9 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
 
     protected override async Task<SongInfo> InternalRequestSongInfo()
     {
+        if (CurrentSong != null)
+            return CurrentSong;
+
         string json = await webClient.DownloadStringTaskAsync($"https://www.1.fm/stplaylist/{HttpUtility.UrlEncode(radioStation)}");
         var newsData = JsonConvert.DeserializeObject<NewsData>(json) ?? throw new ArgumentException("Deserialized JSON is null");
 
