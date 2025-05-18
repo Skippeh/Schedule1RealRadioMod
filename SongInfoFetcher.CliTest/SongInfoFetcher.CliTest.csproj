@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="../SongInfoFetcher/SongInfoFetcher.csproj" />
     <ProjectReference Include="../SongInfoFetcher.OneFM/SongInfoFetcher.OneFM.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.SimulatorRadio/SongInfoFetcher.SimulatorRadio.csproj" />
   </ItemGroup>
 
 </Project>
