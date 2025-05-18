@@ -97,7 +97,7 @@ public class OneFMSongInfoFetcher : SocketIOSongInfoFetcher
             return;
 
         var currentSongData = newsData.Data.NowPlaying.FirstOrDefault();
-        CurrentSong = new SongInfo(CapitalizeWords(currentSongData.Title)!, CapitalizeWords(currentSongData.Artist));
+        CurrentSong = new SongInfo(CapitalizeWords(currentSongData.Title), CapitalizeWords(currentSongData.Artist));
         SongInfoReceived?.Invoke(CurrentSong);
     }
 
