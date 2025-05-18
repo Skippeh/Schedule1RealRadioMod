@@ -56,6 +56,7 @@ public class OneFMSongInfoFetcher : SocketIOSongInfoFetcher
     public override Task Start()
     {
         Client.On("news", OnNewsReceived);
+        Client.On("playernews", OnNewsReceived);
         return base.Start();
     }
 
