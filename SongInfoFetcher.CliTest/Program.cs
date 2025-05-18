@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
+using SongInfoFetcher.GlobalPlayer;
 using SongInfoFetcher.OneFM;
 using SongInfoFetcher.SimulatorRadio;
 using SongInfoFetcher.TruckersFM;
@@ -18,6 +20,7 @@ public static class Program
         manager.AddOneFMFetcher();
         manager.AddSimulatorRadioFetcher();
         manager.AddTruckersFMSongInfoFetcher();
+        manager.AddGlobalPlayerFetcher();
 
         ISongInfoFetcher? fetcher = await manager.GetFetcher(uri);
 

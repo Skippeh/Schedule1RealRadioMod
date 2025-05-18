@@ -12,6 +12,7 @@
     <ProjectReference Include="../SongInfoFetcher.OneFM/SongInfoFetcher.OneFM.csproj" />
     <ProjectReference Include="../SongInfoFetcher.SimulatorRadio/SongInfoFetcher.SimulatorRadio.csproj" />
     <ProjectReference Include="../SongInfoFetcher.TruckersFM/SongInfoFetcher.TruckersFM.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.GlobalPlayer/SongInfoFetcher.GlobalPlayer.csproj" />
   </ItemGroup>
 
 </Project>
