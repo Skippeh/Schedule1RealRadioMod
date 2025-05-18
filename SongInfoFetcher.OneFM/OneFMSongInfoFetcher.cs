@@ -151,7 +151,16 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
 
     private void HandleEvent(string data)
     {
-        JArray jArray = JArray.Parse(data);
+        JArray jArray;
+
+        try
+        {
+            jArray = JArray.Parse(data);
+        }
+        catch
+        {
+            return;
+        }
 
         if (jArray.Count == 0)
             return;
@@ -168,7 +177,21 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
         if (eventData.Type != JTokenType.Object)
             return;
 
-        var newsData = eventData.ToObject<EventData<NewsData>>();
+
+        EventData<NewsData>? newsData;
+
+        try
+        {
+            newsData = eventData.ToObject<EventData<NewsData>>();
+
+            if (newsData == null)
+                return;
+        }
+        catch
+        {
+            return;
+        }
+
         var currentSong = newsData?.Data?.NowPlaying.FirstOrDefault();
 
         if (currentSong == null)
