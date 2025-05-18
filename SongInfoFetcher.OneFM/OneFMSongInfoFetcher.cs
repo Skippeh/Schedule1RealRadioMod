@@ -99,7 +99,7 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
         var newsData = JsonConvert.DeserializeObject<NewsData>(json) ?? throw new ArgumentException("Deserialized JSON is null");
 
         var currentSongData = newsData.NowPlaying.FirstOrDefault();
-        SongInfo songInfo = new SongInfo(currentSongData.Title!, currentSongData.Artist);
+        SongInfo songInfo = new SongInfo(CapitalizeWords(currentSongData.Title)!, CapitalizeWords(currentSongData.Artist));
         CurrentSong = songInfo;
         SongInfoReceived?.Invoke(songInfo);
         return songInfo;
@@ -174,7 +174,7 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
         if (currentSong == null)
             return;
 
-        CurrentSong = new SongInfo(currentSong.Title!, currentSong.Artist);
+        CurrentSong = new SongInfo(CapitalizeWords(currentSong.Title)!, CapitalizeWords(currentSong.Artist));
         SongInfoReceived?.Invoke(CurrentSong);
     }
 
@@ -219,5 +219,22 @@ public class OneFMSongInfoFetcher : WSSongInfoFetcher
     {
         string[] message = [id, data as string ?? JsonConvert.SerializeObject(data)];
         Send($"420{JsonConvert.SerializeObject(message)}");
+    }
+
+    private string? CapitalizeWords(string? input)
+    {
+        if (input == null)
+            return null;
+
+        var builder = new StringBuilder(input);
+        for (int i = 0; i < builder.Length; i++)
+        {
+            if (i == 0 || ShouldCapitalizeNextCharacter(builder[i - 1]))
+                builder[i] = char.ToUpper(builder[i]);
+        }
+
+        return builder.ToString();
+
+        static bool ShouldCapitalizeNextCharacter(char ch) => !char.IsLetter(ch);
     }
 }
