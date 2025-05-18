@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
@@ -7,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SongInfoFetcher.GlobalPlayer.Data;
 using Websocket.Client;
 
 namespace SongInfoFetcher.GlobalPlayer;
@@ -19,15 +19,17 @@ public class GlobalPlayerSongFetcher : WSSongInfoFetcher
 
     public override bool CanRequestSongInfo => true;
 
-    private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+    internal static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
     {
         ContractResolver = new CamelCasePropertyNamesContractResolver()
     };
     private int heraldId;
+    private string stationSlug;
 
     public GlobalPlayerSongFetcher(Uri uri) : base(clientFactory: CreateClient, reconnectTimeout: TimeSpan.FromSeconds(5))
     {
         WSUri = new Uri("wss://metadata.musicradio.com/v2/now-playing");
+        stationSlug = ParseStationSlug(uri);
     }
 
     private static ClientWebSocket CreateClient()
@@ -37,10 +39,35 @@ public class GlobalPlayerSongFetcher : WSSongInfoFetcher
         return client;
     }
 
+    private static string ParseStationSlug(Uri uri)
+    {
+        var match = UriRegex.Match(uri.ToString());
+
+        if (!match.Success)
+            throw new ArgumentException("Invalid uri", nameof(uri));
+
+        return match.Groups["station"].Value;
+    }
+
     public override async Task Start()
     {
         var metaData = await MetaDataFetcher.FetchMetaData();
-        Console.WriteLine($"Got meta data: {metaData}");
+        var brands = metaData.Props.PageProps.Feature.Blocks.FirstOrDefault(x => x.Type == BlockType.LiveRadio && x.Brands != null).Brands;
+
+        if (brands == null)
+            throw new InvalidOperationException("Could not find brands (required for resolving herald id from brand slug)");
+
+        foreach (var brand in brands)
+        {
+            if (brand.Slug.Equals(stationSlug, StringComparison.InvariantCultureIgnoreCase))
+            {
+                heraldId = brand.NationalStation.HeraldId;
+                break;
+            }
+        }
+
+        if (heraldId == 0)
+            throw new InvalidOperationException($"Could not find herald id for station slug {stationSlug}");
 
         await base.Start();
     }
@@ -62,7 +89,22 @@ public class GlobalPlayerSongFetcher : WSSongInfoFetcher
 
     protected override void OnMessageReceived(ResponseMessage message)
     {
-        Console.WriteLine($"Message received: {message.Text}");
+        if (message.MessageType != WebSocketMessageType.Text || message.Text == null)
+            return;
+
+        try
+        {
+            var messageData = JsonConvert.DeserializeObject<NowPlayingResponse>(message.Text);
+
+            if (messageData == null || messageData.Type != ServiceMessageType.Station || messageData.NowPlaying == null)
+                return;
+
+            CurrentSong = new SongInfo(messageData.NowPlaying.Title, messageData.NowPlaying.Artist);
+        }
+        catch
+        {
+            return;
+        }
     }
 
     protected override void OnReconnected(ReconnectionInfo info)
