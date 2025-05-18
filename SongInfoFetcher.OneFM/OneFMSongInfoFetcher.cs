@@ -115,6 +115,6 @@ public class OneFMSongInfoFetcher : SocketIOSongInfoFetcher
 
         return builder.ToString();
 
-        static bool ShouldCapitalizeNextCharacter(char ch) => !char.IsLetter(ch) && ch != '\'';
+        static bool ShouldCapitalizeNextCharacter(char ch) => !char.IsLetter(ch) && ch != '\'' && ch != '’';
     }
 }
