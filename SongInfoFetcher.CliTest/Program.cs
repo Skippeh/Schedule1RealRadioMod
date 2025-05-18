@@ -15,9 +15,9 @@ public static class Program
         var manager = new SongInfoFetchManager();
         manager.AddOneFMFetcher();
 
-        ISongInfoFetcher? fetcher;
+        ISongInfoFetcher? fetcher = await manager.GetFetcher(uri);
 
-        if ((fetcher = await manager.GetFetcher(uri)) == null)
+        if (fetcher == null)
         {
             Console.WriteLine("No fetcher found");
             return;
