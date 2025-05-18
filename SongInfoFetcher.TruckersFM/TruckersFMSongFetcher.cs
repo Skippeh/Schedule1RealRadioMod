@@ -28,7 +28,7 @@ public class TruckersFMSongFetcher : SocketIOSongInfoFetcher
 
     private static SocketIOOptions GetSocketIOOptions()
     {
-        var options = new SocketIOOptions
+        return new SocketIOOptions
         {
             ExtraHeaders = new()
             {
@@ -40,8 +40,6 @@ public class TruckersFMSongFetcher : SocketIOSongInfoFetcher
             ReconnectionDelay = 5000,
             Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
         };
-
-        return options;
     }
 
     private void OnSongInfoReceived(SocketIOResponse response)
