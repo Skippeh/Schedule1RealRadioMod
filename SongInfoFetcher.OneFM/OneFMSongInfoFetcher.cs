@@ -56,7 +56,6 @@ public class OneFMSongInfoFetcher : SocketIOSongInfoFetcher
     public override Task Start()
     {
         Client.On("news", OnNewsReceived);
-        Client.OnAny((name, response) => Console.WriteLine($"Received event: {name}: {response}"));
         return base.Start();
     }
 
