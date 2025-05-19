@@ -52,6 +52,8 @@ public class RadialMenu : Singleton<RadialMenu>
                 OnUpdateInteractionText?.Invoke(hoveredOption, eventData);
                 optionLabel.text = eventData.Value;
 
+                descriptionLabel.text = hoveredOption.Description;
+
                 OnHoveredOptionChanged?.Invoke(hoveredOption);
             }
             else
@@ -86,6 +88,7 @@ public class RadialMenu : Singleton<RadialMenu>
     private UIDocument document = null!;
     private VisualElement root = null!;
     private Label optionLabel = null!;
+    private Label descriptionLabel = null!;
     private VisualElement radialItemsContainer = null!;
     private VisualElement arrow = null!;
     private float? arrowOffset;
@@ -105,6 +108,7 @@ public class RadialMenu : Singleton<RadialMenu>
         document = GetComponent<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object");
         root = document.rootVisualElement.Query(className: "root").First() ?? throw new InvalidOperationException("Could not find root ui element");
         optionLabel = root.Query<Label>(name: "SelectedOptionLabel").First() ?? throw new InvalidOperationException("Could not find option label ui element");
+        descriptionLabel = root.Query<Label>(name: "DescriptionLabel").First() ?? throw new InvalidOperationException("Could not find description label ui element");
         radialItemsContainer = root.Query(name: "RadialItems").First() ?? throw new InvalidOperationException("Could not find radial items container ui element");
         arrow = root.Query(name: "Arrow").First() ?? throw new InvalidOperationException("Could not find arrow ui element");
     }

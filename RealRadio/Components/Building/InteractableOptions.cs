@@ -158,6 +158,7 @@ public class InteractableOption : ScriptableObject
 {
     public string? Id;
     public string? Name;
+    public string? Description;
     public string? Abbreviation;
     public Sprite? Sprite;
     public Color? BackgroundColor;
@@ -167,11 +168,12 @@ public class InteractableOption : ScriptableObject
     /// <summary>
     /// Creates an option. Meant to be used from code at runtime.
     /// </summary>
-    public static InteractableOption CreateOption(string id, string name, Sprite? sprite = null, string? abbreviation = null, Color? backgroundColor = null, bool roundedBackground = false, Color? textColor = null)
+    public static InteractableOption CreateOption(string id, string name, string? description = null, Sprite? sprite = null, string? abbreviation = null, Color? backgroundColor = null, bool roundedBackground = false, Color? textColor = null)
     {
         var result = CreateInstance<InteractableOption>();
         result.Id = id;
         result.Name = name;
+        result.Description = description;
         result.Abbreviation = abbreviation;
         result.Sprite = sprite;
         result.BackgroundColor = backgroundColor;
