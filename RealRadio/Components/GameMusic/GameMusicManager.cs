@@ -12,8 +12,9 @@ namespace RealRadio.GameMusic;
 public class GameMusicManager : Singleton<GameMusicManager>
 {
     private Dictionary<MusicTrack, AudioSourceController> activeMusicTracks = [];
+    private HashSet<MusicTrack> soonStopping = [];
     private StreamAudioClient? globalClient;
-    private float? currentVolume;
+    private float currentVolume;
 
     public override void Awake()
     {
@@ -63,6 +64,8 @@ public class GameMusicManager : Singleton<GameMusicManager>
 
     private IEnumerator RemoveTrackAfterDelay(MusicTrack track, float delay)
     {
+        soonStopping.Add(track);
+        track.volumeMultiplier = currentVolume;
         yield return new WaitForSeconds(delay);
         RemoveTrack(track);
     }
@@ -70,6 +73,7 @@ public class GameMusicManager : Singleton<GameMusicManager>
     private void RemoveTrack(MusicTrack track)
     {
         activeMusicTracks.Remove(track);
+        soonStopping.Remove(track);
     }
 
     private void Update()
@@ -118,20 +122,15 @@ public class GameMusicManager : Singleton<GameMusicManager>
     {
         float volumeTarget = globalClient == null ? 1f : 0f;
 
-        if (currentVolume == null)
-        {
-            currentVolume = volumeTarget;
-        }
-
-        if (Mathf.Approximately(currentVolume.Value, volumeTarget) && volumeTarget == 1f)
-            return;
-
         foreach (var (track, controller) in activeMusicTracks)
         {
+            if (soonStopping.Contains(track))
+                continue;
+
             // Lerp volume towards volumeTarget if target volume is higher
             if (currentVolume < volumeTarget)
             {
-                currentVolume = Mathf.Min(currentVolume.Value + (Time.unscaledDeltaTime / 3f), volumeTarget);
+                currentVolume = Mathf.Min(currentVolume + (Time.unscaledDeltaTime / 3f), volumeTarget);
             }
             else if (currentVolume > volumeTarget)
             {
@@ -139,7 +138,7 @@ public class GameMusicManager : Singleton<GameMusicManager>
                 currentVolume = volumeTarget;
             }
 
-            controller.VolumeMultiplier = currentVolume.Value;
+            controller.VolumeMultiplier = currentVolume;
             controller.ApplyVolume();
         }
     }
