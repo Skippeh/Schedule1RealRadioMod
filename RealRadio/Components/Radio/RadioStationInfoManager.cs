@@ -100,9 +100,9 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         if (getFetcherTask.IsFaulted || getFetcherTask.Result == null)
         {
             if (getFetcherTask.IsFaulted)
-                Plugin.Logger.LogError($"Failed to get fetcher for radio station '{station.Id} ({station.Url})':\n{getFetcherTask.Exception}");
+                Plugin.Logger.LogError($"Failed to get song info fetcher for radio station '{station.Id} ({station.Url})':\n{getFetcherTask.Exception}");
             else
-                Plugin.Logger.LogWarning($"No fetcher found for radio station '{station.Id} ({station.Url})'");
+                Plugin.Logger.LogWarning($"No song info fetcher found for radio station '{station.Id} ({station.Url})'");
 
             yield break;
         }
@@ -133,6 +133,6 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         yield return new WaitUntil(() => removeTask.IsCompleted);
 
         if (removeTask.IsFaulted)
-            Plugin.Logger.LogError($"Failed to remove fetcher for radio station '{station.Id} ({station.Url})':\n{removeTask.Exception}");
+            Plugin.Logger.LogError($"Failed to remove song info fetcher for radio station '{station.Id} ({station.Url})':\n{removeTask.Exception}");
     }
 }
