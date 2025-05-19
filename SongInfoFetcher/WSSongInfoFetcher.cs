@@ -66,18 +66,8 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
         if (WSUri == null)
             throw new InvalidOperationException("WSUri is not set");
 
-        if (CanListenForSongInfo)
-        {
-            SongInfoReceived += OnSongInfoReceived;
-        }
-
         Client.Url = WSUri;
         await Client.Start();
-    }
-
-    private void OnSongInfoReceived(SongInfo info)
-    {
-        CurrentSong = info;
     }
 
     public Task<SongInfo> RequestSongInfo()
