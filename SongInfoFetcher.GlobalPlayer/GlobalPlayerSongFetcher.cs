@@ -99,6 +99,10 @@ public class GlobalPlayerSongFetcher : WSSongInfoFetcher
             if (messageData == null || messageData.Type != ServiceMessageType.Station || messageData.NowPlaying == null)
                 return;
 
+            // Sometimes the title and artist are null, we can ignore these because another message is sent right after with the correct data
+            if (messageData.NowPlaying.Title == null || messageData.NowPlaying.Artist == null)
+                return;
+
             CurrentSong = new SongInfo(messageData.NowPlaying.Title, messageData.NowPlaying.Artist);
         }
         catch
