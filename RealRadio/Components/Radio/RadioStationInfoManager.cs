@@ -251,7 +251,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
             return new SongInfo(title, metaData.Uploader);
 
         string artistName = title.Substring(0, indexOfDash).Trim();
-        title = indexOfDash >= title.Length ? null : title.Substring(indexOfDash + 1).Trim();
+        title = indexOfDash >= title.Length - 1 ? null : title.Substring(indexOfDash + 1).Trim();
 
         return new SongInfo(title, artistName);
     }
