@@ -81,12 +81,7 @@ public class GameMusicManager : Singleton<GameMusicManager>
         if (globalClient != null)
         {
             if (
-                !globalClient.enabled ||
-                !globalClient.AudioSource.isPlaying ||
-                globalClient.Host?.AudioStream is null or { Started: false } ||
-                globalClient.AudioSource.spatialBlend > 0f ||
-                globalClient.AudioSource.volume <= 0f ||
-                globalClient.AudioSource.mute
+                IsClientQuietOrSpatial(globalClient)
             )
             {
                 globalClient = null;
@@ -103,9 +98,7 @@ public class GameMusicManager : Singleton<GameMusicManager>
                 foreach (var client in host.ActiveClients)
                 {
                     if (
-                        client.AudioSource.volume <= 0f ||
-                        client.AudioSource.mute ||
-                        client.AudioSource.spatialBlend > 0f
+                        IsClientQuietOrSpatial(client)
                     )
                     {
                         continue;
@@ -116,6 +109,16 @@ public class GameMusicManager : Singleton<GameMusicManager>
                 }
             }
         }
+    }
+
+    private static bool IsClientQuietOrSpatial(StreamAudioClient client)
+    {
+        return !client.enabled ||
+            !client.AudioSource.isPlaying ||
+            client.Host?.AudioStream is null or { Started: false } ||
+            client.AudioSource.spatialBlend > 0f ||
+            client.AudioSource.volume <= 0f ||
+            client.AudioSource.mute;
     }
 
     private void LateUpdate()
