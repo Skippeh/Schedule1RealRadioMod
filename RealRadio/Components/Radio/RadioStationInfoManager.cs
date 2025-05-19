@@ -79,7 +79,10 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         }
     }
 
-    public async Task<SongInfo?> GetSong(Data.RadioStation station)
+    /// <summary>
+    /// Requests song info for the specified radio station.
+    /// </summary>
+    public async Task<SongInfo?> RequestSong(Data.RadioStation station)
     {
         if (!fetchers.TryGetValue(station, out var fetcher))
             return null;
@@ -94,6 +97,12 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
             return null;
         }
     }
+
+    /// <summary>
+    /// Returns the current cached song info for the specified radio station. If no song info is available, returns null.
+    /// Use <see cref="RequestSong(Data.RadioStation)"/> to request song info.
+    /// /// </summary>
+    public SongInfo? GetSong(Data.RadioStation station) => fetchers.TryGetValue(station, out var fetcher) ? fetcher.CurrentSong : null;
 
     private void OnRadioStationAdded(Data.RadioStation station)
     {
