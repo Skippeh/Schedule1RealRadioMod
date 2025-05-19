@@ -138,7 +138,7 @@ public class GameMusicManager : Singleton<GameMusicManager>
                 currentVolume = volumeTarget;
             }
 
-            controller.VolumeMultiplier = currentVolume;
+            controller.VolumeMultiplier = track.VolumeMultiplier * currentVolume;
             controller.ApplyVolume();
         }
     }
