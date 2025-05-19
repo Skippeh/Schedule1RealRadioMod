@@ -68,10 +68,6 @@ public class SimulatorRadioSongInfoFetcher : WSSongInfoFetcher
         var nowPlaying = messageData.NowPlaying;
 
         SongInfo songInfo = new(nowPlaying.Title, nowPlaying.Artists);
-
-        if (songInfo == CurrentSong)
-            return;
-
         CurrentSong = songInfo;
     }
 
