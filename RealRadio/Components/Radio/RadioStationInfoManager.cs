@@ -20,8 +20,9 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
     public SongInfoFetchManager SongInfoFetchManager { get; private set; } = null!;
 
     private readonly Dictionary<Data.RadioStation, ISongInfoFetcher> fetchers = [];
-
     private Dictionary<Data.RadioStation, List<SongInfo>> pendingUpdates = [];
+    private readonly Dictionary<ISongInfoFetcher, float> fetchersToPoll = [];
+    private readonly HashSet<ISongInfoFetcher> updatedPollTimes = [];
 
     public override void Awake()
     {
@@ -42,6 +43,22 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
     private void Update()
     {
+        updatedPollTimes.Clear();
+
+        foreach (var kv in fetchersToPoll)
+        {
+            if (Time.time - kv.Value >= 10f)
+            {
+                updatedPollTimes.Add(kv.Key);
+                kv.Key.RequestSongInfo();
+            }
+        }
+
+        float currentTime = Time.time;
+
+        foreach (var fetcher in updatedPollTimes)
+            fetchersToPoll[fetcher] = currentTime;
+
         lock (pendingUpdates)
         {
             foreach (var (station, list) in pendingUpdates)
@@ -124,7 +141,11 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
             }
         });
 
-        fetcher.RequestSongInfo();
+        if (!fetcher.CanListenForSongInfo && fetcher.CanRequestSongInfo)
+            fetchersToPoll.Add(fetcher, Time.unscaledTime);
+
+        if (fetcher.CanRequestSongInfo)
+            fetcher.RequestSongInfo();
     }
 
     private IEnumerator RemoveFetcher(Data.RadioStation station)
