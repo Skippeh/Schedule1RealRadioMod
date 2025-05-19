@@ -13,7 +13,7 @@ namespace SongInfoFetcher.GlobalPlayer;
 
 public class GlobalPlayerSongFetcher : WSSongInfoFetcher
 {
-    internal static Regex UriRegex = new Regex(@"https?://media-ice.musicradio.com/(?<station>[^_/?]+)MP3.*", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    internal static Regex UriRegex = new Regex(@"https?://(media-ice\.musicradio\.com/(?<station>[^/?]+)MP3.*|(media-ssl\.musicradio\.com/(?<station>[^/?]+)).*)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public override bool CanListenForSongInfo => true;
 
