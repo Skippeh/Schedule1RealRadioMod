@@ -54,7 +54,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
             }
         }
 
-        float currentTime = Time.time;
+        float currentTime = Time.unscaledTime;
 
         foreach (var fetcher in updatedPollTimes)
             fetchersToPoll[fetcher] = currentTime;
