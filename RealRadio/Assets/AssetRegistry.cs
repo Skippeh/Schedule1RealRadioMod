@@ -72,6 +72,9 @@ public class AssetRegistry : ScriptableObject
         if (result.Singletons.APIManager == null)
             throw new AssetRegistryLoadException("Singletons.APIManager is null");
 
+        if (result.Singletons.GameMusicManager == null)
+            throw new AssetRegistryLoadException("Singletons.GameMusicManager is null");
+
         if (result.Prefabs.VehicleRadioProxy == null)
             throw new AssetRegistryLoadException("Prefabs.VehicleRadio is null");
 
@@ -151,6 +154,7 @@ public class SingletonPrefabs : ScriptableObject
     public GameObject YtDlpManager;
     public GameObject YtDlpUiManager;
     public GameObject APIManager;
+    public GameObject GameMusicManager;
 #nullable enable
 }
 

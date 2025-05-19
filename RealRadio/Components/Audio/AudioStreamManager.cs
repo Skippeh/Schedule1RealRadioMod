@@ -12,6 +12,8 @@ namespace RealRadio.Components.Audio;
 
 public class AudioStreamManager : MonoBehaviour
 {
+    public IReadOnlyCollection<StreamAudioHost> Hosts => hosts.Values;
+
     public uint MaxActiveInaudibleHosts = 5;
 
     public int NumActiveHosts => hosts.Count(host => host.Value.AudioStream?.Started == true);
