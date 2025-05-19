@@ -129,7 +129,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             // When doing it this way we ensure that the song isn't cut off early if the duration is not completely accurate.
             if (metaData == null || metaData.Duration != null && state.CurrentTime > metaData.Duration + 2f)
             {
-                var newState = GetRandomRadioStationState(station, state.SongIndex, state.SongIteration + 1, startTime: 0);
+                var newState = GetRandomRadioStationState(station, state.SongIndex, state.SongIteration + 1, startTime: state.SongIteration == null ? null : 0);
                 RequestOrSetSongState(station, newState);
             }
         }
