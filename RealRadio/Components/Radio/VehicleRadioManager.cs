@@ -2,14 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using AsmResolver;
 using RealRadio.Components.Building;
 using RealRadio.Components.UI;
 using RealRadio.Components.Vehicles;
+using RealRadio.Data;
 using RealRadio.Patches;
 using ScheduleOne;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.Vehicles;
+using SongInfoFetcher;
 using UnityEngine;
 
 namespace RealRadio.Components.Radio;
@@ -36,8 +39,8 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         }
 
         LandVehicleStartPatch.OnVehicleSpawned += (vehicle) => StartCoroutine(OnVehicleSpawned(vehicle));
-
         RadioStationManager.Instance.OnStationsChanged += OnStationsChanged;
+        RadioStationInfoManager.Instance.SongInfoUpdated += OnSongInfoUpdated;
     }
 
     public override void Start()
@@ -48,6 +51,19 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
     private void OnStationsChanged()
     {
         radialMenuOptions = CreateRadialMenuOptions();
+    }
+
+    private void OnSongInfoUpdated(RadioStation station, SongInfo info)
+    {
+        if (radialMenuOptions == null)
+            return;
+
+        int indexOfStation = RadioStationManager.Instance.SortedStations.IndexOf(station);
+
+        if (indexOfStation == -1)
+            return;
+
+        radialMenuOptions[indexOfStation + 1].Description = info.ToString().EscapeRichText();
     }
 
     private InteractableOption[] CreateRadialMenuOptions()
@@ -63,9 +79,17 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         for (int i = 0; i < RadioStationManager.Instance.SortedStations.Count; ++i)
         {
             var station = RadioStationManager.Instance.SortedStations[i];
+            string? songInfo = RadioStationInfoManager.Instance.GetSong(station)?.ToString().EscapeRichText();
+
+            if (songInfo == null)
+            {
+                songInfo = "<i>Song info unavailable</i>";
+            }
+
             options[i + 1] = InteractableOption.CreateOption(
                 id: RadioStationManager.Instance.IndexOfSortedStation(i).ToString(CultureInfo.InvariantCulture),
                 name: station.Name!,
+                description: songInfo,
                 sprite: station.Icon,
                 abbreviation: station.Abbreviation,
                 backgroundColor: station.BackgroundColor,

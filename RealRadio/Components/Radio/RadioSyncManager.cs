@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using FishNet.Connection;
 using FishNet.Object;
+using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using UnityEngine;
+using YoutubeDLSharp.Metadata;
 
 namespace RealRadio.Components.Radio;
 
@@ -14,6 +16,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
     public Action<RadioStation, RadioStationState>? OnStateReceived;
 
     private Dictionary<RadioStation, RadioStationState> radioStates = [];
+    private Dictionary<RadioStation, VideoData?> currentMetaData = [];
 
     public override void Awake()
     {
@@ -97,16 +100,72 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             radioStates[station] = state;
         }
 
+        VideoData? videoData = null;
+
+        if (station.Type == RadioType.YtDlp && station.Urls != null && station.Urls.Length > state.SongIndex)
+        {
+            string url = station.Urls[state.SongIndex.Value];
+
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(url, out var metaData))
+                videoData = metaData;
+        }
+
+        currentMetaData[station] = videoData;
         OnStateReceived?.Invoke(station, state);
     }
 
     private void FixedUpdate()
     {
-        foreach (var (_, state) in radioStates)
+        foreach (var (station, state) in radioStates)
         {
             if (state.CurrentTime != null)
                 state.CurrentTime += Time.fixedUnscaledDeltaTime;
+
+            currentMetaData.TryGetValue(station, out VideoData? metaData);
+
+            // If the song's time has passed the end of song + 2 seconds then switch to the next song
+            // We add 2 seconds because normally if the station is actively being listened to it'll switch to the next song immediately.
+            // If the station is not actively being listened the state's time will go past the end of the song.
+            // When doing it this way we ensure that the song isn't cut off early if the duration is not completely accurate.
+            if (metaData == null || metaData.Duration != null && state.CurrentTime > metaData.Duration + 2f)
+            {
+                var newState = GetRandomRadioStationState(station, state.SongIndex, state.SongIteration + 1, startTime: state.SongIteration == null ? null : 0);
+                RequestOrSetSongState(station, newState);
+            }
         }
+    }
+
+    public static RadioStationState GetRandomRadioStationState(RadioStation Station, ushort? lastSongIndex, uint? iteration, float? startTime = null)
+    {
+        var result = new RadioStationState();
+        ushort index;
+
+        while (true)
+        {
+            index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
+
+            if (lastSongIndex != index || Station.Urls.Length <= 1)
+                break;
+        }
+
+        result.SongIndex = index;
+        result.SongIteration = iteration;
+
+        if (startTime == null)
+        {
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls[index], out var metaData) && metaData.Duration.HasValue)
+                startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
+            else
+            {
+                // if we don't have metadata, assume the song is atleast 30 seconds long and pick a random time in that range.
+                // if the song is shorter than 30 seconds it'll effectively be skipped, but that's fine for this rare case where the song is short AND the song isn't downloaded yet
+                startTime = UnityEngine.Random.Range(10f, 30f);
+            }
+        }
+
+        result.CurrentTime = startTime ?? 0;
+
+        return result;
     }
 }
 

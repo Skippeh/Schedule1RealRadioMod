@@ -66,7 +66,7 @@ public class YtDlpHostController : HostController
 
     private void OnHostStreamEnded()
     {
-        RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration + 1, startTime: 0));
+        RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, currentSongIteration + 1, startTime: 0));
     }
 
     private void OnHostStreamStartRequested(EventRefData<bool> preventStart)
@@ -84,12 +84,17 @@ public class YtDlpHostController : HostController
         if (state == null || !state.IsValid())
         {
             preventStart.Value = true;
-            RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(currentSongIteration));
+            RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, currentSongIteration));
         }
         else if (currentSongDuration != null && state.CurrentTime >= currentSongDuration.Value)
         {
             preventStart.Value = true;
-            RadioSyncManager.Instance.RequestOrSetSongState(Station, GetRandomRadioStationState(state.SongIteration + 1));
+
+            // Use random start time if the song ended more than 2 seconds ago, otherwise start from the beginning
+            // Note: RadioSyncManager always starts the next song automatically if 2 seconds have passed after the end of the song so this is technically redundant.
+            // Should probably clean this up at some point.
+            float? startTime = (state.CurrentTime - currentSongDuration.Value) >= 2f ? null : 0f;
+            RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, state.SongIteration + 1, startTime));
         }
         else if (state.SongIteration != currentSongIteration)
         {
@@ -112,7 +117,7 @@ public class YtDlpHostController : HostController
 
         Plugin.Logger.LogInfo($"Received song state: {state}");
 
-        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null)
+        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null && Host.NumActiveClients > 0)
             PlayState(state);
     }
 
@@ -165,38 +170,5 @@ public class YtDlpHostController : HostController
     private string GetFileUrl(string filePath)
     {
         return $"file:///{filePath}";
-    }
-
-    private RadioStationState GetRandomRadioStationState(uint? iteration, float? startTime = null)
-    {
-        var result = new RadioStationState();
-        ushort index;
-
-        while (true)
-        {
-            index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
-
-            if (lastSongIndex != index || Station.Urls.Length <= 1)
-                break;
-        }
-
-        result.SongIndex = index;
-        result.SongIteration = iteration;
-
-        if (startTime == null)
-        {
-            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls[index], out var metaData) && metaData.Duration.HasValue)
-                startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
-            else
-            {
-                // if we don't have metadata, assume the song is atleast 30 seconds long and pick a random time in that range.
-                // if the song is shorter than 30 seconds it'll effectively be skipped, but that's fine for this rare case where the song is short AND the song isn't downloaded yet
-                startTime = UnityEngine.Random.Range(10f, 30f);
-            }
-        }
-
-        result.CurrentTime = startTime ?? 0;
-
-        return result;
     }
 }

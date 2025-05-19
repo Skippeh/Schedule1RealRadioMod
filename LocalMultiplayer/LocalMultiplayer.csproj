@@ -16,7 +16,7 @@
     <RootNamespace>LocalMultiplayer</RootNamespace>
   </PropertyGroup>
 
-  <Import Project="$(SolutionDir)DevVars.targets" />
+  <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />

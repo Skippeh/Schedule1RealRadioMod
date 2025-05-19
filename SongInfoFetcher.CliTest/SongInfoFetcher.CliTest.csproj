@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../SongInfoFetcher/SongInfoFetcher.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.OneFM/SongInfoFetcher.OneFM.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.SimulatorRadio/SongInfoFetcher.SimulatorRadio.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.TruckersFM/SongInfoFetcher.TruckersFM.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.GlobalPlayer/SongInfoFetcher.GlobalPlayer.csproj" />
+  </ItemGroup>
+
+</Project>

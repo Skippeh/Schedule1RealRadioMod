@@ -17,7 +17,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <Import Project="$(SolutionDir)DevVars.targets" />
+  <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
@@ -27,6 +27,9 @@
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" ExcludeAssets="runtime" />
     <PackageReference Include="FishNetV3.CodeGenerator.MSBuild" Version="1.0.0-beta.11" PrivateAssets="all" ExcludeAssets="runtime" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
+    <PackageReference Include="System.Buffers" Version="4.6.1" GeneratePathProperty="true" />
+    <PackageReference Include="System.Memory" Version="4.6.3" GeneratePathProperty="true" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" GeneratePathProperty="true" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -37,6 +40,12 @@
     <ProjectReference Include="../AudioStreamer/AudioStreamer.csproj" />
     <ProjectReference Include="../AudioStreamer.MediaFoundation/AudioStreamer.MediaFoundation.csproj" />
     <ProjectReference Include="../YtDlp/YtDlp.csproj" />
+    <ProjectReference Include="../HashUtility/HashUtility.csproj" />
+    <ProjectReference Include="../SongInfoFetcher/SongInfoFetcher.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.OneFM/SongInfoFetcher.OneFM.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.SimulatorRadio/SongInfoFetcher.SimulatorRadio.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.TruckersFM/SongInfoFetcher.TruckersFM.csproj" />
+    <ProjectReference Include="../SongInfoFetcher.GlobalPlayer/SongInfoFetcher.GlobalPlayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -63,6 +72,23 @@
     <CopyToPluginFolder Include="$(TargetDir)\NAudio*.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\YtDlp.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\YoutubeDLSharp.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\SongInfoFetcher*.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\SocketIO*.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\AngleSharp.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\Websocket.Client.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Reactive.dll" />
+    <CopyToPluginFolder Include="$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" />
+    <CopyToPluginFolder Include="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" />
+    <CopyToPluginFolder Include="$(PkgSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Text.Json.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Text.Encodings.Web.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Text.Encoding.CodePages.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\Microsoft.Extensions.Logging.Abstractions.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\Microsoft.IO.RecyclableMemoryStream.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Threading.Channels.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Runtime.CompilerServices.Unsafe.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -75,6 +101,7 @@
     <CopyToPluginFolder Include="$(TargetDir)\AudioStreamer.MediaFoundation.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\HashUtility.pdb" />
     <CopyToPluginFolder Include="$(TargetDir)\YtDlp.pdb" />
+    <CopyToPluginFolder Include="$(TargetDir)\SongInfoFetcher*.pdb" />
   </ItemGroup>
 
   <Target Name="CopyToPluginFolder" AfterTargets="PostBuildEvent" Condition="'$(CI)' == ''" Outputs="%(PluginFolder.Identity)">

@@ -34,3 +34,18 @@
     font-size: 24px;
     color: #fff;
 }
+
+#DescriptionLabel {
+    font-size: 16px;
+    color: rgb(180, 180, 180);
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+    -unity-text-align: upper-center;
+}
+
+#SelectedOptionLabel,
+#DescriptionLabel {
+    text-shadow: 2px 2px 2px rgb(0, 0, 0);
+}
