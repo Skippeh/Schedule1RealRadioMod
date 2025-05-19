@@ -117,7 +117,7 @@ public class YtDlpHostController : HostController
 
         Plugin.Logger.LogInfo($"Received song state: {state}");
 
-        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null)
+        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null && Host.NumActiveClients > 0)
             PlayState(state);
     }
 
