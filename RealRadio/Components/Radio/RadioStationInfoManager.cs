@@ -51,7 +51,6 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
                 foreach (var songInfo in list)
                 {
-                    Plugin.Logger.LogInfo($"Updating song info for radio station '{station.Name}': {songInfo}");
                     SongInfoUpdated?.Invoke(station, songInfo);
                 }
 
