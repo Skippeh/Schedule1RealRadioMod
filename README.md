@@ -15,9 +15,10 @@ Currently in development.
 - All game objects with a LandVehicle component have an associated VehicleRadioProxy networked object which controls playing audio from the vehicle. Players can change radio station by holding the reload button and selecting a station in the radial menu. Audio effects are changed depending on if the player is inside the vehicle or not. When inside the vehicle the audio is not spatialized and has no audio filters. When the player is not in the vehicle the audio is spatialized and a low pass filter is applied to simulate the audio being muffled from inside the car.
 - Residential buildings where NPCs live have a chance (50% atm) to play music when the building has NPCs inside. The time when music starts and stops in a day is randomized at the end of each day. This logic only runs on the server but the playing radio station is synced to all clients
 - Radio stations played by NPCs are randomized. Radio stations can be excluded from being played by NPCs
-- A json file based api to add custom radio stations.
+- A json file based api to add custom radio stations. [see example below](#example-of-custom-radio-station)
+- Fetches currently playing song and displays it in various places (only shown when selecting radio station in vehicles at the moment). Supports all radio stations types including (a limited amount of) internet radio stations out of the box. Can be extended to support more internet stations with a custom mod (no documentation on this yet).
 
-### Example of custom radio station:
+### Example of custom radio station
 ```json5
 {
   "id": "gtasa-radiox",
