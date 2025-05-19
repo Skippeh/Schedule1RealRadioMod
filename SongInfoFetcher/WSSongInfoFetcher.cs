@@ -70,6 +70,11 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
         await Client.Start();
     }
 
+    public async Task Stop()
+    {
+        await Client.Stop(WebSocketCloseStatus.NormalClosure, "Stopped by user");
+    }
+
     public Task<SongInfo> RequestSongInfo()
     {
         if (!CanRequestSongInfo)
@@ -108,4 +113,9 @@ public abstract class WSSongInfoFetcher : ISongInfoFetcher
     protected abstract void OnMessageReceived(ResponseMessage message);
     protected abstract Task<SongInfo> InternalRequestSongInfo();
     protected abstract void OnDisconnected(DisconnectionInfo info);
+
+    public void Dispose()
+    {
+        Client.Dispose();
+    }
 }

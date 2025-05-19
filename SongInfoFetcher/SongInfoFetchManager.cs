@@ -63,4 +63,19 @@ public class SongInfoFetchManager
 
         return null;
     }
+
+    public async Task<bool> RemoveFetcher(Uri uri)
+    {
+        foreach (var kv in fetchers)
+        {
+            if (kv.Value.Remove(uri, out var fetcher))
+            {
+                await fetcher.Stop();
+                fetcher.Dispose();
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

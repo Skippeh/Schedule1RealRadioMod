@@ -48,6 +48,9 @@ public class AssetRegistry : ScriptableObject
         if (result.Singletons.RadioStationManager == null)
             throw new AssetRegistryLoadException("Singletons.RadioStationManager is null");
 
+        if (result.Singletons.RadioStationInfoManager == null)
+            throw new AssetRegistryLoadException("Singletons.RadioStationInfoManager is null");
+
         if (result.Singletons.RadioSyncManager == null)
             throw new AssetRegistryLoadException("Singletons.RadioSyncManager is null");
 
@@ -140,6 +143,7 @@ public class SingletonPrefabs : ScriptableObject
 #nullable disable
     public GameObject OffGridBuildManager;
     public GameObject RadioStationManager;
+    public GameObject RadioStationInfoManager;
     public GameObject RadioSyncManager;
     public GameObject VehicleRadioManager;
     public GameObject BuildingRadioManager;

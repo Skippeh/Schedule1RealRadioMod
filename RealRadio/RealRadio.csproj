@@ -76,6 +76,7 @@
     <CopyToPluginFolder Include="$(TargetDir)\System.Reactive.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\System.Text.Json.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\System.Text.Encodings.Web.dll" />
+    <CopyToPluginFolder Include="$(TargetDir)\System.Text.Encoding.CodePages.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\Microsoft.Extensions.Logging.Abstractions.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\Microsoft.IO.RecyclableMemoryStream.dll" />
     <CopyToPluginFolder Include="$(TargetDir)\Microsoft.Bcl.AsyncInterfaces.dll" />

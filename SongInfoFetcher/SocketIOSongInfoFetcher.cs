@@ -59,6 +59,14 @@ public abstract class SocketIOSongInfoFetcher : ISongInfoFetcher
         return Client.ConnectAsync();
     }
 
+    public Task Stop()
+    {
+        if (!Client.Connected)
+            return Task.CompletedTask;
+
+        return Client.DisconnectAsync();
+    }
+
     public void SubscribeToSongInfoChanges(Action<SongInfo> onSongInfoChanged)
     {
         if (onSongInfoChanged == null)
@@ -82,5 +90,10 @@ public abstract class SocketIOSongInfoFetcher : ISongInfoFetcher
 
     protected virtual void OnConnected()
     {
+    }
+
+    public void Dispose()
+    {
+        Client.Dispose();
     }
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace SongInfoFetcher;
 
-public interface ISongInfoFetcher
+public interface ISongInfoFetcher : IDisposable
 {
     /// <summary>
     /// Checks if the song info fetcher can listen for song info. This means the server sends new song info to the client when the song changes.
@@ -21,6 +21,7 @@ public interface ISongInfoFetcher
     public SongInfo? CurrentSong { get; }
 
     public Task Start();
+    public Task Stop();
 
     /// <summary>
     /// Request the current song info from the server.
