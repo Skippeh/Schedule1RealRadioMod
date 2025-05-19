@@ -73,7 +73,6 @@ public class SimulatorRadioSongInfoFetcher : WSSongInfoFetcher
             return;
 
         CurrentSong = songInfo;
-        SongInfoReceived?.Invoke(CurrentSong);
     }
 
     protected override void OnReconnected(ReconnectionInfo info)
