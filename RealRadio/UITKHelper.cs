@@ -14,7 +14,6 @@ public static class UITKHelper
         var builder = new StringBuilder(text);
         builder.Replace("<", "&lt;");
         builder.Replace(">", "&gt;");
-        builder.Replace("\"", "&quot;");
         return builder.ToString();
     }
 }
