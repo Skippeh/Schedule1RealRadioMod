@@ -29,8 +29,13 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
     public override void Awake()
     {
         base.Awake();
-
         SongInfoFetchManager = new SongInfoFetchManager();
+    }
+
+    public override void Start()
+    {
+        base.Start();
+
         SongInfoFetchManager.AddGlobalPlayerFetcher();
         SongInfoFetchManager.AddOneFMFetcher();
         SongInfoFetchManager.AddSimulatorRadioFetcher();
