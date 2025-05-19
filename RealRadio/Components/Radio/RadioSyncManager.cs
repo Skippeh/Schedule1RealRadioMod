@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using FishNet.Connection;
 using FishNet.Object;
+using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 using UnityEngine;
+using YoutubeDLSharp.Metadata;
 
 namespace RealRadio.Components.Radio;
 
@@ -106,7 +108,38 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         {
             if (state.CurrentTime != null)
                 state.CurrentTime += Time.fixedUnscaledDeltaTime;
+
+    public static RadioStationState GetRandomRadioStationState(RadioStation Station, ushort? lastSongIndex, uint? iteration, float? startTime = null)
+    {
+        var result = new RadioStationState();
+        ushort index;
+
+        while (true)
+        {
+            index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
+
+            if (lastSongIndex != index || Station.Urls.Length <= 1)
+                break;
         }
+
+        result.SongIndex = index;
+        result.SongIteration = iteration;
+
+        if (startTime == null)
+        {
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls[index], out var metaData) && metaData.Duration.HasValue)
+                startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
+            else
+            {
+                // if we don't have metadata, assume the song is atleast 30 seconds long and pick a random time in that range.
+                // if the song is shorter than 30 seconds it'll effectively be skipped, but that's fine for this rare case where the song is short AND the song isn't downloaded yet
+                startTime = UnityEngine.Random.Range(10f, 30f);
+            }
+        }
+
+        result.CurrentTime = startTime ?? 0;
+
+        return result;
     }
 }
 
