@@ -44,3 +44,8 @@
     white-space: wrap;
     -unity-text-align: upper-center;
 }
+
+#SelectedOptionLabel,
+#DescriptionLabel {
+    text-shadow: 2px 2px 2px rgb(0, 0, 0);
+}
