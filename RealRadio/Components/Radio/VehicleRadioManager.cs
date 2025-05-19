@@ -83,7 +83,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
 
             if (songInfo == null)
             {
-                songInfo = "<i>Song name not available</i>";
+                songInfo = "<i>Song info unavailable</i>";
             }
 
             options[i + 1] = InteractableOption.CreateOption(
