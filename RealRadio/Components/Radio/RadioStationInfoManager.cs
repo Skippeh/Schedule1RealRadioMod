@@ -15,6 +15,8 @@ namespace RealRadio.Components.Radio;
 
 public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManager>
 {
+    public static Action<SongInfoFetchManager>? RegisterFetchers;
+
     public Action<Data.RadioStation, SongInfo>? SongInfoUpdated { get; set; }
 
     public SongInfoFetchManager SongInfoFetchManager { get; private set; } = null!;
@@ -33,6 +35,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         SongInfoFetchManager.AddOneFMFetcher();
         SongInfoFetchManager.AddSimulatorRadioFetcher();
         SongInfoFetchManager.AddTruckersFMSongInfoFetcher();
+        RegisterFetchers?.Invoke(SongInfoFetchManager);
 
         foreach (var station in RadioStationManager.Instance.Stations)
             OnRadioStationAdded(station);
