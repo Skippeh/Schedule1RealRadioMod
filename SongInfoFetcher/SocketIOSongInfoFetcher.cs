@@ -64,9 +64,6 @@ public abstract class SocketIOSongInfoFetcher : ISongInfoFetcher
         if (onSongInfoChanged == null)
             throw new ArgumentNullException(nameof(onSongInfoChanged));
 
-        if (!CanListenForSongInfo)
-            throw new InvalidOperationException("Cannot listen for song info");
-
         SongInfoReceived += onSongInfoChanged;
     }
 
@@ -74,9 +71,6 @@ public abstract class SocketIOSongInfoFetcher : ISongInfoFetcher
     {
         if (onSongInfoChanged == null)
             throw new ArgumentNullException(nameof(onSongInfoChanged));
-
-        if (!CanListenForSongInfo)
-            throw new InvalidOperationException("Cannot listen for song info");
 
         SongInfoReceived -= onSongInfoChanged;
     }
