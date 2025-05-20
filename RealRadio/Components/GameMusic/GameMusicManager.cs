@@ -143,6 +143,12 @@ public class GameMusicManager : Singleton<GameMusicManager>
 
             controller.VolumeMultiplier = track.VolumeMultiplier * currentVolume;
             controller.ApplyVolume();
+
+            if (track is StartLoopMusicTrack loopTrack && loopTrack.IsPlaying)
+            {
+                loopTrack.LoopSound.VolumeMultiplier = track.VolumeMultiplier * currentVolume;
+                loopTrack.LoopSound.ApplyVolume();
+            }
         }
     }
 }
