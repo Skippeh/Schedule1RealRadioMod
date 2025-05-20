@@ -143,6 +143,7 @@ public class Plugin : BaseUnityPlugin
 
         Logger.LogInfo("Creating main scene client singletons");
         Instantiate(Assets.Singletons.RadialMenu);
+        Instantiate(Assets.Singletons.GameMusicManager);
     }
 
     private void CreatePersistentSingletons()
