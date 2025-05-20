@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace RealRadio.Components.Building;
 
-public class TogglableOffGridItem : OffGridItem
+public abstract class TogglableOffGridItem : OffGridItem
 {
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.ExcludeOwner, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStateToggled))]
     public bool IsOn { get; [ServerRpc(RequireOwnership = false, RunLocally = true)] set; }
