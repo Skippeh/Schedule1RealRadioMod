@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using FishNet.Object;
+using RealRadio.Persistence.Data;
 using ScheduleOne.EntityFramework;
 using ScheduleOne.ItemFramework;
 using ScheduleOne.Properties;
@@ -28,5 +29,16 @@ public abstract class OffGridItem : BuildableItem
     public override void OnStartServer()
     {
         base.OnStartServer();
+    }
+
+    public override string GetSaveString()
+    {
+        return new OffGridItemData(
+            GUID,
+            ItemInstance,
+            loadOrder: 0,
+            transform.position,
+            transform.rotation.eulerAngles
+        ).GetJson();
     }
 }

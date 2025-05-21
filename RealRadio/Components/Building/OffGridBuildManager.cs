@@ -20,10 +20,11 @@ public class OffGridBuildManager : NetworkSingleton<OffGridBuildManager>
     }
 
     /// <summary>
-    /// Spawns a building. If this is the server, it will spawn the building instantly. Otherwise it will request the server to spawn the building.
+    /// Spawns a building. If this is the server, it will spawn the building instantly and return the building.
+    /// Otherwise it will request the server to spawn the building and return null.
     /// </summary>
     /// <exception cref="ArgumentException">Thrown if itemInstance.Definition is not BuildableItemDefinition.</exception>
-    public void SpawnBuilding(ItemInstance itemInstance, Vector3 position, Quaternion rotation)
+    public OffGridItem? SpawnBuilding(ItemInstance itemInstance, Vector3 position, Quaternion rotation, Guid? guid = null)
     {
         if (itemInstance.Definition is not BuildableItemDefinition itemDefinition)
         {
@@ -32,15 +33,17 @@ public class OffGridBuildManager : NetworkSingleton<OffGridBuildManager>
 
         if (NetworkManager.IsServer)
         {
-            Guid guid = GUIDManager.GenerateUniqueGUID();
+            guid ??= GUIDManager.GenerateUniqueGUID();
             OffGridItem item = Instantiate(itemDefinition.BuiltItem.gameObject).GetComponent<OffGridItem>();
             item.SetLocallyBuilt();
-            item.InitializeOffGridItem(itemInstance, position, rotation, guid);
+            item.InitializeOffGridItem(itemInstance, position, rotation, guid.Value);
             NetworkObject.Spawn(item.gameObject);
+            return item;
         }
         else
         {
             RequestSpawnBuilding(itemInstance, position, rotation);
+            return null;
         }
     }
 
