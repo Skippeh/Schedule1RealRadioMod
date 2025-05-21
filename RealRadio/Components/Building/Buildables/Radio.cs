@@ -5,10 +5,12 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
+using HashUtility;
 using RealRadio.Components.Audio;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
 using RealRadio.Events;
+using RealRadio.Persistence.Data;
 using ScheduleOne;
 using ScheduleOne.Audio;
 using ScheduleOne.Dialogue;
@@ -73,6 +75,20 @@ public class Radio : TogglableOffGridItem, IUsable
 
     protected virtual void OnPlayerUserChanged(NetworkObject prev, NetworkObject next, bool asServer)
     {
+    }
+
+    public override string GetSaveString()
+    {
+        return new RadioData(
+            GUID,
+            ItemInstance,
+            loadOrder: 0,
+            IsOn,
+            transform.position,
+            transform.rotation.eulerAngles,
+            RadioStation?.Id!.GetStableHashCode(),
+            Volume
+        ).GetJson();
     }
 
     public override void Awake()

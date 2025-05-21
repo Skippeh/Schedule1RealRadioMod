@@ -55,6 +55,9 @@ public class Plugin : BaseUnityPlugin
         harmony = new Harmony("com.skipcast.realradio");
         harmony.PatchAll();
 
+        LoadManagerPatches.InitializeObjectLoaders += Persistence.Persistence.AddObjectInitializers;
+        LoadManagerPatches.InitializeItemLoaders += Persistence.Persistence.AddItemInitializers;
+
         // Plugin startup logic
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
