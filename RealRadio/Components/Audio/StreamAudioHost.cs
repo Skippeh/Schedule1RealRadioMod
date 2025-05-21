@@ -222,6 +222,7 @@ public class StreamAudioHost : MonoBehaviour
             Destroy(client.gameObject);
 
         StopAudioStreamNow();
+        AudioStream?.Dispose();
     }
 
     public void StartAudioStream()

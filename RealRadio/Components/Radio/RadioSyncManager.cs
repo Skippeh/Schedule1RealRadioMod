@@ -29,6 +29,13 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
     }
 
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        RadioStationManager.Instance.StationAdded -= OnRadioStationAdded;
+    }
+
     private void OnRadioStationAdded(RadioStation station)
     {
         if (station.Type == RadioType.InternetRadio)

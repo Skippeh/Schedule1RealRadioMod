@@ -186,6 +186,9 @@ namespace RealRadio.Components.UI.WorldUI
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool HoveringOverCollider()
         {
+            if (PlayerCamera.Instance == null)
+                return false;
+
             if (!PlayerCamera.Instance.MouseRaycast(range: 3f, out var hit, Layers.UI.ToLayerMask()))
                 return false;
 

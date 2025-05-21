@@ -155,6 +155,6 @@ public class BuildingRadioProxy : RadioProxy
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        BuildingRadioManager.Instance.RemoveProxy(this);
+        BuildingRadioManager.Instance?.RemoveProxy(this);
     }
 }

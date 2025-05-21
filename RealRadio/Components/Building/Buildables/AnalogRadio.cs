@@ -36,7 +36,7 @@ public class AnalogRadio : Radio
         if (isGhost)
             return;
 
-        volumeEditSlider.Value = crossFade.Volume * volumeEditSlider.MaxValue;
+        volumeEditSlider.Value = Volume * volumeEditSlider.MaxValue;
     }
 
     private void OnSliderLoopedAround(float direction)
