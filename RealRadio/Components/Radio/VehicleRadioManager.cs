@@ -35,12 +35,26 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         // Call OnVehicleSpawned for pre-existing vehicles
         foreach (var vehicle in FindObjectsOfType<LandVehicle>())
         {
-            StartCoroutine(OnVehicleSpawned(vehicle));
+            StartCoroutine(SpawnProxyAfterNetworkInit(vehicle));
         }
 
-        LandVehicleStartPatch.OnVehicleSpawned += (vehicle) => StartCoroutine(OnVehicleSpawned(vehicle));
+        LandVehicleStartPatch.OnVehicleSpawned += OnVehicleSpawned;
         RadioStationManager.Instance.OnStationsChanged += OnStationsChanged;
         RadioStationInfoManager.Instance.SongInfoUpdated += OnSongInfoUpdated;
+    }
+
+    private void OnVehicleSpawned(LandVehicle vehicle)
+    {
+        StartCoroutine(SpawnProxyAfterNetworkInit(vehicle));
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        LandVehicleStartPatch.OnVehicleSpawned -= OnVehicleSpawned;
+        RadioStationManager.Instance.OnStationsChanged -= OnStationsChanged;
+        RadioStationInfoManager.Instance.SongInfoUpdated -= OnSongInfoUpdated;
     }
 
     public override void Start()
@@ -101,7 +115,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         return options;
     }
 
-    private IEnumerator OnVehicleSpawned(LandVehicle vehicle)
+    private IEnumerator SpawnProxyAfterNetworkInit(LandVehicle vehicle)
     {
         if (!IsServer && !IsClient)
             yield return new WaitUntil(() => IsServer || IsClient);
