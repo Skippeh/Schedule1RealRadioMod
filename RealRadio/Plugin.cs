@@ -7,8 +7,12 @@ using BepInEx.Logging;
 using FishNet;
 using HarmonyLib;
 using RealRadio.Assets;
+using RealRadio.Components.UI.Phone;
+using RealRadio.Patches;
 using ScheduleOne.NPCs.CharacterClasses;
 using ScheduleOne.Persistence;
+using ScheduleOne.PlayerScripts;
+using ScheduleOne.UI.Phone;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -58,6 +62,8 @@ public class Plugin : BaseUnityPlugin
         LoadManagerPatches.InitializeObjectLoaders += Persistence.Persistence.AddObjectInitializers;
         LoadManagerPatches.InitializeItemLoaders += Persistence.Persistence.AddItemInitializers;
 
+        AppsCanvasPatches.CanvasCreated += OnAppsCanvasCreated;
+
         // Plugin startup logic
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
@@ -77,6 +83,19 @@ public class Plugin : BaseUnityPlugin
                 go.AddComponent<Components.Debugging.RadioSpawner>();
             }
         };
+    }
+
+    private void OnAppsCanvasCreated(AppsCanvas canvas)
+    {
+        var player = canvas.GetComponentInParent<Player>();
+
+        if (player == null || !player.IsLocalPlayer)
+        {
+            Logger.LogInfo($"Detected AppsCanvas creation from non-local player");
+            return;
+        }
+
+        PhoneBootstrap.CreateApp(canvas);
     }
 
     private AssetBundle LoadAssetBundle()
