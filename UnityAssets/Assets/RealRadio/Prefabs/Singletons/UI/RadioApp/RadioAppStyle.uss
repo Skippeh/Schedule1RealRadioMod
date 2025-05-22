@@ -1,5 +1,7 @@
 @import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
-
-VisualElement {
-    background-color:rgb(170, 51, 51);
+#Root {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/Sprites/Background.psd?fileID=21300000&guid=c008cb062cff20946b033ec0e5b27894&type=3#Background");
+    background-repeat: repeat;
+    background-size: auto;
 }
