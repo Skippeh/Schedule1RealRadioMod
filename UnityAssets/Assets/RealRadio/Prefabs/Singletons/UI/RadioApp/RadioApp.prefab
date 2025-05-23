@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 655, y: 1201}
+  m_SizeDelta: {x: 1201, y: 655}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &-7020332972811010274
 MonoBehaviour:
@@ -52,7 +52,7 @@ MonoBehaviour:
   AppName: Radio
   IconLabel: Radio
   AppIcon: {fileID: 0}
-  Orientation: 1
+  Orientation: 0
   AvailableInTutorial: 0
   appContainer: {fileID: 4067317081412966111}
   renderTextureTarget: {fileID: 2683711941412417989}
