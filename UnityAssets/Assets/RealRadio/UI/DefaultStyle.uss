@@ -4,7 +4,7 @@ Label {
 }
 
 .image-button {
-    -unity-background-scale-mode: scale-and-crop;
+    -unity-background-scale-mode: scale-to-fit;
     background-color: transparent;
     border-width: 0;
 }
