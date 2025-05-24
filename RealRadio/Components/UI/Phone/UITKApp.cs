@@ -15,6 +15,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
     private RawImage renderTextureTarget = null!;
 
     private Camera overlayCamera = null!;
+    private float scale;
 
     public override void Awake()
     {
@@ -27,6 +28,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
         var uiDocument = GetComponentInChildren<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object or children");
         uiDocument.panelSettings.SetScreenToPanelSpaceFunction(ScreenToPanelSpace);
+        scale = uiDocument.panelSettings.scale;
 
         if (Orientation == EOrientation.Vertical)
             rectTransform.localRotation = Quaternion.Euler(0, 0, 90);
@@ -41,6 +43,8 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
         // UITK Y is inverted compared to UGUI
         vector.y = renderTextureTarget.rectTransform.rect.height - vector.y;
+
+        vector *= scale;
 
         return vector;
     }
