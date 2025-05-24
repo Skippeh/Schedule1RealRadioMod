@@ -7,8 +7,22 @@ Label {
     -unity-background-scale-mode: scale-to-fit;
     background-color: transparent;
     border-width: 0;
+    opacity: 1;
+    scale: 1;
+
+    transition: all 0.1s ease-out;
 }
 
 .image-button:disabled {
     opacity: 0.5;
+}
+
+.image-button:hover {
+    transition: none;
+    scale: 0.85;
+}
+
+.image-button:active {
+    transition: none;
+    scale: 0.75;
 }
