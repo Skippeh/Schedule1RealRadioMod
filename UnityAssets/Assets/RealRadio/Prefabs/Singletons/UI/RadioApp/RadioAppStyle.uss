@@ -43,8 +43,14 @@
     flex-grow: 1;
 }
 
-#StationListButtons > Button {
+#StationListButtons {
+    flex-direction: row;
+}
+
+#StationListButtons > .image-button {
     height: 100%;
+    padding: 9px;
+    margin: 0 2px;
 }
 
 #NewStationButton {
