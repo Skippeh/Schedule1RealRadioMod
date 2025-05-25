@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -156,7 +156,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 5787661762110905851}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1092744332, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+  m_Script: {fileID: 380587740, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stationListItemAsset: {fileID: 9197481963319205126, guid: 50873b09daf492549b4bd9fbf1ebf708, type: 3}
   backgroundScrollSpeed: 3

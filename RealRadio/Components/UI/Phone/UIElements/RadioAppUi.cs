@@ -1,12 +1,22 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using RealRadio.Components.Radio;
+using RealRadio.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace RealRadio.Components.UI.Phone;
+namespace RealRadio.Components.UI.Phone.UIElements;
 
 [RequireComponent(typeof(UIDocument))]
 public class RadioAppUi : MonoBehaviour
 {
+    [Header("Asset References")]
+    [SerializeField]
+    private VisualTreeAsset stationListItemAsset = null!;
+
     [Header("Style")]
     [SerializeField]
     private float backgroundScrollSpeed;
@@ -16,16 +26,55 @@ public class RadioAppUi : MonoBehaviour
     private UIDocument document = null!;
     private VisualElement root = null!;
 
+    private Button newStationButton = null!;
+    private ListView stationList = null!;
+
     private void Awake()
     {
         document = GetComponent<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object");
+
+        if (stationListItemAsset == null)
+            throw new InvalidOperationException("StationListItemAsset is null");
     }
 
     void OnEnable()
     {
         root = document.rootVisualElement.Query(name: "Root").First() ?? throw new InvalidOperationException("Could not find root ui element");
+        newStationButton = root.Query<Button>(name: "NewStationButton").First() ?? throw new InvalidOperationException("Could not find new station button ui element");
+        stationList = root.Query<ListView>(name: "StationList").First() ?? throw new InvalidOperationException("Could not find station list ui element");
+        InitializeStationList();
+
+        newStationButton.RegisterCallback<ClickEvent>(OnNewStationButtonClicked);
+        RadioStationManager.Instance.OnStationsChanged += OnStationsChanged;
 
         RandomizeBackgroundParameters();
+    }
+
+    void OnDisable()
+    {
+        RadioStationManager.Instance.OnStationsChanged -= OnStationsChanged;
+    }
+
+    private void InitializeStationList()
+    {
+        stationList.makeItem = () =>
+        {
+            return new StationListItem(stationListItemAsset).Element;
+        };
+
+        stationList.bindItem = (element, index) =>
+        {
+            var station = RadioStationManager.Instance.SortedStations[index];
+            var listItem = element.userData as StationListItem;
+            listItem?.SetStation(station);
+        };
+
+        stationList.itemsSource = RadioStationManager.Instance.SortedStations;
+    }
+
+    private void OnStationsChanged()
+    {
+        stationList.Rebuild();
     }
 
     private void RandomizeBackgroundParameters()
@@ -49,5 +98,9 @@ public class RadioAppUi : MonoBehaviour
 
         root.style.backgroundPositionX = new BackgroundPosition(BackgroundPositionKeyword.Left, x + (backgroundScrollSpeed * Time.unscaledDeltaTime * backgroundMoveDirection.x));
         root.style.backgroundPositionY = new BackgroundPosition(BackgroundPositionKeyword.Top, y + (backgroundScrollSpeed * Time.unscaledDeltaTime * backgroundMoveDirection.y));
+    }
+
+    private void OnNewStationButtonClicked(ClickEvent evt)
+    {
     }
 }

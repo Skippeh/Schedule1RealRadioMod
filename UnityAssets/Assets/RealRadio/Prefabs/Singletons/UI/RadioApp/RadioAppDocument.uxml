@@ -10,7 +10,7 @@
                         <ui:Button name="NewStationButton" class="image-button" />
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:ScrollView name="StationList" />
+                <ui:ListView name="StationList" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" show-bound-collection-size="false" />
             </ui:VisualElement>
             <ui:VisualElement name="StationPropertiesSection" />
         </ui:VisualElement>
