@@ -30,7 +30,7 @@
     background-color: rgba(0, 0, 0, 0.7);
 }
 
-#NameLabel {
+#Name {
     margin-left: 10px;
     margin-right: 10px;
     text-overflow: ellipsis;
