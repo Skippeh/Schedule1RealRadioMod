@@ -44,6 +44,7 @@ public class RadioAppUi : MonoBehaviour
         newStationButton = root.Query<Button>(name: "NewStationButton").First() ?? throw new InvalidOperationException("Could not find new station button ui element");
         stationList = root.Query<ListView>(name: "StationList").First() ?? throw new InvalidOperationException("Could not find station list ui element");
         stationProperties = new StationProperties(root.Query<VisualElement>(name: "StationProperties").First() ?? throw new InvalidOperationException("Could not find station properties ui element"));
+
         InitializeStationList();
 
         newStationButton.RegisterCallback<ClickEvent>(OnNewStationButtonClicked);
