@@ -9,7 +9,11 @@
     width: 100%;
 }
 
-.input-container > Label {
+.unity-base-field {
+    flex-direction: column;
+}
+
+.unity-base-field > .unity-base-field__label {
     color: rgb(255, 255, 255);
     -unity-font-style: bold;
     margin: 0;
@@ -17,22 +21,25 @@
     margin-bottom: 5px;
 }
 
-.input-container .unity-base-field {
+.unity-base-field {
     padding: 5px;
     margin: 0;
     padding: 0;
     margin-bottom: 10px;
 }
 
-.input-container .unity-base-field__input {
+.unity-base-field > .unity-base-field__input {
     background-color: #ffffff;
     padding: 5px;
     margin: 0;
 }
 
+.unity-base-field > .unity-toggle__input {
+    background-color: transparent;
+}
+
 .horizontal-group {
     flex-direction: row;
-    flex-grow: 1;
     justify-content: stretch;
     align-items: stretch;
     flex-wrap: wrap;

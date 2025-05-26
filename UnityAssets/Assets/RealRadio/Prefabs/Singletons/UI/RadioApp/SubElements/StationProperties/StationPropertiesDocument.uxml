@@ -1,13 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesStyle.uss?fileID=7433441132597879392&amp;guid=dcc2a4aae42973a429c9b51f4345550c&amp;type=3#StationPropertiesStyle" />
     <ui:VisualElement class="horizontal-group">
-        <ui:VisualElement class="input-container">
-            <ui:Label text="Name" parse-escape-sequences="true" />
-            <ui:TextField name="Name" picking-mode="Ignore" value="My Amazing Station" />
-        </ui:VisualElement>
-        <ui:VisualElement class="input-container">
-            <ui:Label text="Type" parse-escape-sequences="true" />
-            <ui:EnumField type="RadioType, RealRadio" name="Type" />
-        </ui:VisualElement>
+        <ui:TextField name="Name" picking-mode="Ignore" value="My Amazing Station" label="Name" />
+        <ui:TextField picking-mode="Ignore" label="Abbreviation" value="MAS" name="Abbreviation" style="flex-grow: 0; flex-shrink: 1;" />
+        <ui:EnumField type="RadioType, RealRadio" name="Type" label="Type" />
     </ui:VisualElement>
+    <ui:Toggle label="Can be played by NPCs" name="CanBePlayedByNPCs" />
 </ui:UXML>
