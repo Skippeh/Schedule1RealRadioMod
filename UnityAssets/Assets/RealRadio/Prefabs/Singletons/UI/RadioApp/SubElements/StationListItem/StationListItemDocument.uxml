@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationListItem/StationListItemStyle.uss?fileID=7433441132597879392&amp;guid=400b1692fc4616c4c819ff1db4e70bc2&amp;type=3#StationListItemStyle" />
+    <ui:VisualElement name="ListItemRoot">
+        <ui:Label name="Name" text="Label" parse-escape-sequences="true" />
+    </ui:VisualElement>
+</ui:UXML>

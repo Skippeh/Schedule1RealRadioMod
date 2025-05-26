@@ -1,8 +1,8 @@
-namespace RealRadio.Data
+namespace RealRadio.Data;
+
+public enum StationSource
 {
-    public enum StationSource
-    {
-        DefaultStation,
-        FileAPI,
-    }
+    DefaultStation,
+    FileAPI,
+    UserCreated,
 }

@@ -129,11 +129,22 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
     /// <summary>
     /// Returns the index of the unsorted station in the list of sorted stations, or -1 if the index is out of range.
     /// </summary>
-    internal int IndexOfUnsortedStation(int unsortedIndex)
+    public int IndexOfUnsortedStation(int unsortedIndex)
     {
         if (unsortedIndex < 0 || unsortedIndex >= stations.Count)
             return -1;
 
         return sortedStations.IndexOf(stations[unsortedIndex]);
+    }
+
+    public StationSource? GetStationSource(RadioStation station)
+    {
+        if (station?.Id == null)
+            throw new ArgumentNullException(nameof(station.Id));
+
+        if (!stationSources.TryGetValue(station.Id.GetStableHashCode(), out var source))
+            return null;
+
+        return source;
     }
 }

@@ -23,3 +23,4 @@ MonoBehaviour:
   YtDlpUiManager: {fileID: 4106068969832939728, guid: 1f84cd3bd54437e4797f4ea82456e4be, type: 3}
   APIManager: {fileID: 2987140776399028811, guid: 31dfa3af63ccc6644aca5000f04ae2ae, type: 3}
   GameMusicManager: {fileID: 8913835244707351328, guid: c6146ca416ca8b64089a1da583d4c0b6, type: 3}
+  RadioApp: {fileID: 5454286455656709247, guid: f21a0ec2df6202a4095a1fd5e6f3f1a2, type: 3}
