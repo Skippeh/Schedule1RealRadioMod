@@ -6,6 +6,8 @@ namespace RealRadio.Components.UI.Phone.UIElements;
 
 public class StationListItem
 {
+    public RadioStation? Station => station;
+
     public VisualElement Element { get; private set; }
 
     private RadioStation? station;

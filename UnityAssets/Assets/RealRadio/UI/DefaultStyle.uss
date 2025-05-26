@@ -26,3 +26,7 @@ Label {
     transition: none;
     scale: 0.75;
 }
+
+.unity-base-field {
+    -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf");
+}

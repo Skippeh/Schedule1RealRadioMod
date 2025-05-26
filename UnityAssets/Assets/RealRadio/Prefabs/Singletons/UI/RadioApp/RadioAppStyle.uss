@@ -31,14 +31,14 @@
     flex-grow: 1;
 }
 
-#StationListControls {
+.header {
     flex-direction: row;
     background-color: rgb(145, 20, 20);
     color: rgb(254, 244, 244);
     -unity-font-style: bold;
 }
 
-#StationListControls > Label {
+.header > Label {
     padding: 5px 10px;
     flex-grow: 1;
 }
@@ -47,7 +47,7 @@
     flex-direction: row;
 }
 
-#StationListButtons > .image-button {
+#StationListHeader > .image-button {
     height: 100%;
     padding: 9px;
     margin: 0 2px;
@@ -59,4 +59,12 @@
 
 #StationPropertiesSection {
     width: 67%;
+}
+
+#StationPropertiesContainer {
+    flex-grow: 1;
+}
+
+#StationPropertiesContainer .unity-scroll-view__content-container {
+    flex-grow: 1;
 }

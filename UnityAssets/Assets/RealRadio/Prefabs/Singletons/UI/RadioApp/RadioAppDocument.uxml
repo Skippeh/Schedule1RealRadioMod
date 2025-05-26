@@ -1,10 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="StationPropertiesDocument" src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesDocument.uxml?fileID=9197481963319205126&amp;guid=43a15290d530c9d459764ce52713b06e&amp;type=3#StationPropertiesDocument" />
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/RadioAppStyle.uss?fileID=7433441132597879392&amp;guid=1e42f68ef66cfbe4f8724f0b42811a87&amp;type=3#RadioAppStyle" />
     <ui:VisualElement name="Root" picking-mode="Ignore">
         <ui:Label tabindex="-1" text="Radio" name="AppHeaderLabel" />
         <ui:VisualElement name="SectionsContainer" style="flex-grow: 1;">
-            <ui:VisualElement name="StationListSection">
-                <ui:VisualElement name="StationListControls">
+            <ui:VisualElement name="StationListSection" class="section">
+                <ui:VisualElement name="StationListHeader" class="header">
                     <ui:Label text="Stations" />
                     <ui:VisualElement name="StationListButtons">
                         <ui:Button name="NewStationButton" class="image-button" />
@@ -12,7 +13,14 @@
                 </ui:VisualElement>
                 <ui:ListView name="StationList" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" show-bound-collection-size="false" />
             </ui:VisualElement>
-            <ui:VisualElement name="StationPropertiesSection" />
+            <ui:VisualElement name="StationPropertiesSection" class="section">
+                <ui:VisualElement name="StationListHeader" class="header">
+                    <ui:Label text="Properties" enable-rich-text="false" />
+                </ui:VisualElement>
+                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="StationPropertiesContainer" horizontal-scroller-visibility="Hidden">
+                    <ui:Instance template="StationPropertiesDocument" name="StationProperties" />
+                </ui:ScrollView>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -28,6 +28,7 @@ public class RadioAppUi : MonoBehaviour
 
     private Button newStationButton = null!;
     private ListView stationList = null!;
+    private StationProperties? stationProperties;
 
     private void Awake()
     {
@@ -42,6 +43,7 @@ public class RadioAppUi : MonoBehaviour
         root = document.rootVisualElement.Query(name: "Root").First() ?? throw new InvalidOperationException("Could not find root ui element");
         newStationButton = root.Query<Button>(name: "NewStationButton").First() ?? throw new InvalidOperationException("Could not find new station button ui element");
         stationList = root.Query<ListView>(name: "StationList").First() ?? throw new InvalidOperationException("Could not find station list ui element");
+        stationProperties = new StationProperties(root.Query<VisualElement>(name: "StationProperties").First() ?? throw new InvalidOperationException("Could not find station properties ui element"));
         InitializeStationList();
 
         newStationButton.RegisterCallback<ClickEvent>(OnNewStationButtonClicked);
@@ -53,6 +55,7 @@ public class RadioAppUi : MonoBehaviour
     void OnDisable()
     {
         RadioStationManager.Instance.OnStationsChanged -= OnStationsChanged;
+        stationProperties = null;
     }
 
     private void InitializeStationList()
@@ -67,6 +70,19 @@ public class RadioAppUi : MonoBehaviour
             var station = RadioStationManager.Instance.SortedStations[index];
             var listItem = element.userData as StationListItem;
             listItem?.SetStation(station);
+        };
+
+        stationList.selectedIndicesChanged += (selectedIndices) =>
+        {
+            var indices = selectedIndices.ToList();
+            int index = indices.Count > 0 ? indices[0] : -1;
+            var station = stationList.itemsSource[index] as RadioStation;
+
+            if (stationProperties != null)
+            {
+                stationProperties.Station = station;
+                stationProperties.ReadOnly = station != null && RadioStationManager.Instance.GetStationSource(station) is not StationSource.UserCreated or null;
+            }
         };
 
         stationList.itemsSource = RadioStationManager.Instance.SortedStations;
