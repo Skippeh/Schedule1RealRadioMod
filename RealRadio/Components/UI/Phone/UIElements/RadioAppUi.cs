@@ -13,6 +13,8 @@ namespace RealRadio.Components.UI.Phone.UIElements;
 [RequireComponent(typeof(UIDocument))]
 public class RadioAppUi : MonoBehaviour
 {
+    public const float ScrollSpeed = 100;
+
     [Header("Asset References")]
     [SerializeField]
     private VisualTreeAsset stationListItemAsset = null!;
@@ -61,6 +63,8 @@ public class RadioAppUi : MonoBehaviour
 
     private void InitializeStationList()
     {
+        stationList.scrollView.mouseWheelScrollSize = ScrollSpeed;
+
         stationList.makeItem = () =>
         {
             return new StationListItem(stationListItemAsset).Element;

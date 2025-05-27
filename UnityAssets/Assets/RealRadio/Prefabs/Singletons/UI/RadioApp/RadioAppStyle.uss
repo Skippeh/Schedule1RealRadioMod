@@ -60,11 +60,3 @@
 #StationPropertiesSection {
     width: 67%;
 }
-
-#StationPropertiesContainer {
-    flex-grow: 1;
-}
-
-#StationPropertiesContainer .unity-scroll-view__content-container {
-    flex-grow: 1;
-}

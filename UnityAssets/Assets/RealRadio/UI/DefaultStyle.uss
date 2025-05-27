@@ -1,6 +1,11 @@
 Label {
     font-size: 14px;
-    -unity-font-definition: url("/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght SDF.asset");
+}
+
+Label,
+.unity-base-field,
+.unity-button {
+    -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf");
 }
 
 .image-button {
@@ -25,8 +30,4 @@ Label {
 .image-button:active {
     transition: none;
     scale: 0.75;
-}
-
-.unity-base-field {
-    -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf");
 }

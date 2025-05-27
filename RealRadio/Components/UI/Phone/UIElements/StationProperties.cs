@@ -35,6 +35,7 @@ public class StationProperties
         }
     }
 
+    private ScrollView fieldsScrollView;
     private TextField nameField;
     private EnumField typeField;
     private TextField abbreviationField;
@@ -42,6 +43,11 @@ public class StationProperties
     private TextField textColorField;
     private TextField backgroundColorField;
     private Toggle roundedBackgroundToggle;
+    private TextField urlField;
+    private VisualElement urlsContainer;
+    private ListView urlsList;
+    private Button saveButton;
+    private Button deleteButton;
 
     private RadioStation? station;
     private bool readOnly;
@@ -51,6 +57,9 @@ public class StationProperties
 
     public StationProperties(VisualElement root)
     {
+        fieldsScrollView = root.Query<ScrollView>(name: "FieldsScrollView").First() ?? throw new InvalidOperationException("Could not find fields ScrollView ui element");
+        fieldsScrollView.mouseWheelScrollSize = RadioAppUi.ScrollSpeed;
+
         nameField = root.Query<TextField>(name: "Name").First() ?? throw new InvalidOperationException("Could not find name TextField ui element");
         stationChanged += () => nameField.text = Station?.Name ?? string.Empty;
         readOnlyChanged += () => nameField.SetEnabled(!ReadOnly);
@@ -78,6 +87,29 @@ public class StationProperties
         roundedBackgroundToggle = root.Query<Toggle>(name: "RoundedBackground").First() ?? throw new InvalidOperationException("Could not find rounded background Toggle ui element");
         stationChanged += () => roundedBackgroundToggle.value = Station?.RoundedBackground ?? false;
         readOnlyChanged += () => roundedBackgroundToggle.SetEnabled(!ReadOnly);
+
+        urlField = root.Query<TextField>(name: "Url").First() ?? throw new InvalidOperationException("Could not find url TextField ui element");
+        stationChanged += () =>
+        {
+            urlField.text = Station?.Url ?? string.Empty;
+            urlField.style.display = Station?.Type == RadioType.InternetRadio ? DisplayStyle.Flex : DisplayStyle.None;
+        };
+        readOnlyChanged += () => urlField.SetEnabled(!ReadOnly);
+
+        urlsContainer = root.Query(name: "UrlsContainer").First() ?? throw new InvalidOperationException("Could not find urls container ui element");
+        urlsList = urlsContainer.Query<ListView>(name: "UrlsList").First() ?? throw new InvalidOperationException("Could not find urls list ui element");
+        urlsList.scrollView.mouseWheelScrollSize = RadioAppUi.ScrollSpeed;
+        stationChanged += () =>
+        {
+            urlsList.itemsSource = Station?.Urls;
+            urlsContainer.style.display = Station?.Type == RadioType.YtDlp ? DisplayStyle.Flex : DisplayStyle.None;
+        };
+
+        saveButton = root.Query<Button>(name: "SaveButton").First() ?? throw new InvalidOperationException("Could not find save button ui element");
+        readOnlyChanged += () => saveButton.SetEnabled(!ReadOnly);
+
+        deleteButton = root.Query<Button>(name: "DeleteButton").First() ?? throw new InvalidOperationException("Could not find delete button ui element");
+        readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly);
     }
 
     [return: NotNullIfNotNull(nameof(color))]
@@ -99,5 +131,20 @@ public class StationProperties
             result += $"{a:X2}";
 
         return result;
+    }
+
+    private void OnTypeChanged()
+    {
+        switch (station?.Type)
+        {
+            case RadioType.InternetRadio:
+                urlsContainer.visible = false;
+                urlField.visible = true;
+                break;
+            case RadioType.YtDlp:
+                urlsContainer.visible = true;
+                urlField.visible = false;
+                break;
+        }
     }
 }
