@@ -19,7 +19,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
     private Camera overlayCamera = null!;
     private UIDocument uiDocument = null!;
-    private float scale;
+    private Vector2 scale;
 
     private static readonly KeyCode[] keysToPrevent = [
         KeyCode.Escape,
@@ -37,7 +37,11 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
         uiDocument = GetComponentInChildren<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object or children");
         uiDocument.panelSettings.SetScreenToPanelSpaceFunction(ScreenToPanelSpace);
-        scale = uiDocument.panelSettings.scale;
+
+        // Calculate scale of renderTextureTarget relative to the ui size
+        Vector2 baseSize = rectTransform.rect.size;
+        Vector2 textureSize = new Vector2(renderTextureTarget.texture.width, renderTextureTarget.texture.height);
+        scale = textureSize / baseSize;
 
         if (Orientation == EOrientation.Vertical)
             rectTransform.localRotation = Quaternion.Euler(0, 0, 90);
