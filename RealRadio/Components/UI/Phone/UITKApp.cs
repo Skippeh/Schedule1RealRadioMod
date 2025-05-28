@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
+using ScheduleOne;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -15,7 +18,13 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
     private RawImage renderTextureTarget = null!;
 
     private Camera overlayCamera = null!;
+    private UIDocument uiDocument = null!;
     private float scale;
+
+    private static readonly KeyCode[] keysToPrevent = [
+        KeyCode.Escape,
+        KeyCode.Tab,
+    ];
 
     public override void Awake()
     {
@@ -26,16 +35,41 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
         overlayCamera = Camera.main.transform.Find("OverlayCamera")?.GetComponent<Camera>() ?? throw new InvalidOperationException("No OverlayCamera found");
 
-        var uiDocument = GetComponentInChildren<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object or children");
+        uiDocument = GetComponentInChildren<UIDocument>() ?? throw new InvalidOperationException("No UIDocument component found on game object or children");
         uiDocument.panelSettings.SetScreenToPanelSpaceFunction(ScreenToPanelSpace);
         scale = uiDocument.panelSettings.scale;
 
         if (Orientation == EOrientation.Vertical)
             rectTransform.localRotation = Quaternion.Euler(0, 0, 90);
+
+        ScheduleOne.UI.Phone.Phone.Instance.onPhoneClosed += OnPhoneClosed;
+    }
+
+    private void OnPhoneClosed()
+    {
+        uiDocument.rootVisualElement.SetEnabled(false);
+        uiDocument.rootVisualElement.Blur();
+    }
+
+    public override void OnPhoneOpened()
+    {
+        base.OnPhoneOpened();
+        uiDocument.rootVisualElement.SetEnabled(true);
+    }
+
+    void OnEnable()
+    {
+        var root = uiDocument.rootVisualElement;
+        root.RegisterCallback<FocusEvent>(OnFocus, TrickleDown.TrickleDown);
+        root.RegisterCallback<BlurEvent>(OnBlur, TrickleDown.TrickleDown);
+        root.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);
     }
 
     private Vector2 ScreenToPanelSpace(Vector2 vector)
     {
+        if (!renderTextureTarget.gameObject.activeInHierarchy)
+            return new Vector2(float.NaN, float.NaN);
+
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(renderTextureTarget.rectTransform, Input.mousePosition, overlayCamera, out vector))
         {
             return new Vector2(float.NaN, float.NaN);
@@ -47,5 +81,39 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
         vector *= scale;
 
         return vector;
+    }
+
+    private void OnFocus(FocusEvent evt)
+    {
+        if (evt.target is TextElement)
+        {
+            GameInput.IsTyping = true;
+        }
+    }
+
+    private void OnBlur(BlurEvent evt)
+    {
+        if (evt.target is TextElement)
+        {
+            GameInput.IsTyping = false;
+        }
+    }
+
+    private void OnKeyDown(KeyDownEvent evt)
+    {
+        if (GameInput.IsTyping)
+            return;
+
+        foreach (var key in keysToPrevent)
+        {
+            if (evt.keyCode == key)
+            {
+                Plugin.Logger.LogInfo($"Preventing key: {key}");
+
+                evt.PreventDefault();
+                evt.StopPropagation();
+                return;
+            }
+        }
     }
 }

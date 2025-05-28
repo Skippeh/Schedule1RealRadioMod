@@ -81,6 +81,10 @@ public class RadioAppUi : MonoBehaviour
         {
             var indices = selectedIndices.ToList();
             int index = indices.Count > 0 ? indices[0] : -1;
+
+            if (index < 0)
+                return;
+
             var station = stationList.itemsSource[index] as RadioStation;
 
             if (stationProperties != null)
