@@ -35,6 +35,19 @@ public class StationProperties
         }
     }
 
+    public bool IsNew
+    {
+        get => isNew;
+        set
+        {
+            if (isNew == value)
+                return;
+
+            isNew = value;
+            isNewChanged?.Invoke();
+        }
+    }
+
     private ScrollView fieldsScrollView;
     private TextField nameField;
     private EnumField typeField;
@@ -51,9 +64,11 @@ public class StationProperties
 
     private RadioStation? station;
     private bool readOnly;
+    private bool isNew;
 
     private Action? stationChanged;
     private Action? readOnlyChanged;
+    private Action? isNewChanged;
 
     public StationProperties(VisualElement root)
     {
@@ -67,6 +82,7 @@ public class StationProperties
         typeField = root.Query<EnumField>(name: "Type").First() ?? throw new InvalidOperationException("Could not find type EnumField ui element");
         stationChanged += () => typeField.value = Station?.Type ?? 0;
         readOnlyChanged += () => typeField.SetEnabled(!ReadOnly);
+        typeField.RegisterValueChangedCallback((_) => OnTypeChanged());
 
         abbreviationField = root.Query<TextField>(name: "Abbreviation").First() ?? throw new InvalidOperationException("Could not find abbreviation TextField ui element");
         stationChanged += () => abbreviationField.text = Station?.Abbreviation ?? string.Empty;
@@ -102,6 +118,7 @@ public class StationProperties
         stationChanged += () =>
         {
             urlsList.itemsSource = Station?.Urls;
+            urlsList.Rebuild();
             urlsContainer.style.display = Station?.Type == RadioType.YtDlp ? DisplayStyle.Flex : DisplayStyle.None;
         };
 
@@ -109,7 +126,8 @@ public class StationProperties
         readOnlyChanged += () => saveButton.SetEnabled(!ReadOnly);
 
         deleteButton = root.Query<Button>(name: "DeleteButton").First() ?? throw new InvalidOperationException("Could not find delete button ui element");
-        readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly);
+        readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
+        isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
     }
 
     [return: NotNullIfNotNull(nameof(color))]
@@ -135,15 +153,18 @@ public class StationProperties
 
     private void OnTypeChanged()
     {
-        switch (station?.Type)
+        switch (typeField.value)
         {
             case RadioType.InternetRadio:
-                urlsContainer.visible = false;
-                urlField.visible = true;
+                urlsContainer.style.display = DisplayStyle.None;
+                urlField.style.display = DisplayStyle.Flex;
                 break;
             case RadioType.YtDlp:
-                urlsContainer.visible = true;
-                urlField.visible = false;
+                urlsContainer.style.display = DisplayStyle.Flex;
+                urlField.style.display = DisplayStyle.None;
+                break;
+            default:
+                Plugin.Logger.LogWarning($"Unknown radio type selected: {typeField.value}");
                 break;
         }
     }

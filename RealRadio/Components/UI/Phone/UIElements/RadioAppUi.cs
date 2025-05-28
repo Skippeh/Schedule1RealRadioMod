@@ -127,5 +127,15 @@ public class RadioAppUi : MonoBehaviour
 
     private void OnNewStationButtonClicked(ClickEvent evt)
     {
+        if (stationProperties == null)
+            return;
+
+        var station = ScriptableObject.CreateInstance<RadioStation>();
+        station.Id = Guid.NewGuid().ToString();
+        station.Type = RadioType.YtDlp;
+
+        stationProperties.Station = station;
+        stationProperties.IsNew = true;
+        stationProperties.ReadOnly = false;
     }
 }
