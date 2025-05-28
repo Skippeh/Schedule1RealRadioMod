@@ -16,7 +16,7 @@ MonoBehaviour:
   m_TargetTexture: {fileID: 8400000, guid: a740893be44b8164ca6804e1748aa0fe, type: 2}
   m_ScaleMode: 0
   m_ReferenceSpritePixelsPerUnit: 100
-  m_Scale: 2
+  m_Scale: 2.1
   m_ReferenceDpi: 96
   m_FallbackDpi: 96
   m_ReferenceResolution: {x: 1200, y: 800}
