@@ -156,6 +156,7 @@ public class Plugin : BaseUnityPlugin
         InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.RadioSyncManager));
         InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.VehicleRadioManager));
         InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.BuildingRadioManager));
+        InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.UserStationsManager));
     }
 
     private void CreateMainSceneClientSingletons()
