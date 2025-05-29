@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
 using UnityEngine;
 
 namespace RealRadio.Components.API.Data;
@@ -73,7 +72,7 @@ public class RadioStation
 
         if (BackgroundColor != null)
         {
-            if (!ColorUtility.DoTryParseHtmlColor(BackgroundColor, out _))
+            if (!ColorUtility.TryParseHtmlString(BackgroundColor, out _))
             {
                 invalidReasons.Add($"Invalid background color '{BackgroundColor}'");
             }
@@ -81,7 +80,7 @@ public class RadioStation
 
         if (TextColor != null)
         {
-            if (!ColorUtility.DoTryParseHtmlColor(TextColor, out _))
+            if (!ColorUtility.TryParseHtmlString(TextColor, out _))
             {
                 invalidReasons.Add($"Invalid text color '{TextColor}'");
             }
@@ -100,5 +99,23 @@ public class RadioStation
     public bool IsYtDlpRadio()
     {
         return Type == RadioType.YtDlp && Urls is { Length: > 0 };
+    }
+
+    public RealRadio.Data.RadioStation ToRuntimeType()
+    {
+        var result = ScriptableObject.CreateInstance<RealRadio.Data.RadioStation>();
+
+        result.Id = Id;
+        result.Name = Name ?? string.Empty;
+        result.Abbreviation = Abbreviation ?? string.Empty;
+        result.Type = Type.GetValueOrDefault();
+        result.Url = Url ?? string.Empty;
+        result.Urls = Urls ?? [];
+        result.CanBePlayedByNPCs = CanBePlayedByNPCs;
+        result.BackgroundColor = ColorUtility.TryParseHtmlString(BackgroundColor, out var backgroundColor) ? backgroundColor : Color.clear;
+        result.RoundedBackground = RoundedBackground;
+        result.TextColor = ColorUtility.TryParseHtmlString(TextColor, out var textColor) ? textColor : Color.white;
+
+        return result;
     }
 }
