@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using RealRadio.Components.API.Data;
 using RealRadio.Components.Radio;
-using RealRadio.Data;
 using RealRadio.Peristence.Data;
 using ScheduleOne.Persistence.Loaders;
 using UnityEngine;
@@ -34,32 +34,25 @@ public class UserStationsLoader : Loader
             return;
         }
 
-        List<RadioStation> convertedStations = [];
+        List<RadioStation> validatedStations = new(capacity: data.Stations.Count);
 
         foreach (var station in data.Stations)
         {
-            try
+            if (!station.IsValid(out var invalidReasons))
             {
-                if (!station.IsValid(out var invalidReasons))
-                {
-                    throw new ArgumentException($"Could not validate user radio station:\n- {string.Join("\n- ", invalidReasons)}");
-                }
-
-                convertedStations.Add(station.ToRuntimeType());
-            }
-            catch (Exception ex)
-            {
-                Plugin.Logger.LogError($"Failed to convert user radio station from '{mainPath}': {ex}");
+                Plugin.Logger.LogError($"Could not validate user radio station '{station.Id} ({station.Name})':\n- {string.Join("\n- ", invalidReasons)}");
                 continue;
             }
+
+            validatedStations.Add(station);
         }
 
         try
         {
-            UserStationsManager.Instance.AddStations(convertedStations);
+            UserStationsManager.Instance.AddOrUpdateStations(validatedStations);
 
-            if (convertedStations.Count != data.Stations.Count)
-                Plugin.Logger.LogWarning($"Loaded {convertedStations.Count} out of {data.Stations.Count} user radio station(s)");
+            if (validatedStations.Count != data.Stations.Count)
+                Plugin.Logger.LogWarning($"Loaded {validatedStations.Count} out of {data.Stations.Count} user radio station(s)");
             else
                 Plugin.Logger.LogInfo($"Successfully loaded {data.Stations.Count} user radio station(s)");
         }
