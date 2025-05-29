@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using BepInEx;
 using BepInEx.Logging;
@@ -64,6 +65,8 @@ public class Plugin : BaseUnityPlugin
 
         AppsCanvasPatches.CanvasCreated += OnAppsCanvasCreated;
 
+        InitFishNet();
+
         // Plugin startup logic
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
@@ -83,6 +86,17 @@ public class Plugin : BaseUnityPlugin
                 go.AddComponent<Components.Debugging.RadioSpawner>();
             }
         };
+    }
+
+    private void InitFishNet()
+    {
+        var fishnetTypes = Assembly.GetExecutingAssembly().GetExportedTypes().Where(t => t.Namespace == "FishNet.Serializing.Generated");
+
+        foreach (var type in fishnetTypes)
+        {
+            MethodInfo method = type.GetMethod("InitializeOnce", BindingFlags.NonPublic | BindingFlags.Static);
+            method.Invoke(null, []);
+        }
     }
 
     private void OnAppsCanvasCreated(AppsCanvas canvas)
