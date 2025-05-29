@@ -92,9 +92,9 @@ public class Plugin : BaseUnityPlugin
     {
         // FishNet normally uses RuntimeInitializeOnLoadMethod to invoke these methods, but those do not get invoked when using a mod loader.
         // So we invoke them manually here.
-        var fishnetTypes = Assembly.GetExecutingAssembly().GetExportedTypes().Where(t => t.Namespace == "FishNet.Serializing.Generated");
+        var types = Assembly.GetExecutingAssembly().GetExportedTypes().Where(t => t.Namespace == "FishNet.Serializing.Generated");
 
-        foreach (var type in fishnetTypes)
+        foreach (var type in types)
         {
             MethodInfo method = type.GetMethod("InitializeOnce", BindingFlags.NonPublic | BindingFlags.Static);
             method.Invoke(null, []);
