@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using FishNet.Serializing;
 using UnityEngine;
 
 namespace RealRadio.Components.API.Data;
@@ -115,6 +116,61 @@ public class RadioStation
         result.BackgroundColor = ColorUtility.TryParseHtmlString(BackgroundColor, out var backgroundColor) ? backgroundColor : Color.clear;
         result.RoundedBackground = RoundedBackground;
         result.TextColor = ColorUtility.TryParseHtmlString(TextColor, out var textColor) ? textColor : Color.white;
+
+        return result;
+    }
+}
+
+public static class RadioStationNetworkExtensions
+{
+    public static void WriteRadioStation(this Writer writer, RadioStation value)
+    {
+        writer.Write((byte?)value.Type);
+
+        writer.Write(value.Id);
+        writer.Write(value.Name);
+        writer.Write(value.Abbreviation);
+
+        switch (value.Type)
+        {
+            case RadioType.YtDlp:
+                writer.WriteArray(value.Urls);
+                break;
+            case RadioType.InternetRadio:
+                writer.Write(value.Url);
+                break;
+            default:
+                throw new NotImplementedException($"Unexpected RadioType: {value.Type}");
+        }
+
+        writer.Write(value.CanBePlayedByNPCs);
+        writer.Write(value.BackgroundColor);
+        writer.Write(value.TextColor);
+        writer.Write(value.RoundedBackground);
+    }
+
+    public static RadioStation? ReadRadioStation(this Reader reader)
+    {
+        RadioType? type = (RadioType?)reader.Read<byte?>();
+
+        var result = new RadioStation
+        {
+            Id = reader.ReadString(),
+            Name = reader.ReadString(),
+            Abbreviation = reader.ReadString(),
+            Type = type,
+            Url = type == RadioType.InternetRadio ? reader.ReadString() : string.Empty,
+            Urls = type == RadioType.YtDlp ? reader.ReadArrayAllocated<string>() : [],
+            CanBePlayedByNPCs = reader.ReadBoolean(),
+            BackgroundColor = reader.ReadString(),
+            TextColor = reader.ReadString(),
+            RoundedBackground = reader.ReadBoolean(),
+        };
+
+        if (!result.IsValid(out var invalidReasons))
+        {
+            throw new ArgumentException($"Could not validate radio station received from network:\n- {string.Join("\n- ", invalidReasons)}");
+        }
 
         return result;
     }
