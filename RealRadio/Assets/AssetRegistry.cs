@@ -78,6 +78,9 @@ public class AssetRegistry : ScriptableObject
         if (result.Singletons.RadioApp == null)
             throw new AssetRegistryLoadException("Singletons.RadioApp is null");
 
+        if (result.Singletons.UserStationsManager == null)
+            throw new AssetRegistryLoadException("Singletons.UserStationsManager is null");
+
         if (result.Prefabs.VehicleRadioProxy == null)
             throw new AssetRegistryLoadException("Prefabs.VehicleRadio is null");
 
@@ -159,6 +162,7 @@ public class SingletonPrefabs : ScriptableObject
     public GameObject APIManager;
     public GameObject GameMusicManager;
     public GameObject RadioApp;
+    public GameObject UserStationsManager;
 #nullable enable
 }
 

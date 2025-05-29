@@ -24,3 +24,4 @@ MonoBehaviour:
   APIManager: {fileID: 2987140776399028811, guid: 31dfa3af63ccc6644aca5000f04ae2ae, type: 3}
   GameMusicManager: {fileID: 8913835244707351328, guid: c6146ca416ca8b64089a1da583d4c0b6, type: 3}
   RadioApp: {fileID: 5454286455656709247, guid: f21a0ec2df6202a4095a1fd5e6f3f1a2, type: 3}
+  UserStationsManager: {fileID: 1592960787267117964, guid: 5b1c789cbb076f649972121e7b16d276, type: 3}
