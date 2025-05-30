@@ -39,9 +39,16 @@ public class RadioStation
             invalidReasons.Add($"Invalid radio type: {Type} - must be one of: {string.Join(", ", Enum.GetNames(typeof(RadioType)))}");
         }
 
-        if (Type == RadioType.InternetRadio && string.IsNullOrEmpty(Url))
+        if (Type == RadioType.InternetRadio)
         {
-            invalidReasons.Add("Internet radio station must have a 'Url' set");
+            if (string.IsNullOrEmpty(Url))
+            {
+                invalidReasons.Add("Internet radio station must have a 'Url' set");
+            }
+            else if (!Uri.TryCreate(Url, UriKind.Absolute, out Uri? uri) || uri.Scheme is not ("http" or "https"))
+            {
+                invalidReasons.Add($"Url must be a valid url '{Url}' (must start with 'http://' or 'https://')");
+            }
         }
 
         if (Type == RadioType.YtDlp)
