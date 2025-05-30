@@ -139,10 +139,18 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
     public StationSource? GetStationSource(RadioStation station)
     {
-        if (station?.Id == null)
-            throw new ArgumentNullException(nameof(station.Id));
+        if (station == null)
+            throw new ArgumentNullException(nameof(station));
 
-        if (!stationSources.TryGetValue(station.Id.GetStableHashCode(), out var source))
+        return GetStationSource(station.Id);
+    }
+
+    public StationSource? GetStationSource(string? stationId)
+    {
+        if (stationId == null)
+            return null;
+
+        if (!stationSources.TryGetValue(stationId.GetStableHashCode(), out var source))
             return null;
 
         return source;

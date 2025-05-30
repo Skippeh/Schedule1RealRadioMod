@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using RealRadio.Data;
+using RealRadio.Components.API.Data;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 namespace RealRadio.Components.UI.Phone.UIElements;
 
 public class StationProperties
 {
+    public Action<RadioStation?>? StationChanged;
+
     public RadioStation? Station
     {
         get => station;
@@ -65,13 +67,18 @@ public class StationProperties
     private RadioStation? station;
     private bool readOnly;
     private bool isNew;
+    private RadioAppUi parent;
 
     private Action? stationChanged;
     private Action? readOnlyChanged;
     private Action? isNewChanged;
 
-    public StationProperties(VisualElement root)
+    public StationProperties(RadioAppUi parent, VisualElement root)
     {
+        this.parent = parent;
+
+        stationChanged += () => StationChanged?.Invoke(station);
+
         fieldsScrollView = root.Query<ScrollView>(name: "FieldsScrollView").First() ?? throw new InvalidOperationException("Could not find fields ScrollView ui element");
         fieldsScrollView.mouseWheelScrollSize = RadioAppUi.ScrollSpeed;
 
@@ -93,11 +100,11 @@ public class StationProperties
         readOnlyChanged += () => canBePlayedByNPCsToggle.SetEnabled(!ReadOnly);
 
         textColorField = root.Query<TextField>(name: "TextColor").First() ?? throw new InvalidOperationException("Could not find text color TextField ui element");
-        stationChanged += () => textColorField.text = GetColorString(Station?.TextColor) ?? string.Empty;
+        stationChanged += () => textColorField.text = Station?.TextColor ?? string.Empty;
         readOnlyChanged += () => textColorField.SetEnabled(!ReadOnly);
 
         backgroundColorField = root.Query<TextField>(name: "BackgroundColor").First() ?? throw new InvalidOperationException("Could not find background color TextField ui element");
-        stationChanged += () => backgroundColorField.text = GetColorString(Station?.BackgroundColor) ?? string.Empty;
+        stationChanged += () => backgroundColorField.text = Station?.BackgroundColor ?? string.Empty;
         readOnlyChanged += () => backgroundColorField.SetEnabled(!ReadOnly);
 
         roundedBackgroundToggle = root.Query<Toggle>(name: "RoundedBackground").First() ?? throw new InvalidOperationException("Could not find rounded background Toggle ui element");
@@ -124,10 +131,12 @@ public class StationProperties
 
         saveButton = root.Query<Button>(name: "SaveButton").First() ?? throw new InvalidOperationException("Could not find save button ui element");
         readOnlyChanged += () => saveButton.SetEnabled(!ReadOnly);
+        saveButton.RegisterCallback<ClickEvent>(OnSaveButtonClicked);
 
         deleteButton = root.Query<Button>(name: "DeleteButton").First() ?? throw new InvalidOperationException("Could not find delete button ui element");
         readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
+        deleteButton.RegisterCallback<ClickEvent>(OnDeleteButtonClicked);
     }
 
     [return: NotNullIfNotNull(nameof(color))]
@@ -167,5 +176,59 @@ public class StationProperties
                 Plugin.Logger.LogWarning($"Unknown radio type selected: {typeField.value}");
                 break;
         }
+    }
+
+    private void OnSaveButtonClicked(ClickEvent evt)
+    {
+        if (station == null)
+            return;
+
+        var newStation = new RadioStation
+        {
+            Id = station.Id,
+            Name = nameField.text.Trim(),
+            Abbreviation = abbreviationField.text.Trim(),
+            Type = typeField.value as RadioType? ?? throw new InvalidOperationException("Could not convert radio type to enum value"),
+            CanBePlayedByNPCs = canBePlayedByNPCsToggle.value,
+            TextColor = textColorField.text.Trim(),
+            BackgroundColor = backgroundColorField.text.Trim(),
+            RoundedBackground = roundedBackgroundToggle.value,
+            Url = urlField.text.Trim(),
+            Urls = GetUrls(),
+        };
+
+        if (!newStation.IsValid(out var invalidReasons))
+        {
+            Plugin.Logger.LogWarning($"Could not save radio station:\n- {string.Join("\n- ", invalidReasons)}");
+            return;
+        }
+
+        parent.StationSaveRequested?.Invoke(newStation);
+
+        return;
+
+        string[] GetUrls()
+        {
+            if (urlsList.itemsSource == null)
+                return [];
+
+            List<string> result = new(capacity: urlsList.itemsSource.Count);
+
+            foreach (var item in urlsList.itemsSource)
+            {
+                if (item is string url)
+                    result.Add(url.Trim());
+            }
+
+            return result.ToArray();
+        }
+    }
+
+    private void OnDeleteButtonClicked(ClickEvent evt)
+    {
+        if (station == null)
+            return;
+
+        parent.StationDeleteRequested?.Invoke(station);
     }
 }

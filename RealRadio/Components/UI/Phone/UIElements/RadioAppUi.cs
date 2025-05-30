@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using RealRadio.Components.API.Data;
 using RealRadio.Components.Radio;
-using RealRadio.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,6 +11,9 @@ namespace RealRadio.Components.UI.Phone.UIElements;
 public class RadioAppUi : MonoBehaviour
 {
     public const float ScrollSpeed = 100;
+
+    public Action<RadioStation>? StationSaveRequested { get; set; }
+    public Action<RadioStation>? StationDeleteRequested { get; set; }
 
     [Header("Asset References")]
     [SerializeField]
@@ -45,12 +45,12 @@ public class RadioAppUi : MonoBehaviour
         root = document.rootVisualElement.Query(name: "Root").First() ?? throw new InvalidOperationException("Could not find root ui element");
         newStationButton = root.Query<Button>(name: "NewStationButton").First() ?? throw new InvalidOperationException("Could not find new station button ui element");
         stationList = root.Query<ListView>(name: "StationList").First() ?? throw new InvalidOperationException("Could not find station list ui element");
-        stationProperties = new StationProperties(root.Query<VisualElement>(name: "StationProperties").First() ?? throw new InvalidOperationException("Could not find station properties ui element"));
+        stationProperties = new StationProperties(this, root.Query<VisualElement>(name: "StationProperties").First() ?? throw new InvalidOperationException("Could not find station properties ui element"));
 
         InitializeStationList();
 
         newStationButton.RegisterCallback<ClickEvent>(OnNewStationButtonClicked);
-        RadioStationManager.Instance.OnStationsChanged += OnStationsChanged;
+        UserStationsManager.instance.StationsChanged += OnStationsChanged;
 
         RandomizeBackgroundParameters();
     }
@@ -72,7 +72,7 @@ public class RadioAppUi : MonoBehaviour
 
         stationList.bindItem = (element, index) =>
         {
-            var station = RadioStationManager.Instance.SortedStations[index];
+            var station = (RadioStation)stationList.itemsSource[index];
             var listItem = element.userData as StationListItem;
             listItem?.SetStation(station);
         };
@@ -90,16 +90,23 @@ public class RadioAppUi : MonoBehaviour
             if (stationProperties != null)
             {
                 stationProperties.Station = station;
-                stationProperties.ReadOnly = station != null && RadioStationManager.Instance.GetStationSource(station) is not StationSource.UserCreated or null;
+                stationProperties.ReadOnly = false;
+                stationProperties.IsNew = false;
             }
         };
 
-        stationList.itemsSource = RadioStationManager.Instance.SortedStations;
+        stationProperties!.StationChanged += (station) =>
+        {
+            var index = stationList.itemsSource.IndexOf(station);
+            stationList.selectedIndex = index;
+        };
+
+        OnStationsChanged();
     }
 
     private void OnStationsChanged()
     {
-        stationList.Rebuild();
+        stationList.itemsSource = UserStationsManager.Instance.Stations.Values.OrderBy(s => s.Name).ToList();
     }
 
     private void RandomizeBackgroundParameters()
@@ -130,9 +137,11 @@ public class RadioAppUi : MonoBehaviour
         if (stationProperties == null)
             return;
 
-        var station = ScriptableObject.CreateInstance<RadioStation>();
-        station.Id = Guid.NewGuid().ToString();
-        station.Type = RadioType.YtDlp;
+        var station = new RadioStation
+        {
+            Id = Guid.NewGuid().ToString(),
+            Type = RadioType.YtDlp
+        };
 
         stationProperties.Station = station;
         stationProperties.IsNew = true;
