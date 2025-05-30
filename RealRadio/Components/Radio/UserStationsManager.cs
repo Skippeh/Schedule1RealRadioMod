@@ -100,7 +100,13 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
 
     public void RemoveStation(RadioStation station)
     {
-        RemoveStationById(station.Id!);
+        if (station == null)
+            throw new ArgumentNullException(nameof(station));
+
+        if (station.Id == null)
+            throw new ArgumentNullException(nameof(station.Id));
+
+        RemoveStationByIdHash(station.Id.GetStableHashCode());
     }
 
     public void RemoveStationById(string id)
