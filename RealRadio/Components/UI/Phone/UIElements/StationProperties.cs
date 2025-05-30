@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using RealRadio.Components.API.Data;
+using RealRadio.Components.Radio;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -78,6 +79,7 @@ public class StationProperties
         this.parent = parent;
 
         stationChanged += () => StationChanged?.Invoke(station);
+        UserStationsManager.Instance.StationUpdated += OnStationUpdated;
 
         fieldsScrollView = root.Query<ScrollView>(name: "FieldsScrollView").First() ?? throw new InvalidOperationException("Could not find fields ScrollView ui element");
         fieldsScrollView.mouseWheelScrollSize = RadioAppUi.ScrollSpeed;
@@ -158,6 +160,14 @@ public class StationProperties
             result += $"{a:X2}";
 
         return result;
+    }
+
+    private void OnStationUpdated(RadioStation station, bool isNew)
+    {
+        if (station.Id != this.station?.Id)
+            return;
+
+        Station = station;
     }
 
     private void OnTypeChanged()

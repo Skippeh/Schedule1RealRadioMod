@@ -107,6 +107,12 @@ public class RadioAppUi : MonoBehaviour
     private void OnStationsChanged()
     {
         stationList.itemsSource = UserStationsManager.Instance.Stations.Values.OrderBy(s => s.Name).ToList();
+
+        if (stationProperties != null)
+        {
+            var index = stationList.itemsSource.IndexOf(stationProperties.Station);
+            stationList.selectedIndex = index;
+        }
     }
 
     private void RandomizeBackgroundParameters()
