@@ -89,7 +89,7 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
         }
 
         stations.Add(idHash, station);
-        StationUpdated?.Invoke(station, !updatedExisting);
+        StationUpdated?.Invoke(station, isNew: !updatedExisting);
 
         HasChanged = true;
         invokeStationsChanged = true;
