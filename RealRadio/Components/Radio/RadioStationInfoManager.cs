@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
@@ -46,9 +47,9 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         RegisterFetchers?.Invoke(SongInfoFetchManager);
 
         foreach (var station in RadioStationManager.Instance.Stations)
-            OnRadioStationAdded(station);
+            OnRadioStationUpdated(station, oldStation: null);
 
-        RadioStationManager.Instance.StationAdded += OnRadioStationAdded;
+        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
     }
 
@@ -56,6 +57,9 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
     {
         if (!subscribedToSyncManager && RadioSyncManager.InstanceExists)
         {
+            foreach (var state in RadioSyncManager.Instance.RadioStates.Where(kv => kv.Value.IsValid()))
+                OnRadioStationSyncStateReceived(state.Key, state.Value);
+
             RadioSyncManager.Instance.OnStateReceived += OnRadioStationSyncStateReceived;
             subscribedToSyncManager = true;
         }
@@ -130,12 +134,22 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
     /// /// </summary>
     public SongInfo? GetSong(RadioStation station) => fetchers.TryGetValue(station, out var fetcher) ? fetcher.CurrentSong : null;
 
-    private void OnRadioStationAdded(RadioStation station)
+    private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
+        Plugin.Logger.LogInfo($"Updating song info fetcher for radio station '{station}'...");
+
+        StartCoroutine(UpdateFetcher(station, oldStation));
+    }
+
+    private IEnumerator UpdateFetcher(RadioStation station, RadioStation? oldStation)
+    {
+        if (oldStation != null)
+            yield return RemoveFetcher(oldStation);
+
         switch (station.Type)
         {
             case RadioType.InternetRadio:
-                StartCoroutine(AddInternetRadioFetcher(station));
+                yield return AddInternetRadioFetcher(station);
                 break;
             case RadioType.YtDlp:
                 AddYtDlpRadioFetcher(station);
@@ -218,7 +232,11 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
     private IEnumerator RemoveFetcher(RadioStation station)
     {
-        fetchers.Remove(station);
+        Plugin.Logger.LogInfo($"Removing song info fetcher for radio station '{station.Id} ({station.Url})'...");
+
+        fetchers.Remove(station, out var fetcher);
+        pendingUpdates.Remove(station);
+        updatedPollTimes.Remove(fetcher);
 
         // if the fetcher is not in the manual fetchers, it was added to the song info fetch manager
         if (!manualFetchers.Remove(station))

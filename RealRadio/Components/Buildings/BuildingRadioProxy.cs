@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
+using HashUtility;
 using RealRadio.Components.Radio;
 using ScheduleOne.Audio;
 using ScheduleOne.Doors;
@@ -43,17 +44,17 @@ public class BuildingRadioProxy : RadioProxy
         if (IsClientOnly)
             return;
 
-        if (ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StopTime && RadioStationIndex != -1)
+        if (ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StopTime && RadioStationIdHash != null)
         {
-            SetRadioStationIndex(-1);
+            SetRadioStationIdHash(null);
         }
 
-        if (!startedOnceToday && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StartTime && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal < StopTime && RadioStationIndex == -1)
+        if (!startedOnceToday && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StartTime && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal < StopTime && RadioStationIdHash == null)
         {
             startedOnceToday = true;
 
             if (Building?.OccupantCount > 0 && UnityEngine.Random.Range(0f, 1f) <= 0.5f)
-                SetRadioStationIndex(RadioStationManager.Instance.GetRandomNPCStationIndex());
+                SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
         }
     }
 

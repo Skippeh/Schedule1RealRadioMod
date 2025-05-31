@@ -1,3 +1,4 @@
+using HashUtility;
 using RealRadio.Components.Building.Buildables;
 using RealRadio.Components.Radio;
 using RealRadio.Persistence.Data;
@@ -22,7 +23,7 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
         }
         else
         {
-            Item.SetRadioStationIndex(RadioStationManager.Instance.SortedStations.IndexOf(station));
+            Item.SetRadioStationIdHash(Data.StationIdHash);
         }
 
         Item.Volume = Data.Volume;

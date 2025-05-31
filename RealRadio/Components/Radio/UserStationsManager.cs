@@ -11,6 +11,7 @@ using RealRadio.Persistence.Loaders;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.Persistence;
 using ScheduleOne.Persistence.Loaders;
+using UnityEngine;
 
 namespace RealRadio.Components.Radio;
 
@@ -57,6 +58,20 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
         base.Awake();
         Stations = new ReadOnlyDictionary<uint, RadioStation>(stations);
         InitializeSaveable();
+
+        StationUpdated += OnStationUpdated;
+        StationRemoved += OnStationRemoved;
+    }
+
+    private void OnStationUpdated(RadioStation station, bool isNew)
+    {
+        var runtimeStation = station.ToRuntimeType();
+        RadioStationManager.Instance.AddOrUpdateRadioStation(runtimeStation, Data.StationSource.UserCreated);
+    }
+
+    private void OnStationRemoved(RadioStation station)
+    {
+        RadioStationManager.Instance.RemoveRadioStationById(station.Id!);
     }
 
     public void InitializeSaveable()
@@ -137,6 +152,16 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
         {
             invokeStationsChanged = false;
             StationsChanged?.Invoke();
+        }
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        foreach (var station in stations.Values.ToList())
+        {
+            RadioStationManager.Instance.RemoveRadioStationById(station.Id!);
         }
     }
 

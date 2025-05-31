@@ -57,7 +57,9 @@ public class RadioAppUi : MonoBehaviour
 
     void OnDisable()
     {
-        RadioStationManager.Instance.OnStationsChanged -= OnStationsChanged;
+        if (UserStationsManager.Instance != null)
+            UserStationsManager.Instance.StationsChanged -= OnStationsChanged;
+
         stationProperties = null;
     }
 

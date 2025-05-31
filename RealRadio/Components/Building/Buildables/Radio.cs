@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
@@ -28,7 +29,7 @@ public class Radio : TogglableOffGridItem, IUsable
     public RadioStation? RadioStation { get; private set; }
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ClientUnsynchronized, OnChange = nameof(OnStationChanged))]
-    public int RadioStationIndex { get; private set; }
+    public uint? RadioStationIdHash { get; private set; }
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnVolumeChanged))]
     public float Volume { get; set; }
@@ -50,15 +51,21 @@ public class Radio : TogglableOffGridItem, IUsable
     public NetworkObject? PlayerUserObject { get; set; }
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-    public void SetRadioStationIndex(int index)
+    public void SetRadioStationIdHash(uint? idHash)
     {
-        if (index < 0 || index >= RadioStationManager.Instance.Stations.Count)
+        if (idHash == null)
         {
-            Plugin.Logger.LogWarning($"Invalid radio station index (out of range): {index}");
+            RadioStationIdHash = null;
             return;
         }
 
-        RadioStationIndex = index;
+        if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(idHash.Value, out _))
+        {
+            Plugin.Logger.LogWarning($"Invalid radio station hash (not found): {idHash}");
+            return;
+        }
+
+        RadioStationIdHash = idHash;
     }
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]
@@ -114,7 +121,21 @@ public class Radio : TogglableOffGridItem, IUsable
         interactableOptions.OnInteract += OnInteract;
         interactableOptions.OnUpdateInteractionText += OnUpdateInteractionText;
 
+        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+    }
+
+    private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
+    {
+        if (RadioStationIdHash == null)
+            return;
+
+        // The latter condition is to check if the station was set before user stations were received if we're not the server.
+        // This fixes stations being unknown on the client if they're already playing when the client joins the game.
+        if (station.Id?.GetStableHashCode() != RadioStationIdHash)
+            return;
+
+        RadioStation = station;
     }
 
     private void OnRadioStationRemoved(RadioStation station)
@@ -125,7 +146,7 @@ public class Radio : TogglableOffGridItem, IUsable
         if (RadioStation == station)
         {
             Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
-            SetRadioStationIndex(-1);
+            SetRadioStationIdHash(null);
         }
     }
 
@@ -165,14 +186,14 @@ public class Radio : TogglableOffGridItem, IUsable
     public override void OnStartServer()
     {
         base.OnStartServer();
-        RadioStationIndex = 0; // temp for testing
-        OnStationChanged(-1, RadioStationIndex, true);
+        RadioStationIdHash = 0; // temp for testing
+        OnStationChanged(null, RadioStationIdHash, true);
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-        OnStationChanged(-1, RadioStationIndex, false);
+        OnStationChanged(0, RadioStationIdHash, false);
     }
 
     protected override void OnStateToggled(bool prev, bool next, bool asServer)
@@ -193,10 +214,10 @@ public class Radio : TogglableOffGridItem, IUsable
         }
     }
 
-    protected virtual void OnStationChanged(int prev, int next, bool asServer)
+    protected virtual void OnStationChanged(uint? prev, uint? next, bool asServer)
     {
-        var prevStation = prev == -1 ? null : RadioStationManager.Instance.SortedStations.ElementAtOrDefault(prev);
-        var nextStation = next == -1 ? null : RadioStationManager.Instance.SortedStations.ElementAtOrDefault(next);
+        var prevStation = prev == null ? null : RadioStationManager.Instance.StationsByHashedId.GetValueOrDefault(prev.Value);
+        var nextStation = next == null ? null : RadioStationManager.Instance.StationsByHashedId.GetValueOrDefault(next.Value);
 
         if (nextStation == RadioStation)
             return;

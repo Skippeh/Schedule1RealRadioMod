@@ -98,6 +98,7 @@ public class RadioStation : ScriptableObject
         return Type switch
         {
             RadioType.InternetRadio => Url ?? string.Empty,
+            RadioType.YtDlp => Urls != null ? $" ({Urls.Length} songs)" : string.Empty,
             _ => throw new NotImplementedException($"Unknown type: {Type}"),
         };
     }
