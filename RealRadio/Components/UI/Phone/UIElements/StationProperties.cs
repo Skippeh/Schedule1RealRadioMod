@@ -68,8 +68,8 @@ public class StationProperties
     private RadioStation? station;
     private bool readOnly;
     private bool isNew = true;
-    private RadioAppUi parent;
-
+    private readonly RadioAppUi parent;
+    private readonly VisualElement root;
     private Action? stationChanged;
     private Action? readOnlyChanged;
     private Action? isNewChanged;
@@ -77,6 +77,7 @@ public class StationProperties
     public StationProperties(RadioAppUi parent, VisualElement root)
     {
         this.parent = parent;
+        this.root = root;
 
         stationChanged += () => StationChanged?.Invoke(station);
         UserStationsManager.Instance.StationUpdated += OnStationUpdated;
@@ -210,7 +211,7 @@ public class StationProperties
 
         if (!newStation.IsValid(out var invalidReasons))
         {
-            Plugin.Logger.LogWarning($"Could not save radio station:\n- {string.Join("\n- ", invalidReasons)}");
+            Modal.Instance.ShowModal(title: "Validation failed", message: $"- {string.Join("\n- ", invalidReasons)}", context: root, confirmText: "OK");
             return;
         }
 
