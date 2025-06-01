@@ -67,7 +67,7 @@ public class StationProperties
 
     private RadioStation? station;
     private bool readOnly;
-    private bool isNew;
+    private bool isNew = true;
     private RadioAppUi parent;
 
     private Action? stationChanged;
@@ -90,7 +90,8 @@ public class StationProperties
 
         typeField = root.Query<EnumField>(name: "Type").First() ?? throw new InvalidOperationException("Could not find type EnumField ui element");
         stationChanged += () => typeField.value = Station?.Type ?? 0;
-        readOnlyChanged += () => typeField.SetEnabled(!ReadOnly);
+        readOnlyChanged += () => typeField.SetEnabled(!ReadOnly && IsNew);
+        isNewChanged += () => typeField.SetEnabled(!ReadOnly && IsNew);
         typeField.RegisterValueChangedCallback((_) => OnTypeChanged());
 
         abbreviationField = root.Query<TextField>(name: "Abbreviation").First() ?? throw new InvalidOperationException("Could not find abbreviation TextField ui element");
@@ -139,6 +140,10 @@ public class StationProperties
         readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         deleteButton.RegisterCallback<ClickEvent>(OnDeleteButtonClicked);
+
+        isNewChanged += () => Plugin.Logger.LogInfo($"Is new: {IsNew}");
+        readOnlyChanged += () => Plugin.Logger.LogInfo($"Read only: {ReadOnly}");
+        stationChanged += () => Plugin.Logger.LogInfo($"Station: {Station}");
     }
 
     [return: NotNullIfNotNull(nameof(color))]
