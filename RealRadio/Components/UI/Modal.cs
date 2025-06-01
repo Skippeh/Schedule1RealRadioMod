@@ -176,7 +176,7 @@ public class ModalInstance
 
     private string? title;
     private VisualElement? content;
-    private string? confirmText = "Ok";
+    private string? confirmText;
     private string? cancelText;
 
     private VisualElement root;
@@ -204,33 +204,28 @@ public class ModalInstance
 
         confirmButton.RegisterCallback<ClickEvent>(OnConfirmButtonClicked);
         cancelButton.RegisterCallback<ClickEvent>(OnCancelButtonClicked);
-        root.RegisterCallback<KeyDownEvent>(OnKeyDown);
-        root.RegisterCallback<PointerDownEvent>(OnPointerDown);
+        root.RegisterCallback<PointerUpEvent>(OnPointerUp);
     }
 
     private void OnConfirmButtonClicked(ClickEvent evt)
     {
-        Close(true);
+        Close(confirmed: true);
     }
 
     private void OnCancelButtonClicked(ClickEvent evt)
     {
-        Close(false);
+        Close(confirmed: false);
     }
 
-    private void OnKeyDown(KeyDownEvent evt)
+    private void OnPointerUp(PointerUpEvent evt)
     {
-        if (evt.keyCode == KeyCode.Escape)
-            Close(false);
-    }
-
-    private void OnPointerDown(PointerDownEvent evt)
-    {
-        if (evt.target is not VisualElement element || element.name != "ModalRoot")
+        if (evt.target is not VisualElement element || element.m_Name != "ModalRoot")
             return;
 
-        if (evt.button == 1)
-            Close(false);
+        Plugin.Logger.LogInfo(evt.button);
+
+        if (evt.button == 0)
+            Close(confirmed: false);
     }
 
     public void Close(bool confirmed)
