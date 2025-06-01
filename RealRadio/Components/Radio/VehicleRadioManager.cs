@@ -138,7 +138,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
 
     private void UpdateRadialMenu()
     {
-        if (GameInput.GetButtonUp(GameInput.ButtonCode.Reload) || Player.Local?.CurrentVehicle == null)
+        if (GameInput.GetButtonUp(GameInput.ButtonCode.Reload) || GameInput.IsTyping || Player.Local?.CurrentVehicle == null)
         {
             if (radialMenuOpen)
             {
@@ -149,7 +149,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
             return;
         }
 
-        if (!GameInput.GetButtonDown(GameInput.ButtonCode.Reload))
+        if (!GameInput.GetButtonDown(GameInput.ButtonCode.Reload) || GameInput.IsTyping)
             return;
 
         // Only show the radial menu if the current vehicle has a proxy
