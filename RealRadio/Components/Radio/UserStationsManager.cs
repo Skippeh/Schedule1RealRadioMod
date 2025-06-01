@@ -98,6 +98,11 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
         uint idHash = station.Id.GetStableHashCode();
         bool updatedExisting = false;
 
+        var existingStation = stations.GetValueOrDefault(idHash);
+
+        if (existingStation != null && existingStation.Type != station.Type)
+            throw new ArgumentException($"Cannot change radio station type after initial creation", nameof(station.Type));
+
         if (stations.Remove(idHash))
         {
             updatedExisting = true;
