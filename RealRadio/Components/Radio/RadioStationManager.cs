@@ -49,10 +49,6 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
 
             InternalOnStationsChanged();
         }
-
-        StationUpdated += (station, oldStation) => Plugin.Logger.LogInfo($"Radio station {station.Id} {(oldStation != null ? "updated" : "added")}");
-        OnStationsChanged += () => Plugin.Logger.LogInfo("Radio stations changed");
-        StationRemoved += station => Plugin.Logger.LogInfo($"Radio station {station.Id} removed");
     }
 
     public void AddOrUpdateRadioStation(RadioStation station, StationSource source)
