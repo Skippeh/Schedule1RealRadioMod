@@ -222,8 +222,6 @@ public class ModalInstance
         if (evt.target is not VisualElement element || element.m_Name != "ModalRoot")
             return;
 
-        Plugin.Logger.LogInfo(evt.button);
-
         if (evt.button == 0)
             Close(confirmed: false);
     }
