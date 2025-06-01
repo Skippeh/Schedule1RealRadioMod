@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AsmResolver;
 using RealRadio.Components.API.Data;
 using RealRadio.Components.Radio;
 using UnityEngine;
@@ -14,6 +15,8 @@ public class RadioAppUi : MonoBehaviour
 
     public Action<RadioStation>? StationSaveRequested { get; set; }
     public Action<RadioStation>? StationDeleteRequested { get; set; }
+
+    public RadioStation? SelectedStation { get; private set; }
 
     [Header("Asset References")]
     [SerializeField]
@@ -91,6 +94,7 @@ public class RadioAppUi : MonoBehaviour
 
             if (stationProperties != null)
             {
+                SelectedStation = station;
                 stationProperties.Station = station;
                 stationProperties.ReadOnly = false;
                 stationProperties.IsNew = false;
@@ -154,5 +158,29 @@ public class RadioAppUi : MonoBehaviour
         stationProperties.Station = station;
         stationProperties.IsNew = true;
         stationProperties.ReadOnly = false;
+    }
+
+    public void SetSelectedStation(RadioStation station, bool readOnly = true, bool isNew = false)
+    {
+        if (stationProperties != null)
+        {
+            stationProperties.Station = station;
+            stationProperties.ReadOnly = readOnly;
+            stationProperties.IsNew = isNew;
+        }
+
+        stationList.selectedIndex = stationList.itemsSource.IndexOf(station);
+    }
+
+    internal void SetStationPropertiesModifiers(bool? readOnly = null, bool? isNew = null)
+    {
+        if (stationProperties != null)
+        {
+            if (readOnly.HasValue)
+                stationProperties.ReadOnly = readOnly.Value;
+
+            if (isNew.HasValue)
+                stationProperties.IsNew = isNew.Value;
+        }
     }
 }

@@ -22,6 +22,9 @@ public class RadioApp : UITKApp<RadioApp>
 
         ui.StationSaveRequested += OnStationSaveRequested;
         ui.StationDeleteRequested += OnStationDeleteRequested;
+
+        UserStationsManager.Instance.StationUpdated += OnStationUpdated;
+        UserStationsManager.Instance.StationRemoved += OnStationRemoved;
     }
 
     private void OnStationDeleteRequested(RadioStation station)
@@ -32,6 +35,7 @@ public class RadioApp : UITKApp<RadioApp>
         if (station.Id == null)
             throw new ArgumentNullException(nameof(station.Id), "Station id cannot be null");
 
+        ui.SetStationPropertiesModifiers(readOnly: true);
         UserStationsManager.Instance.RequestRemoveStation(station.Id.GetStableHashCode());
     }
 
@@ -43,6 +47,23 @@ public class RadioApp : UITKApp<RadioApp>
         if (station.Id == null)
             throw new ArgumentNullException(nameof(station.Id), "Station id cannot be null");
 
+        ui.SetStationPropertiesModifiers(readOnly: true);
         UserStationsManager.Instance.RequestAddOrUpdateStation(station);
+    }
+
+    private void OnStationUpdated(RadioStation station, bool isNew)
+    {
+        if (station.Id != ui.SelectedStation?.Id)
+            return;
+
+        ui.SetSelectedStation(station);
+    }
+
+    private void OnStationRemoved(RadioStation station)
+    {
+        if (station.Id != ui.SelectedStation?.Id)
+            return;
+
+        ui.SetSelectedStation(station, readOnly: false, isNew: true);
     }
 }
