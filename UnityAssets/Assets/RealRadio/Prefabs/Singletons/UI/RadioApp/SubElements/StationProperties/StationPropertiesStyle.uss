@@ -102,16 +102,3 @@
     border-color: rgba(105, 20, 20, 0.8);
     flex-grow: 1;
 }
-
-.unity-button {
-    border-radius: 5px;
-    -unity-font-style: bold;
-}
-
-.unity-button.primary {
-    background-color: rgb(100, 185, 100);
-}
-
-.unity-button.warning {
-    background-color: rgb(204, 178, 88);
-}

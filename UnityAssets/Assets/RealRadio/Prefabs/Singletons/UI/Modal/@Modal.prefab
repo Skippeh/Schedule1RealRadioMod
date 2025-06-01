@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <ModalTemplate>k__BackingField: {fileID: 9197481963319205126, guid: 17702be23906b5140afd6b103e668231, type: 3}
+  <MessageContentTemplate>k__BackingField: {fileID: 9197481963319205126, guid: 5ea6ffe3b931f8644871ea171d312e6b, type: 3}

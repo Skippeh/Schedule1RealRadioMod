@@ -1,6 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/Modal/ModalStyle.uss?fileID=7433441132597879392&amp;guid=502faaf2af6b84545b330de4a5762908&amp;type=3#ModalStyle" />
     <ui:VisualElement name="ModalRoot" class="visible">
-        <ui:VisualElement name="Content" />
+        <ui:VisualElement name="ContentRoot">
+            <ui:VisualElement name="TitleContainer" style="flex-grow: 1;">
+                <ui:Label tabindex="-1" text="Title Label" parse-escape-sequences="false" display-tooltip-when-elided="false" name="Title" enable-rich-text="false" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Content" style="flex-grow: 1;" />
+            <ui:VisualElement name="ButtonsContainer" style="flex-grow: 1;">
+                <ui:Button text="OK" parse-escape-sequences="false" display-tooltip-when-elided="false" name="ConfirmButton" enable-rich-text="false" class="button primary" />
+                <ui:Button text="Cancel" parse-escape-sequences="false" display-tooltip-when-elided="false" name="CancelButton" enable-rich-text="false" class="button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

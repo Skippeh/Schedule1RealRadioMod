@@ -9,23 +9,38 @@
 }
 
 #ModalRoot {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
 
     align-items: center;
     justify-content: center;
 
     opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+    transition: opacity 0.1s ease-out;
 }
 
 #ModalRoot.visible {
     opacity: 1;
 }
 
-#Content {
+#ContentRoot {
     background-color:rgb(50, 50, 50);
     padding: 20px;
     border-radius: 10px;
-
     color: #fff;
+}
+
+#TitleContainer {
+    margin-bottom: 10px;
+
+    -unity-font-size: 20px;
+    -unity-font-style: bold;
+    color: #fff;
+}
+
+#Content {
+    margin-bottom: 10px;
+}
+
+#ButtonsContainer {
+    flex-direction: row;
 }
