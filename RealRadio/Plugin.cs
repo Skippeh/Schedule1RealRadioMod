@@ -182,6 +182,7 @@ public class Plugin : BaseUnityPlugin
 
         Logger.LogInfo("Creating main scene client singletons");
         Instantiate(Assets.Singletons.RadialMenu);
+        Instantiate(Assets.Singletons.Modal);
         Instantiate(Assets.Singletons.GameMusicManager);
     }
 

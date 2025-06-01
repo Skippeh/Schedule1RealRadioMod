@@ -63,6 +63,9 @@ public class AssetRegistry : ScriptableObject
         if (result.Singletons.RadialMenu == null)
             throw new AssetRegistryLoadException("Singletons.RadialMenu is null");
 
+        if (result.Singletons.Modal == null)
+            throw new AssetRegistryLoadException("Singletons.Modal is null");
+
         if (result.Singletons.YtDlpManager == null)
             throw new AssetRegistryLoadException("Singletons.YtDlpManager is null");
 
@@ -157,6 +160,7 @@ public class SingletonPrefabs : ScriptableObject
     public GameObject VehicleRadioManager;
     public GameObject BuildingRadioManager;
     public GameObject RadialMenu;
+    public GameObject Modal;
     public GameObject YtDlpManager;
     public GameObject YtDlpUiManager;
     public GameObject APIManager;
