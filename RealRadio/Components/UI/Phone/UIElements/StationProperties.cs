@@ -140,10 +140,6 @@ public class StationProperties
         readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         deleteButton.RegisterCallback<ClickEvent>(OnDeleteButtonClicked);
-
-        isNewChanged += () => Plugin.Logger.LogInfo($"Is new: {IsNew}");
-        readOnlyChanged += () => Plugin.Logger.LogInfo($"Read only: {ReadOnly}");
-        stationChanged += () => Plugin.Logger.LogInfo($"Station: {Station}");
     }
 
     [return: NotNullIfNotNull(nameof(color))]
