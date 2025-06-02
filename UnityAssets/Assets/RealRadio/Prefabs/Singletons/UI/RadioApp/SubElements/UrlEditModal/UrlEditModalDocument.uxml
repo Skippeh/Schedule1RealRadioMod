@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlEditModal/UrlEditModalStyle.uss?fileID=7433441132597879392&amp;guid=98ada65e0b0138a4eb9257e4e9e3d86b&amp;type=3#UrlEditModalStyle" />
+    <ui:TextField picking-mode="Ignore" label="Url" name="Url" />
+</ui:UXML>

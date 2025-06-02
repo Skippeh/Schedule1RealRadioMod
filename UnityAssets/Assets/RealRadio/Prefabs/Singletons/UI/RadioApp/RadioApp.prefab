@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <UrlListItemAsset>k__BackingField: {fileID: 9197481963319205126, guid: 23773d0e60621d940b72c6fcbdd8b680, type: 3}
+  <UrlEditModalAsset>k__BackingField: {fileID: 9197481963319205126, guid: 8a0f42be542171e43a272eec9c23a7f1, type: 3}
   stationListItemAsset: {fileID: 9197481963319205126, guid: 50873b09daf492549b4bd9fbf1ebf708, type: 3}
   backgroundScrollSpeed: 3
 --- !u!1 &5787661762110905851

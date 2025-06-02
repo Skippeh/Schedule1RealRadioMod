@@ -241,6 +241,16 @@ public class StationProperties
             string url = (string)urlsList.itemsSource[urlsList.selectedIndex];
 
             Plugin.Logger.LogInfo($"Opening edit modal for '{url}'");
+
+            OpenUrlEditModal(url, (newUrl) =>
+            {
+                var index = urlsList.itemsSource.IndexOf(url);
+
+                if (index >= 0)
+                    urlsList.itemsSource[index] = newUrl;
+
+                urlsList.Rebuild();
+            });
         }
     }
 
@@ -249,7 +259,33 @@ public class StationProperties
         if (evt.button != 0)
             return;
 
-        Plugin.Logger.LogInfo("Opening edit modal for new url");
+        OpenUrlEditModal(string.Empty, (url) =>
+        {
+            stationUrls.Add(url);
+            urlsList.Rebuild();
+        });
+    }
+
+    private ModalInstance OpenUrlEditModal(string url, Action<string> onSaveUrl)
+    {
+        UrlEditModal modal = null!;
+        return Modal.Instance.ShowModal(parent.UrlEditModalAsset, SetupContent, root, title: string.IsNullOrEmpty(url) ? "Add URL" : "Edit URL", confirmText: "Save", cancelText: "Cancel", onConfirm: OnConfirm);
+
+        void SetupContent(VisualElement root)
+        {
+            modal = new UrlEditModal(root, url);
+        }
+
+        void OnConfirm(ref bool preventClose)
+        {
+            if (!modal.IsValid())
+            {
+                preventClose = true;
+                return;
+            }
+
+            onSaveUrl(modal.Url);
+        }
     }
 
     [return: NotNullIfNotNull(nameof(color))]

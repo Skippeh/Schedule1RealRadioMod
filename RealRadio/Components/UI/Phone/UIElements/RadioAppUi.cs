@@ -22,6 +22,9 @@ public class RadioAppUi : MonoBehaviour
     [field: SerializeField]
     public VisualTreeAsset UrlListItemAsset { get; private set; } = null!;
 
+    [field: SerializeField]
+    public VisualTreeAsset UrlEditModalAsset { get; private set; } = null!;
+
     [SerializeField]
     private VisualTreeAsset stationListItemAsset = null!;
 

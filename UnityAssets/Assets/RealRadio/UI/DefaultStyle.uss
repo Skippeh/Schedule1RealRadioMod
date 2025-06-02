@@ -44,3 +44,52 @@ Label,
 .unity-button.warning {
     background-color: rgb(204, 178, 88);
 }
+
+.unity-base-field {
+    flex-direction: column;
+}
+
+.unity-base-field > .unity-base-field__label,
+.field-label {
+    color: rgb(254, 244, 244);
+    -unity-font-style: bold;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+}
+
+.unity-base-field {
+    padding: 5px;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.unity-base-field > .unity-base-field__input {
+    color: #000;
+    background-color: rgb(254, 244, 244);
+    padding: 5px;
+    margin: 0;
+    border-radius: 5px;
+}
+
+.unity-base-field > .unity-toggle__input {
+    background-color: transparent;
+}
+
+.unity-base-field > .unity-toggle__input > .unity-toggle__checkmark {
+    background-color: rgb(254, 244, 244);
+    border-radius: 5px;
+}
+
+.horizontal-group {
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.horizontal-group > * {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
