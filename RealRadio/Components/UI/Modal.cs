@@ -205,6 +205,8 @@ public class ModalInstance
         confirmButton.RegisterCallback<ClickEvent>(OnConfirmButtonClicked);
         cancelButton.RegisterCallback<ClickEvent>(OnCancelButtonClicked);
         root.RegisterCallback<PointerUpEvent>(OnPointerUp);
+
+        confirmButton.Focus();
     }
 
     private void OnConfirmButtonClicked(ClickEvent evt)
