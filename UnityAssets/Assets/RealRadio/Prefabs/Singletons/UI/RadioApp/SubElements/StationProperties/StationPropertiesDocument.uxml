@@ -18,7 +18,7 @@
         <ui:TextField picking-mode="Ignore" label="Url" value="https://myradio.com/stream.mp3" name="Url" />
         <ui:VisualElement name="UrlsContainer">
             <ui:Label text="Urls" class="field-label" />
-            <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="25" show-bound-collection-size="false" />
+            <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" />
         </ui:VisualElement>
     </ui:ScrollView>
     <ui:VisualElement name="ButtonsContainer">

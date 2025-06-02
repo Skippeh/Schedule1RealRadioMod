@@ -12,6 +12,7 @@ using SongInfoFetcher.OneFM;
 using SongInfoFetcher.SimulatorRadio;
 using SongInfoFetcher.TruckersFM;
 using UnityEngine;
+using YoutubeDLSharp.Metadata;
 
 namespace RealRadio.Components.Radio;
 
@@ -262,6 +263,11 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         if (!YtDlpManager.Instance.AudioMetaData.TryGetValue(url, out var metaData))
             return null;
 
+        return SongInfoFromVideoData(metaData);
+    }
+
+    public static SongInfo SongInfoFromVideoData(VideoData metaData)
+    {
         string? title = metaData.Title;
         int indexOfDash = title.IndexOf('-');
 

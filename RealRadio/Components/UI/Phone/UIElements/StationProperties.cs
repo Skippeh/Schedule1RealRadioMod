@@ -1,8 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
 using RealRadio.Components.API.Data;
 using RealRadio.Components.Radio;
+using RealRadio.Components.YoutubeDL;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -66,6 +70,7 @@ public class StationProperties
     private Button deleteButton;
 
     private RadioStation? station;
+    private List<string> stationUrls = [];
     private bool readOnly;
     private bool isNew = true;
     private readonly RadioAppUi parent;
@@ -126,9 +131,12 @@ public class StationProperties
         urlsContainer = root.Query(name: "UrlsContainer").First() ?? throw new InvalidOperationException("Could not find urls container ui element");
         urlsList = urlsContainer.Query<ListView>(name: "UrlsList").First() ?? throw new InvalidOperationException("Could not find urls list ui element");
         urlsList.scrollView.mouseWheelScrollSize = RadioAppUi.ScrollSpeed;
+        InitializeUrlsList();
         stationChanged += () =>
         {
-            urlsList.itemsSource = Station?.Urls;
+            stationUrls = Station?.Urls?.ToList() ?? [];
+            urlsList.itemsSource = stationUrls;
+            urlsList.selectedIndex = -1;
             urlsList.Rebuild();
             urlsContainer.style.display = Station?.Type == RadioType.YtDlp ? DisplayStyle.Flex : DisplayStyle.None;
         };
@@ -141,6 +149,76 @@ public class StationProperties
         readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         deleteButton.RegisterCallback<ClickEvent>(OnDeleteButtonClicked);
+    }
+
+    private void InitializeUrlsList()
+    {
+        urlsList.makeItem += () =>
+        {
+            var item = new UrlListItem(parent.UrlListItemAsset).Element;
+            return item;
+        };
+
+        urlsList.bindItem += (element, index) =>
+        {
+            var url = (string)urlsList.itemsSource[index];
+            var listItem = (UrlListItem)element.userData;
+            listItem.Url = url;
+
+            parent.StartCoroutine(FetchMetaData());
+
+            IEnumerator FetchMetaData()
+            {
+                var metaDataTask = YtDlpManager.Instance.FetchMetaData(url);
+                yield return new WaitUntil(() => metaDataTask.IsCompleted);
+
+                if (metaDataTask.IsFaulted)
+                {
+                    Plugin.Logger.LogError($"Failed to fetch metadata for URL '{url}':\n{metaDataTask.Exception}");
+                    yield break;
+                }
+
+                listItem.HumanReadableText = RadioStationInfoManager.SongInfoFromVideoData(metaDataTask.Result).ToString();
+            }
+        };
+
+        urlsList.RegisterCallback<KeyUpEvent>(OnKeyUp, TrickleDown.TrickleDown);
+
+        void OnKeyUp(KeyUpEvent evt)
+        {
+            if (evt.keyCode != KeyCode.Delete)
+                return;
+
+            var selectedUrls = urlsList.selectedIndices.Select(index => (string)urlsList.itemsSource[index]).ToList();
+
+            if (selectedUrls.Count == 0)
+                return;
+
+            string pluralText = selectedUrls.Count == 1 ? "this song" : "these songs";
+            var builder = new StringBuilder($"Are you sure you want to remove {pluralText} from the playlist?\n\n");
+
+            foreach (var url in selectedUrls)
+            {
+                YtDlpManager.Instance.AudioMetaData.TryGetValue(url, out var metaData);
+
+                if (metaData != null)
+                    builder.AppendLine(RadioStationInfoManager.SongInfoFromVideoData(metaData).ToString());
+                else
+                    builder.AppendLine(url);
+            }
+
+            pluralText = selectedUrls.Count == 1 ? "song" : "songs";
+            var modal = Modal.Instance.ShowModal($"Delete {pluralText}", builder.ToString(), root, "Yes", "No", onConfirm: OnConfirm);
+
+            void OnConfirm(ref bool preventClose)
+            {
+                foreach (var url in selectedUrls)
+                    stationUrls.Remove(url);
+
+                urlsList.selectedIndex = -1;
+                urlsList.Rebuild();
+            }
+        }
     }
 
     [return: NotNullIfNotNull(nameof(color))]

@@ -18,7 +18,10 @@ public class RadioAppUi : MonoBehaviour
 
     public RadioStation? SelectedStation { get; private set; }
 
-    [Header("Asset References")]
+    [field: Header("Asset References")]
+    [field: SerializeField]
+    public VisualTreeAsset UrlListItemAsset { get; private set; } = null!;
+
     [SerializeField]
     private VisualTreeAsset stationListItemAsset = null!;
 
@@ -41,6 +44,9 @@ public class RadioAppUi : MonoBehaviour
 
         if (stationListItemAsset == null)
             throw new InvalidOperationException("StationListItemAsset is null");
+
+        if (UrlListItemAsset == null)
+            throw new InvalidOperationException("UrlListItemAsset is null");
     }
 
     void OnEnable()

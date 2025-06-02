@@ -102,3 +102,7 @@
     border-color: rgba(105, 20, 20, 0.8);
     flex-grow: 1;
 }
+
+#UrlsList .unity-scroll-view__content-viewport {
+    padding: 0;
+}
