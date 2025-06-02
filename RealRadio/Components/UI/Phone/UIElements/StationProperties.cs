@@ -350,6 +350,11 @@ public class StationProperties
         if (station == null)
             return;
 
-        parent.StationDeleteRequested?.Invoke(station);
+        Modal.Instance.ShowModal("Delete station", $"Are you sure you want to delete this station?\n\n{station.Name}", root, "Yes", "No", OnConfirm);
+
+        void OnConfirm(ref bool preventClose)
+        {
+            parent.StationDeleteRequested?.Invoke(station);
+        }
     }
 }
