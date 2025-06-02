@@ -106,3 +106,12 @@
 #UrlsList .unity-scroll-view__content-viewport {
     padding: 0;
 }
+
+#UrlsTitleContainer {
+    flex-direction: row;
+    align-items: center;
+}
+
+#UrlsTitleContainer > * {
+    margin-bottom: 5px;
+}

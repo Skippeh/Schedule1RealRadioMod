@@ -17,7 +17,10 @@
         <ui:Label text="Content" name="Label" class="section-header" />
         <ui:TextField picking-mode="Ignore" label="Url" value="https://myradio.com/stream.mp3" name="Url" />
         <ui:VisualElement name="UrlsContainer">
-            <ui:Label text="Urls" class="field-label" />
+            <ui:VisualElement name="UrlsTitleContainer">
+                <ui:Label text="Urls" class="field-label" />
+                <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/plus.png?fileID=21300000&amp;guid=c2bd55691a28af6449321de16d115a3c&amp;type=3#plus&quot;);" />
+            </ui:VisualElement>
             <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" />
         </ui:VisualElement>
     </ui:ScrollView>

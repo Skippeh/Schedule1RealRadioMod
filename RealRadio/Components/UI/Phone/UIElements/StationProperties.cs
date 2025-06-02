@@ -69,6 +69,7 @@ public class StationProperties
     private ListView urlsList;
     private Button saveButton;
     private Button deleteButton;
+    private Button addUrlButton;
 
     private RadioStation? station;
     private List<string> stationUrls = [];
@@ -141,6 +142,10 @@ public class StationProperties
             urlsList.Rebuild();
             urlsContainer.style.display = Station?.Type == RadioType.YtDlp ? DisplayStyle.Flex : DisplayStyle.None;
         };
+
+        addUrlButton = root.Query<Button>(name: "AddUrlButton").First() ?? throw new InvalidOperationException("Could not find add url button ui element");
+        readOnlyChanged += () => addUrlButton.SetEnabled(!ReadOnly);
+        addUrlButton.RegisterCallback<ClickEvent>(OnAddUrlButtonClicked);
 
         saveButton = root.Query<Button>(name: "SaveButton").First() ?? throw new InvalidOperationException("Could not find save button ui element");
         readOnlyChanged += () => saveButton.SetEnabled(!ReadOnly);
@@ -237,6 +242,14 @@ public class StationProperties
 
             Plugin.Logger.LogInfo($"Opening edit modal for '{url}'");
         }
+    }
+
+    private void OnAddUrlButtonClicked(ClickEvent evt)
+    {
+        if (evt.button != 0)
+            return;
+
+        Plugin.Logger.LogInfo("Opening edit modal for new url");
     }
 
     [return: NotNullIfNotNull(nameof(color))]
