@@ -7,6 +7,7 @@ using System.Text;
 using RealRadio.Components.API.Data;
 using RealRadio.Components.Radio;
 using RealRadio.Components.YoutubeDL;
+using ScheduleOne.Tiles;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -183,6 +184,7 @@ public class StationProperties
         };
 
         urlsList.RegisterCallback<KeyUpEvent>(OnKeyUp, TrickleDown.TrickleDown);
+        urlsList.RegisterCallback<ClickEvent>(OnClick, TrickleDown.TrickleDown);
 
         void OnKeyUp(KeyUpEvent evt)
         {
@@ -218,6 +220,22 @@ public class StationProperties
                 urlsList.selectedIndex = -1;
                 urlsList.Rebuild();
             }
+        }
+
+        void OnClick(ClickEvent evt)
+        {
+            if (evt.button != 0)
+                return;
+
+            if (evt.clickCount != 2)
+                return;
+
+            if (urlsList.selectedIndex == -1)
+                return;
+
+            string url = (string)urlsList.itemsSource[urlsList.selectedIndex];
+
+            Plugin.Logger.LogInfo($"Opening edit modal for '{url}'");
         }
     }
 
