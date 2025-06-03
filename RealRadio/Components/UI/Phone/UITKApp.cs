@@ -49,7 +49,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
         ScheduleOne.UI.Phone.Phone.Instance.onPhoneClosed += OnPhoneClosed;
     }
 
-    private void OnPhoneClosed()
+    protected virtual void OnPhoneClosed()
     {
         uiDocument.rootVisualElement.SetEnabled(false);
         uiDocument.rootVisualElement.Blur();
@@ -61,7 +61,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
         uiDocument.rootVisualElement.SetEnabled(true);
     }
 
-    void OnEnable()
+    protected virtual void OnEnable()
     {
         var root = uiDocument.rootVisualElement.GetRoot();
         root.RegisterCallback<FocusEvent>(OnFocus, TrickleDown.TrickleDown);
