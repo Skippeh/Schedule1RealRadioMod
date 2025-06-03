@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using RealRadio.Events;
+using ScheduleOne;
 using ScheduleOne.DevUtilities;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -242,6 +243,7 @@ public class ModalInstance
             Canceled?.Invoke();
 
         root.RemoveFromHierarchy();
+        GameInput.IsTyping = false;
         Closed?.Invoke();
     }
 }

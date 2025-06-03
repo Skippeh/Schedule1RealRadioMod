@@ -51,14 +51,15 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
     protected virtual void OnPhoneClosed()
     {
-        uiDocument.rootVisualElement.SetEnabled(false);
-        uiDocument.rootVisualElement.Blur();
+        VisualElement root = uiDocument.rootVisualElement.GetRoot();
+        root.SetEnabled(false);
+        root.Blur();
     }
 
     public override void OnPhoneOpened()
     {
         base.OnPhoneOpened();
-        uiDocument.rootVisualElement.SetEnabled(true);
+        uiDocument.rootVisualElement.GetRoot().SetEnabled(true);
     }
 
     protected virtual void OnEnable()
