@@ -63,7 +63,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
 
     void OnEnable()
     {
-        var root = uiDocument.rootVisualElement;
+        var root = uiDocument.rootVisualElement.GetRoot();
         root.RegisterCallback<FocusEvent>(OnFocus, TrickleDown.TrickleDown);
         root.RegisterCallback<BlurEvent>(OnBlur, TrickleDown.TrickleDown);
         root.RegisterCallback<KeyDownEvent>(OnKeyDown, TrickleDown.TrickleDown);

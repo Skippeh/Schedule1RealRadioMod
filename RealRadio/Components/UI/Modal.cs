@@ -90,7 +90,7 @@ public class Modal : Singleton<Modal>
         if (context == null)
             return null;
 
-        return context.GetRootVisualContainer();
+        return context.GetRoot();
     }
 }
 
