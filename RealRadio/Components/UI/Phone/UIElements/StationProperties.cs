@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using AngleSharp.Html.Dom;
 using RealRadio.Components.API.Data;
 using RealRadio.Components.Radio;
 using RealRadio.Components.YoutubeDL;
@@ -273,12 +274,12 @@ public class StationProperties
 
         void SetupContent(VisualElement root)
         {
-            modal = new UrlEditModal(root, url);
+            modal = new UrlEditModal(parent, root, url);
         }
 
         void OnConfirm(ref bool preventClose)
         {
-            if (!modal.IsValid())
+            if (!modal.IsValid() || modal.State != UrlEditModal.UrlState.ValidAndMetaDataLoaded)
             {
                 preventClose = true;
                 return;

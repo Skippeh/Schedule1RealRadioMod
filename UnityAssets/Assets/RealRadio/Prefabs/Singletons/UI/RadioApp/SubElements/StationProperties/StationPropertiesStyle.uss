@@ -24,16 +24,6 @@
     width: 100%;
 }
 
-.section-header {
-    color: rgb(254, 244, 244);
-    -unity-font-style: bold;
-    margin: 0;
-    border-bottom-width: 1px;
-    border-bottom-color: rgb(254, 244, 244);
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-}
-
 #UrlsContainer {
     flex-grow: 1;
     min-height: 150px;
