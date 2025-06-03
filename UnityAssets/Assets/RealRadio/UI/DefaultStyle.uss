@@ -41,8 +41,32 @@ Label,
     background-color: rgb(100, 185, 100);
 }
 
+.unity-button.primary:hover {
+    background-color: rgb(75, 150, 75);
+}
+
+.unity-button.primary:active {
+    background-color: rgb(50, 125, 50);
+}
+
+.unity-button.primary:disabled {
+    background-color: rgb(117, 202, 117);
+}
+
 .unity-button.warning {
     background-color: rgb(204, 178, 88);
+}
+
+.unity-button.warning:hover {
+    background-color: rgb(175, 150, 75);
+}
+
+.unity-button.warning:active {
+    background-color: rgb(150, 125, 50);
+}
+
+.unity-button.warning:disabled {
+    background-color: rgb(222, 202, 117);
 }
 
 .unity-base-field {
@@ -102,4 +126,62 @@ Label,
     border-bottom-color: rgb(254, 244, 244);
     margin-bottom: 10px;
     padding-bottom: 10px;
+}
+
+.unity-scroller--vertical {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 10px;
+    margin-right: 10px;
+}
+
+.unity-scroller .unity-scroller__low-button {
+    display: none;
+}
+
+.unity-scroller .unity-scroller__high-button {
+    display: none;
+}
+
+.unity-scroller .unity-slider__input {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.unity-scroller .unity-base-slider__tracker {
+    display: none;
+}
+
+.unity-scroller .unity-base-slider__dragger-border {
+    display: none;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger {
+    width: 10px;
+}
+
+.unity-scroller--horizontal .unity-base-slider__dragger {
+    height: 10px;
+}
+
+.unity-scroller .unity-base-slider__dragger {
+    border-radius: 5px;
+    opacity: 0.2;
+
+    transition: opacity 0.1s ease-in-out;
+}
+
+.unity-scroller .unity-base-slider__dragger:hover,
+.unity-scroller .unity-base-slider__dragger:active {
+    opacity: 1;
+
+    transition: none;
+}
+
+/* Hides the empty list message */
+.unity-list-view__empty-label {
+    display: none;
 }
