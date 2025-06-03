@@ -109,15 +109,17 @@ public class YtDlpHostController : HostController
 
     private void OnStateReceived(RadioStation station, RadioStationState state)
     {
-        if (station != Station)
+        if (station.Id != Station.Id)
             return;
+
+        // This event is potentially invoked before OnRadioStationUpdated
+        // so we need to update the radio station here
+        Station = station;
 
         if (state.SongIteration == currentSongIteration)
             return;
 
-        Plugin.Logger.LogInfo($"Received song state: {state}");
-
-        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null && Host.NumActiveClients > 0)
+        if (Host.NumActiveClients > 0)
             PlayState(state);
     }
 

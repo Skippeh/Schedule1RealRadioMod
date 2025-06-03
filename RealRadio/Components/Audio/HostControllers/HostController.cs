@@ -1,4 +1,5 @@
 using System;
+using RealRadio.Components.Radio;
 using RealRadio.Data;
 using UnityEngine;
 
@@ -35,9 +36,24 @@ public class HostController : MonoBehaviour
 
         Host = GetComponent<StreamAudioHost>() ?? throw new InvalidOperationException("No audio host component found on game object");
         OnStationChanged(Station, oldStation: null);
+
+        RadioStationManager.Instance.StationUpdated += OnStationUpdated;
+    }
+
+    protected virtual void OnDestroy()
+    {
+        RadioStationManager.Instance.StationUpdated -= OnStationUpdated;
     }
 
     protected virtual void OnStationChanged(RadioStation newStation, RadioStation? oldStation)
     {
+    }
+
+    private void OnStationUpdated(RadioStation newStation, RadioStation? oldStation)
+    {
+        if (Station == null || newStation.Id != Station.Id)
+            return;
+
+        Station = newStation;
     }
 }
