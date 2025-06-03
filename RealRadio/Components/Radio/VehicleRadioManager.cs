@@ -104,7 +104,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
 
             options[i + 1] = InteractableOption.CreateOption(
                 id: station.Id!,
-                name: station.Name!,
+                name: station.Name!.EscapeRichText(),
                 description: songInfo,
                 sprite: station.Icon,
                 abbreviation: station.Abbreviation,

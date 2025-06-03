@@ -4,8 +4,8 @@
     <ui:VisualElement name="Root" class="root">
         <ui:VisualElement name="BackgroundOverlay" style="flex-grow: 1;" />
         <ui:VisualElement name="RadialItems" style="flex-grow: 1;" />
-        <ui:Label text="Selected Option" parse-escape-sequences="true" display-tooltip-when-elided="true" name="SelectedOptionLabel" />
-        <ui:Label text="A potentially long description goes here (like really really really really really really really really really long)" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DescriptionLabel" />
+        <ui:Label text="Selected Option" name="SelectedOptionLabel" />
+        <ui:Label text="A potentially long description goes here (like really really really really really really really really really long)" name="DescriptionLabel" />
         <ui:Instance template="Arrow" name="Arrow" />
     </ui:VisualElement>
 </ui:UXML>

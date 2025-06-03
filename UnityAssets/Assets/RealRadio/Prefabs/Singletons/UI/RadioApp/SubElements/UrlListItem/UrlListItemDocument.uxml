@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlListItem/UrlListItemStyle.uss?fileID=7433441132597879392&amp;guid=2ee39bf3636f52d4dbfca839dacf0bf8&amp;type=3#UrlListItemStyle" />
     <ui:VisualElement name="UrlListItemRoot" focusable="true">
-        <ui:Label text="Label" name="Text" />
+        <ui:Label text="Label" name="Text" enable-rich-text="false" />
     </ui:VisualElement>
 </ui:UXML>
