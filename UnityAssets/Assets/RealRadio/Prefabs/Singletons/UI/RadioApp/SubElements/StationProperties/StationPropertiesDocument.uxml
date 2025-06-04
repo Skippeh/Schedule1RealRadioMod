@@ -1,24 +1,24 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesStyle.uss?fileID=7433441132597879392&amp;guid=dcc2a4aae42973a429c9b51f4345550c&amp;type=3#StationPropertiesStyle" />
     <ui:ScrollView name="FieldsScrollView">
-        <ui:Label text="Basics" class="section-header" />
+        <ui:Label text="Settings" class="section-header" />
         <ui:VisualElement class="horizontal-group">
             <ui:TextField name="Name" picking-mode="Ignore" value="My Amazing Station" label="Name" />
             <ui:TextField label="Abbreviation" value="MAS" name="Abbreviation" style="flex-shrink: 1;" />
             <ui:EnumField type="RadioType, RealRadio" name="Type" label="Type" />
         </ui:VisualElement>
         <ui:Toggle label="Can be played by NPCs" name="CanBePlayedByNPCs" />
-        <ui:Label text="Style" class="section-header" />
+        <ui:Label text="Style (for radial menu)" class="section-header" />
         <ui:VisualElement class="horizontal-group">
             <ui:TextField label="Text Color" value="#fff" name="TextColor" />
             <ui:TextField label="Background Color" value="clear" name="BackgroundColor" />
             <ui:Toggle label="Rounded Background" name="RoundedBackground" />
         </ui:VisualElement>
         <ui:Label text="Content" name="Label" class="section-header" />
-        <ui:TextField picking-mode="Ignore" label="Url" value="https://myradio.com/stream.mp3" name="Url" />
+        <ui:TextField picking-mode="Ignore" label="Stream URL" value="https://myradio.com/stream.mp3" name="Url" />
         <ui:VisualElement name="UrlsContainer">
             <ui:VisualElement name="UrlsTitleContainer">
-                <ui:Label text="Urls" class="field-label" />
+                <ui:Label text="Songs" class="field-label" />
                 <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/plus.png?fileID=21300000&amp;guid=c2bd55691a28af6449321de16d115a3c&amp;type=3#plus&quot;);" />
             </ui:VisualElement>
             <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" />

@@ -270,7 +270,7 @@ public class StationProperties
     private ModalInstance OpenUrlEditModal(string url, Action<string> onSaveUrl)
     {
         UrlEditModal modal = null!;
-        return Modal.Instance.ShowModal(parent.UrlEditModalAsset, SetupContent, root, title: string.IsNullOrEmpty(url) ? "Add URL" : "Edit URL", confirmText: "Save", cancelText: "Cancel", onConfirm: OnConfirm);
+        return Modal.Instance.ShowModal(parent.UrlEditModalAsset, SetupContent, root, title: string.IsNullOrEmpty(url) ? "Add song" : "Edit song", confirmText: "Save", cancelText: "Cancel", onConfirm: OnConfirm);
 
         void SetupContent(VisualElement root)
         {
