@@ -119,8 +119,7 @@ public class YtDlpHostController : HostController
         if (state.SongIteration == currentSongIteration)
             return;
 
-        if (Host.NumActiveClients > 0)
-            PlayState(state);
+        PlayState(state);
     }
 
     private IEnumerator DownloadAndPlayAudioFile(string url, Func<float>? getStartTime = null)
