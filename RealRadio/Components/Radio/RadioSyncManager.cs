@@ -77,7 +77,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
-        if (station.Type == RadioType.InternetRadio)
+        if (station.Type != RadioType.YtDlp)
             return;
 
         RadioStationState? oldState = null;
