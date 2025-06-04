@@ -31,6 +31,14 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
     }
 
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        RadioStationManager.Instance.StationRemoved -= OnRadioStationRemoved;
+        RadioStationManager.Instance.StationUpdated -= OnRadioStationUpdated;
+    }
+
     public override void OnStartServer()
     {
         foreach (var station in RadioStationManager.Instance.Stations)
@@ -41,6 +49,9 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
     public override void OnStartClient()
     {
+        if (!IsClientOnly)
+            return;
+
         UserStationsManager.Instance.StationUpdated += OnClientUserStationUpdated;
 
         // Request song state for all yt-dlp radio stations
@@ -66,14 +77,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         RequestOrSetSongState(radioStation, new RadioStationState());
     }
 
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-
-        RadioStationManager.Instance.StationUpdated -= OnRadioStationUpdated;
-        RadioStationManager.Instance.StationRemoved -= OnRadioStationRemoved;
-    }
-
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
         if (station.Type == RadioType.InternetRadio)
@@ -90,17 +93,12 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         if (!IsServer)
             return;
 
-        if (oldState != null)
+        if (oldState?.IsValid() == true)
         {
             // clone old state
             oldState = oldState with { };
 
-            string? oldSong = null;
-
-            if (oldState.SongIndex != null)
-            {
-                oldSong = oldStation!.Urls![oldState.SongIndex.Value];
-            }
+            string? oldSong = oldStation!.Urls![oldState.SongIndex.Value];
 
             int newIndex = Array.IndexOf(station.Urls!, oldSong);
             oldState.SongIndex = newIndex >= 0 ? (ushort)newIndex : null;
@@ -115,8 +113,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         Plugin.Logger.LogInfo($"Station {station} got updated, new radio state: {state}");
 
-        radioStates[station] = state;
-        ReceiveSongState(conn: null, station, state);
+        RequestOrSetSongState(station, state);
     }
 
     private void OnRadioStationRemoved(RadioStation station)
