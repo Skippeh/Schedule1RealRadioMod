@@ -72,8 +72,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(station.Id!.GetStableHashCode(), out var radioStation))
             return;
 
-        Plugin.Logger.LogInfo($"UserStation updated: {radioStation}");
-
         RequestOrSetSongState(radioStation, new RadioStationState());
     }
 
@@ -110,9 +108,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
 
         var state = oldState ?? GetRandomRadioStationState(station, lastSongIndex: null, iteration: 0, startTime: null);
-
-        Plugin.Logger.LogInfo($"Station {station} got updated, new radio state: {state}");
-
         RequestOrSetSongState(station, state);
     }
 
@@ -148,7 +143,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (existingState != null && existingState.IsValid() && (newState.SongIteration <= existingState.SongIteration || newState.SongIteration == null))
         {
-            Plugin.Logger.LogInfo($"Sending existing state: {existingState}");
             ReceiveSongState(conn, station, existingState);
             return;
         }
@@ -170,7 +164,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         radioStates[station] = newState;
 
-        Plugin.Logger.LogInfo($"Broadcasting state: {newState}");
         ReceiveSongState(conn: null, station, newState);
     }
 
@@ -185,7 +178,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (IsClientOnly)
         {
-            Plugin.Logger.LogInfo($"Adding to current time: {NetworkManager.TimeManager.RoundTripTime / 2f / 1000f} sec(s)");
             state.CurrentTime += NetworkManager.TimeManager.RoundTripTime / 2f / 1000f;
             radioStates[station] = state;
         }
