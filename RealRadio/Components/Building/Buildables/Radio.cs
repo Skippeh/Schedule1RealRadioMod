@@ -228,9 +228,7 @@ public class Radio : TogglableOffGridItem, IUsable
         RadioStation = nextStation;
 
         if (RadioStation != null)
-        {
             InitAudioClient();
-        }
     }
 
     protected virtual void OnVolumeChanged(float prev, float next, bool asServer)
@@ -297,7 +295,6 @@ public class Radio : TogglableOffGridItem, IUsable
         {
             audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(AudioClientObject);
             audioClient.ConvertToMono = true;
-            return;
         }
     }
 
@@ -306,10 +303,11 @@ public class Radio : TogglableOffGridItem, IUsable
         if (RadioStation?.Url == null)
             throw new InvalidOperationException("Can not unbind. RadioStation or RadioStation.Url is null");
 
-        if (audioClient != null)
+        if (audioClient?.Host != null)
         {
-            AudioStreamManager.Instance.GetOrCreateHost(RadioStation).DetachClient(AudioClientObject);
-            audioClient = null;
+            audioClient.Host.DetachClient(AudioClientObject);
         }
+
+        audioClient = null;
     }
 }

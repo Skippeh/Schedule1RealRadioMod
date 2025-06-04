@@ -64,6 +64,13 @@ public class YtDlpHostController : HostController
         Host.OnStreamEnded += OnHostStreamEnded;
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        RadioSyncManager.Instance.OnStateReceived -= OnStateReceived;
+    }
+
     private void OnHostStreamEnded()
     {
         RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, currentSongIteration + 1, startTime: 0));

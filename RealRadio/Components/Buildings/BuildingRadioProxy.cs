@@ -6,6 +6,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using HashUtility;
 using RealRadio.Components.Radio;
+using RealRadio.Data;
 using ScheduleOne.Audio;
 using ScheduleOne.Doors;
 using ScheduleOne.GameTime;
@@ -37,6 +38,26 @@ public class BuildingRadioProxy : RadioProxy
     {
         base.OnStartServer();
         OnDayPass();
+
+        RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        RadioStationManager.Instance.StationRemoved -= OnRadioStationRemoved;
+
+        BuildingRadioManager.Instance?.RemoveProxy(this);
+    }
+
+    private void OnRadioStationRemoved(RadioStation station)
+    {
+        if (RadioStationIdHash != station.Id!.GetStableHashCode())
+            return;
+
+        var newStation = RadioStationManager.Instance.GetRandomNPCStation();
+        SetRadioStationIdHash(newStation.Id!.GetStableHashCode());
     }
 
     private void OnMinutePass()
@@ -151,11 +172,5 @@ public class BuildingRadioProxy : RadioProxy
         {
             ambientSound.GetComponent<AudioSource>().mute = true;
         }
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        BuildingRadioManager.Instance?.RemoveProxy(this);
     }
 }
