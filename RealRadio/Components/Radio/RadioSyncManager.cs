@@ -108,6 +108,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
 
         var state = oldState ?? GetRandomRadioStationState(station, lastSongIndex: null, iteration: 0, startTime: null);
+        radioStates[station] = state;
         RequestOrSetSongState(station, state);
     }
 
