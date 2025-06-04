@@ -18,8 +18,11 @@
         <ui:TextField picking-mode="Ignore" label="Stream URL" value="https://myradio.com/stream.mp3" name="Url" />
         <ui:VisualElement name="UrlsContainer">
             <ui:VisualElement name="UrlsTitleContainer">
-                <ui:Label text="Songs" class="field-label" />
-                <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/plus.png?fileID=21300000&amp;guid=c2bd55691a28af6449321de16d115a3c&amp;type=3#plus&quot;);" />
+                <ui:Label text="Playlist" class="field-label" />
+                <ui:VisualElement name="UrlsTitleButtons">
+                    <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/plus.png?fileID=21300000&amp;guid=c2bd55691a28af6449321de16d115a3c&amp;type=3#plus&quot;);" />
+                    <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeleteUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/trash.png?fileID=21300000&amp;guid=969df749c1f64114196a1193189765ee&amp;type=3#trash&quot;);" />
+                </ui:VisualElement>
             </ui:VisualElement>
             <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" />
         </ui:VisualElement>

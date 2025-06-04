@@ -48,8 +48,26 @@
 #UrlsTitleContainer {
     flex-direction: row;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 #UrlsTitleContainer > * {
-    margin-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#UrlsTitleContainer > Label {
+    flex-grow: 1;
+}
+
+#UrlsTitleButtons {
+    flex-direction: row;
+    margin-right: 5px;
+}
+
+#UrlsTitleButtons > .image-button {
+    margin-top: 1px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    flex-shrink: 1;
 }

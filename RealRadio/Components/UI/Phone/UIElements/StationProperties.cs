@@ -71,6 +71,7 @@ public class StationProperties
     private Button saveButton;
     private Button deleteButton;
     private Button addUrlButton;
+    private Button deleteUrlButton;
 
     private RadioStation? station;
     private List<string> stationUrls = [];
@@ -148,6 +149,10 @@ public class StationProperties
         readOnlyChanged += () => addUrlButton.SetEnabled(!ReadOnly);
         addUrlButton.RegisterCallback<ClickEvent>(OnAddUrlButtonClicked);
 
+        deleteUrlButton = root.Query<Button>(name: "DeleteUrlButton").First() ?? throw new InvalidOperationException("Could not find delete url button ui element");
+        readOnlyChanged += () => deleteUrlButton.SetEnabled(!ReadOnly);
+        deleteUrlButton.RegisterCallback<ClickEvent>(OnDeleteUrlButtonClicked);
+
         saveButton = root.Query<Button>(name: "SaveButton").First() ?? throw new InvalidOperationException("Could not find save button ui element");
         readOnlyChanged += () => saveButton.SetEnabled(!ReadOnly);
         saveButton.RegisterCallback<ClickEvent>(OnSaveButtonClicked);
@@ -202,30 +207,7 @@ public class StationProperties
             if (selectedUrls.Count == 0)
                 return;
 
-            string pluralText = selectedUrls.Count == 1 ? "this song" : "these songs";
-            var builder = new StringBuilder($"Are you sure you want to remove {pluralText} from the playlist?\n\n");
-
-            foreach (var url in selectedUrls)
-            {
-                YtDlpManager.Instance.AudioMetaData.TryGetValue(url, out var metaData);
-
-                if (metaData != null)
-                    builder.AppendLine(RadioStationInfoManager.SongInfoFromVideoData(metaData).ToString());
-                else
-                    builder.AppendLine(url);
-            }
-
-            pluralText = selectedUrls.Count == 1 ? "song" : "songs";
-            var modal = Modal.Instance.ShowModal($"Delete {pluralText}", builder.ToString(), root, "Yes", "No", onConfirm: OnConfirm);
-
-            void OnConfirm(ref bool preventClose)
-            {
-                foreach (var url in selectedUrls)
-                    stationUrls.Remove(url);
-
-                urlsList.selectedIndex = -1;
-                urlsList.Rebuild();
-            }
+            ConfirmDeleteUrls(selectedUrls);
         }
 
         void OnClick(ClickEvent evt)
@@ -265,6 +247,19 @@ public class StationProperties
             stationUrls.Add(url);
             urlsList.Rebuild();
         });
+    }
+
+    private void OnDeleteUrlButtonClicked(ClickEvent evt)
+    {
+        if (evt.button != 0)
+            return;
+
+        var selectedUrls = urlsList.selectedIndices.Select(index => (string)urlsList.itemsSource[index]).ToList();
+
+        if (selectedUrls.Count == 0)
+            return;
+
+        ConfirmDeleteUrls(selectedUrls);
     }
 
     private ModalInstance OpenUrlEditModal(string url, Action<string> onSaveUrl)
@@ -393,6 +388,34 @@ public class StationProperties
         void OnConfirm(ref bool preventClose)
         {
             parent.StationDeleteRequested?.Invoke(station);
+        }
+    }
+
+    private void ConfirmDeleteUrls(ICollection<string> selectedUrls)
+    {
+        string pluralText = selectedUrls.Count == 1 ? "this song" : "these songs";
+        var builder = new StringBuilder($"Are you sure you want to remove {pluralText} from the playlist?\n\n");
+
+        foreach (var url in selectedUrls)
+        {
+            YtDlpManager.Instance.AudioMetaData.TryGetValue(url, out var metaData);
+
+            if (metaData != null)
+                builder.AppendLine(RadioStationInfoManager.SongInfoFromVideoData(metaData).ToString());
+            else
+                builder.AppendLine(url);
+        }
+
+        pluralText = selectedUrls.Count == 1 ? "song" : "songs";
+        var modal = Modal.Instance.ShowModal($"Delete {pluralText}", builder.ToString(), root, "Yes", "No", onConfirm: OnConfirm);
+
+        void OnConfirm(ref bool preventClose)
+        {
+            foreach (var url in selectedUrls)
+                stationUrls.Remove(url);
+
+            urlsList.selectedIndex = -1;
+            urlsList.Rebuild();
         }
     }
 }
