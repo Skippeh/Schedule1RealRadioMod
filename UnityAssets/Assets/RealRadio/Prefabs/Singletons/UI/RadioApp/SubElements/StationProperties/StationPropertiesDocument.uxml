@@ -26,6 +26,6 @@
     </ui:ScrollView>
     <ui:VisualElement name="ButtonsContainer">
         <ui:Button text="Save" name="SaveButton" class="primary" />
-        <ui:Button text="Delete" name="DeleteButton" class="warning" />
+        <ui:Button text="Delete Station" name="DeleteButton" class="warning" />
     </ui:VisualElement>
 </ui:UXML>
