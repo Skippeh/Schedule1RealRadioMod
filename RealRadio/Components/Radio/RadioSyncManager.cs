@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using FishNet.Connection;
 using FishNet.Object;
+using HashUtility;
 using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
@@ -36,6 +37,33 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         {
             OnRadioStationUpdated(station, oldStation: null);
         }
+    }
+
+    public override void OnStartClient()
+    {
+        UserStationsManager.Instance.StationUpdated += OnClientUserStationUpdated;
+
+        // Request song state for all yt-dlp radio stations
+        foreach (var station in RadioStationManager.Instance.Stations)
+        {
+            if (station.Type != RadioType.YtDlp)
+                continue;
+
+            RequestOrSetSongState(station, new RadioStationState());
+        }
+    }
+
+    private void OnClientUserStationUpdated(API.Data.RadioStation station, bool isNew)
+    {
+        if (station.Type != RadioType.YtDlp)
+            return;
+
+        if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(station.Id!.GetStableHashCode(), out var radioStation))
+            return;
+
+        Plugin.Logger.LogInfo($"UserStation updated: {radioStation}");
+
+        RequestOrSetSongState(radioStation, new RadioStationState());
     }
 
     public override void OnDestroy()
