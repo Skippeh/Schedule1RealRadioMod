@@ -163,9 +163,11 @@ public class StationProperties
         readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         deleteButton.RegisterCallback<ClickEvent>(OnDeleteButtonClicked);
+
+        RefreshUI();
     }
 
-    public void RefreshUI()
+    private void RefreshUI()
     {
         isNewChanged?.Invoke();
         stationChanged?.Invoke();

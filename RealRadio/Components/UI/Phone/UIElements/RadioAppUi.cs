@@ -67,7 +67,6 @@ public class RadioAppUi : MonoBehaviour
         RandomizeBackgroundParameters();
 
         SetNewRadioStation();
-        stationProperties.RefreshUI();
     }
 
     void OnDisable()
