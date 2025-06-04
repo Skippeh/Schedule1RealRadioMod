@@ -16,6 +16,8 @@ namespace RealRadio.Components.UI.Phone.UIElements;
 
 public class StationProperties
 {
+    public VisualElement Element => root;
+
     public Action<RadioStation?>? StationChanged;
 
     public RadioStation? Station
@@ -161,6 +163,13 @@ public class StationProperties
         readOnlyChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         isNewChanged += () => deleteButton.SetEnabled(!ReadOnly && !IsNew);
         deleteButton.RegisterCallback<ClickEvent>(OnDeleteButtonClicked);
+    }
+
+    public void RefreshUI()
+    {
+        isNewChanged?.Invoke();
+        stationChanged?.Invoke();
+        readOnlyChanged?.Invoke();
     }
 
     private void InitializeUrlsList()

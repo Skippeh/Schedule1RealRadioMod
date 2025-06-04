@@ -65,6 +65,9 @@ public class RadioAppUi : MonoBehaviour
         UserStationsManager.instance.StationsChanged += OnStationsChanged;
 
         RandomizeBackgroundParameters();
+
+        SetNewRadioStation();
+        stationProperties.RefreshUI();
     }
 
     void OnDisable()
@@ -154,6 +157,11 @@ public class RadioAppUi : MonoBehaviour
     }
 
     private void OnNewStationButtonClicked(ClickEvent evt)
+    {
+        SetNewRadioStation();
+    }
+
+    private void SetNewRadioStation()
     {
         if (stationProperties == null)
             return;
