@@ -27,6 +27,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         RadioStates = new(radioStates);
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
     }
 
     public override void OnStartServer()
@@ -35,8 +36,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         {
             OnRadioStationUpdated(station, oldStation: null);
         }
-
-        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
     }
 
     public override void OnDestroy()
@@ -52,9 +51,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         if (station.Type == RadioType.InternetRadio)
             return;
 
-        if (!IsServer)
-            return;
-
         RadioStationState? oldState = null;
 
         if (oldStation != null)
@@ -62,6 +58,9 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             radioStates.Remove(oldStation, out oldState);
             currentMetaData.Remove(oldStation);
         }
+
+        if (!IsServer)
+            return;
 
         if (oldState != null)
         {
@@ -124,6 +123,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (existingState != null && existingState.IsValid() && (newState.SongIteration <= existingState.SongIteration || newState.SongIteration == null))
         {
+            Plugin.Logger.LogInfo($"Sending existing state: {existingState}");
             ReceiveSongState(conn, station, existingState);
             return;
         }
@@ -144,6 +144,8 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
 
         radioStates[station] = newState;
+
+        Plugin.Logger.LogInfo($"Broadcasting state: {newState}");
         ReceiveSongState(conn: null, station, newState);
     }
 
@@ -158,8 +160,8 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (IsClientOnly)
         {
-            Plugin.Logger.LogInfo($"Adding to current time: {NetworkManager.TimeManager.RoundTripTime / 1000f} sec(s)");
-            state.CurrentTime += NetworkManager.TimeManager.RoundTripTime / 1000f;
+            Plugin.Logger.LogInfo($"Adding to current time: {NetworkManager.TimeManager.RoundTripTime / 2f / 1000f} sec(s)");
+            state.CurrentTime += NetworkManager.TimeManager.RoundTripTime / 2f / 1000f;
             radioStates[station] = state;
         }
 
