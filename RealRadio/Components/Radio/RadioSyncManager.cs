@@ -210,7 +210,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             // We add 2 seconds because normally if the station is actively being listened to it'll switch to the next song immediately.
             // If the station is not actively being listened the state's time will go past the end of the song.
             // When doing it this way we ensure that the song isn't cut off early if the duration is not completely accurate.
-            if (metaData == null || metaData.Duration != null && state.CurrentTime > metaData.Duration + 2f)
+            if (metaData?.Duration != null && state.CurrentTime > metaData.Duration + 2f)
             {
                 var newState = GetRandomRadioStationState(station, state.SongIndex, state.SongIteration + 1, startTime: state.SongIteration == null ? null : 0);
                 RequestOrSetSongState(station, newState);
