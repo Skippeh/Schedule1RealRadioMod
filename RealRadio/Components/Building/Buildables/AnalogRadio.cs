@@ -71,6 +71,7 @@ public class AnalogRadio : Radio
         if (!asServer)
         {
             stationEditSlider.gameObject.SetActive(next == Player.Local.NetworkObject);
+            volumeEditSlider.gameObject.SetActive(next == Player.Local.NetworkObject);
         }
     }
 }
