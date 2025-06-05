@@ -73,6 +73,7 @@ public class StationProperties
     private Button saveButton;
     private Button deleteButton;
     private Button addUrlButton;
+    private Button importPlaylistButton;
     private Button deleteUrlButton;
 
     private RadioStation? station;
@@ -150,6 +151,10 @@ public class StationProperties
         addUrlButton = root.Query<Button>(name: "AddUrlButton").First() ?? throw new InvalidOperationException("Could not find add url button ui element");
         readOnlyChanged += () => addUrlButton.SetEnabled(!ReadOnly);
         addUrlButton.RegisterCallback<ClickEvent>(OnAddUrlButtonClicked);
+
+        importPlaylistButton = root.Query<Button>(name: "ImportPlaylistButton").First() ?? throw new InvalidOperationException("Could not find import playlist button ui element");
+        readOnlyChanged += () => importPlaylistButton.SetEnabled(!ReadOnly);
+        importPlaylistButton.RegisterCallback<ClickEvent>(OnImportPlaylistButtonClicked);
 
         deleteUrlButton = root.Query<Button>(name: "DeleteUrlButton").First() ?? throw new InvalidOperationException("Could not find delete url button ui element");
         readOnlyChanged += () => deleteUrlButton.SetEnabled(!ReadOnly);
@@ -260,6 +265,17 @@ public class StationProperties
         });
     }
 
+    private void OnImportPlaylistButtonClicked(ClickEvent evt)
+    {
+        if (evt.button != 0)
+            return;
+
+        OpenImportPlaylistModal((urls) =>
+        {
+            Plugin.Logger.LogInfo($"Import {urls.Length} urls");
+        });
+    }
+
     private void OnDeleteUrlButtonClicked(ClickEvent evt)
     {
         if (evt.button != 0)
@@ -293,6 +309,27 @@ public class StationProperties
             }
 
             onSaveUrl(modal.Url);
+        }
+    }
+
+    private ModalInstance OpenImportPlaylistModal(Action<string[]> onImportUrls)
+    {
+        ImportPlaylistModal modal = null!;
+
+        return Modal.Instance.ShowModal(parent.ImportPlaylistModalAsset, SetupContent, root, title: "Import playlist", confirmText: "Import", cancelText: "Cancel", onConfirm: OnConfirm);
+
+        void SetupContent(VisualElement root)
+        {
+            modal = new ImportPlaylistModal(parent, root, parent.UrlListItemAsset);
+        }
+
+        void OnConfirm(ref bool preventClose)
+        {
+            if (!modal.IsValid())
+            {
+                preventClose = true;
+                return;
+            }
         }
     }
 

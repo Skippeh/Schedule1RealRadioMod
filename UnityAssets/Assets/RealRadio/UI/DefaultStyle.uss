@@ -8,6 +8,11 @@ Label,
     -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf");
 }
 
+/* We need a more specific selector for the border radius otherwise the border-radius for the .unity-button selector overrides this */
+.unity-button.image-button {
+    border-radius: 0;
+}
+
 .image-button {
     -unity-background-scale-mode: scale-to-fit;
     background-color: transparent;

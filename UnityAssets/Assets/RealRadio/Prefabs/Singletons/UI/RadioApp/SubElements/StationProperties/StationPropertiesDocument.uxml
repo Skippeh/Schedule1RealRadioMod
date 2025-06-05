@@ -20,6 +20,7 @@
             <ui:VisualElement name="UrlsTitleContainer">
                 <ui:Label text="Playlist" class="field-label" />
                 <ui:VisualElement name="UrlsTitleButtons">
+                    <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="ImportPlaylistButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/add-list.png?fileID=21300000&amp;guid=2efd8ab1309e3714ea131fa5a2619b3a&amp;type=3#add-list&quot;);" />
                     <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="AddUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/plus.png?fileID=21300000&amp;guid=c2bd55691a28af6449321de16d115a3c&amp;type=3#plus&quot;);" />
                     <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeleteUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/trash.png?fileID=21300000&amp;guid=969df749c1f64114196a1193189765ee&amp;type=3#trash&quot;);" />
                 </ui:VisualElement>

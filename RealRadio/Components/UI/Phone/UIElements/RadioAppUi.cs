@@ -25,6 +25,9 @@ public class RadioAppUi : MonoBehaviour
     [field: SerializeField]
     public VisualTreeAsset UrlEditModalAsset { get; private set; } = null!;
 
+    [field: SerializeField]
+    public VisualTreeAsset ImportPlaylistModalAsset { get; private set; } = null!;
+
     [SerializeField]
     private VisualTreeAsset stationListItemAsset = null!;
 
@@ -50,6 +53,12 @@ public class RadioAppUi : MonoBehaviour
 
         if (UrlListItemAsset == null)
             throw new InvalidOperationException("UrlListItemAsset is null");
+
+        if (UrlEditModalAsset == null)
+            throw new InvalidOperationException("UrlEditModalAsset is null");
+
+        if (ImportPlaylistModalAsset == null)
+            throw new InvalidOperationException("ImportPlaylistModalAsset is null");
     }
 
     void OnEnable()
