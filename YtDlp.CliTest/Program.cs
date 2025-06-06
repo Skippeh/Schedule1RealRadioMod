@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using YoutubeDLSharp;
 
@@ -6,23 +7,44 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        if (args.Length != 2)
+        if (args.Length < 3)
         {
-            Console.WriteLine("Usage: YtDlp.CliTest.exe <cachePath> <url>");
+            Console.WriteLine("Usage: YtDlp.CliTest.exe <cachePath> <type> <urls>");
             return;
         }
 
         string cachePath = args[0];
-        string url = args[1];
+        string type = args[1];
+        string[] urls = args.Skip(2).ToArray();
 
         var ytDlp = new YtDlp(cachePath);
-        var metaData = await ytDlp.DownloadMetaData(url, default);
 
-        Console.WriteLine($"Video name: {metaData.Title}");
+        if (type == "video")
+        {
+            foreach (var url in urls)
+            {
+                var metaData = await ytDlp.DownloadMetaData(url, default);
 
-        string filePath = await ytDlp.DownloadAudioFile(url, default, new OutputDownloadProgress(), new OutputProgress());
+                Console.WriteLine($"Video name: {metaData.Title}");
 
-        Console.WriteLine($"Audio file path: {filePath}");
+                string filePath = await ytDlp.DownloadAudioFile(url, default, new OutputDownloadProgress(), new OutputProgress());
+
+                Console.WriteLine($"Audio file path: {filePath}");
+            }
+        }
+        else if (type == "playlist")
+        {
+            var videoDatas = await ytDlp.DownloadPlaylistUrls(urls, default);
+
+            foreach (var videoData in videoDatas)
+            {
+                Console.WriteLine($"{videoData.Url}: {videoData.Title}");
+            }
+        }
+        else
+        {
+            throw new ArgumentException($"Invalid type: {type}");
+        }
     }
 }
 

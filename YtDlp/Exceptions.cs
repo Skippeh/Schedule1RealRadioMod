@@ -14,3 +14,7 @@ public class YtDlpVideoDownloadException(string[] errors) : YtDlpException(error
 public class YtDlpFetchMetaDataException(string[] errors) : YtDlpException(errors)
 {
 }
+
+public class YtDlpDownloadPlaylistUrlsException(string[] errors) : YtDlpException(errors)
+{
+}

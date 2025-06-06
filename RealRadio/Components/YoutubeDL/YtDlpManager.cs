@@ -220,6 +220,11 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         });
     }
 
+    public Task<VideoData[]> FetchPlaylistMetaData(string[] urls, CancellationToken token)
+    {
+        return ytDlp.DownloadPlaylistUrls(urls, token);
+    }
+
     private class ReportDownloadProgress(YtDlpManager manager, string url) : IProgress<DownloadProgress>
     {
         public void Report(DownloadProgress value)
