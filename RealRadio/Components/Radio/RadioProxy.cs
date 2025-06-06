@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using HashUtility;
 using RealRadio.Components.Audio;
 using RealRadio.Data;
 using UnityEngine;
@@ -17,7 +19,7 @@ public abstract class RadioProxy : NetworkBehaviour
     public RadioStation? RadioStation { get; private set; }
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ClientUnsynchronized, OnChange = nameof(OnStationChanged))]
-    public int RadioStationIndex { get; private set; } = -1;
+    public uint? RadioStationIdHash { get; private set; }
 
     protected GameObject? audioClientObject;
     protected StreamAudioClient? audioClient;
@@ -28,7 +30,21 @@ public abstract class RadioProxy : NetworkBehaviour
         if (AudioClientPrefab == null)
             throw new InvalidOperationException("AudioClientPrefab is null");
 
+        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+    }
+
+    private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
+    {
+        if (RadioStationIdHash == null)
+            return;
+
+        // The latter condition is to check if the station was set before user stations were received if we're not the server.
+        // This fixes stations being unknown on the client if they're already playing when the client joins the game.
+        if (station.Id?.GetStableHashCode() != RadioStationIdHash)
+            return;
+
+        RadioStation = station;
     }
 
     private void OnRadioStationRemoved(RadioStation station)
@@ -39,7 +55,7 @@ public abstract class RadioProxy : NetworkBehaviour
         if (RadioStation == station)
         {
             Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
-            SetRadioStationIndex(-1);
+            SetRadioStationIdHash(null);
         }
     }
 
@@ -50,15 +66,21 @@ public abstract class RadioProxy : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]
-    public void SetRadioStationIndex(int index)
+    public void SetRadioStationIdHash(uint? idHash)
     {
-        if (index < -1 || index >= RadioStationManager.Instance.Stations.Count)
+        if (idHash == null)
         {
-            Plugin.Logger.LogWarning($"Invalid radio station index (out of range): {index}");
+            RadioStationIdHash = null;
             return;
         }
 
-        RadioStationIndex = index;
+        if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(idHash.Value, out _))
+        {
+            Plugin.Logger.LogWarning($"Invalid radio station hash (not found): {idHash}");
+            return;
+        }
+
+        RadioStationIdHash = idHash;
     }
 
     private IEnumerator WaitForAudioClientThenEnable()
@@ -73,14 +95,12 @@ public abstract class RadioProxy : NetworkBehaviour
         audioClientObject!.SetActive(true);
     }
 
-    protected virtual void OnStationChanged(int prev, int next, bool asServer)
+    protected virtual void OnStationChanged(uint? prev, uint? next, bool asServer)
     {
         if (asServer)
             return;
 
-        RadioStation? nextStation = next == -1 ? null : RadioStationManager.Instance.Stations.ElementAtOrDefault(next);
-
-        Plugin.Logger.LogInfo($"New station: {nextStation?.Name} ({nextStation?.Url})");
+        RadioStation? nextStation = next == null ? null : RadioStationManager.Instance.StationsByHashedId.GetValueOrDefault(next.Value);
 
         if (RadioStation != null)
             UnbindAudioClient();
@@ -107,10 +127,7 @@ public abstract class RadioProxy : NetworkBehaviour
         if (audioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
-        if (audioClient == null)
-        {
-            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
-        }
+        audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
     }
 
     protected virtual void UnbindAudioClient()
@@ -121,10 +138,8 @@ public abstract class RadioProxy : NetworkBehaviour
         if (audioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
-        if (audioClient != null)
-        {
-            AudioStreamManager.Instance.GetOrCreateHost(RadioStation).DetachClient(audioClientObject);
-            audioClient = null;
-        }
+
+        audioClient?.Host?.DetachClient(audioClientObject);
+        audioClient = null;
     }
 }

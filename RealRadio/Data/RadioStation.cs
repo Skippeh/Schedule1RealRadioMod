@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using FishNet.Serializing;
 using GameKit.Utilities;
 using HashUtility;
 using RealRadio.Components.Radio;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace RealRadio.Data;
 
@@ -74,11 +76,29 @@ public class RadioStation : ScriptableObject
         return $"{Name} ({Type}): {TypeDataToString()}";
     }
 
+    public Components.API.Data.RadioStation ToDataType()
+    {
+        return new()
+        {
+            Id = Id,
+            Name = Name,
+            Abbreviation = Abbreviation,
+            Type = Type,
+            Url = Url,
+            Urls = Urls.ToArray(),
+            CanBePlayedByNPCs = CanBePlayedByNPCs,
+            TextColor = $"#{ColorUtility.ToHtmlStringRGBA(TextColor)}",
+            BackgroundColor = $"#{ColorUtility.ToHtmlStringRGBA(BackgroundColor)}",
+            RoundedBackground = RoundedBackground,
+        };
+    }
+
     private string TypeDataToString()
     {
         return Type switch
         {
             RadioType.InternetRadio => Url ?? string.Empty,
+            RadioType.YtDlp => Urls != null ? $" ({Urls.Length} songs)" : string.Empty,
             _ => throw new NotImplementedException($"Unknown type: {Type}"),
         };
     }

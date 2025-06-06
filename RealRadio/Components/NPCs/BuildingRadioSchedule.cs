@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using HashUtility;
 using RealRadio.Components.Buildings;
 using RealRadio.Components.Radio;
 using ScheduleOne.GameTime;
@@ -120,8 +121,8 @@ public class BuildingRadioSchedule : MonoBehaviour
             if (proxy == null)
                 return;
 
-            if ((!returningFromSummon || proxy.RadioStationIndex == -1) && proxy.StartTime <= TimeManager.Instance.DailyMinTotal && proxy.StopTime > TimeManager.Instance.DailyMinTotal && UnityEngine.Random.Range(0f, 1f) <= 0.5f)
-                proxy.SetRadioStationIndex(RadioStationManager.Instance.GetRandomNPCStationIndex());
+            if ((!returningFromSummon || proxy.RadioStationIdHash == null) && proxy.StartTime <= TimeManager.Instance.DailyMinTotal && proxy.StopTime > TimeManager.Instance.DailyMinTotal && UnityEngine.Random.Range(0f, 1f) <= 0.5f)
+                proxy.SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
         }
     }
 
@@ -137,7 +138,7 @@ public class BuildingRadioSchedule : MonoBehaviour
                 return;
 
             if (!summoned)
-                proxy.SetRadioStationIndex(-1);
+                proxy.SetRadioStationIdHash(null);
         }
     }
 }

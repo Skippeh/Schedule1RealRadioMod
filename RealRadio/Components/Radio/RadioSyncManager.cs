@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using FishNet.Connection;
 using FishNet.Object;
+using HashUtility;
 using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
@@ -15,6 +17,8 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 {
     public Action<RadioStation, RadioStationState>? OnStateReceived;
 
+    public ReadOnlyDictionary<RadioStation, RadioStationState> RadioStates = null!;
+
     private Dictionary<RadioStation, RadioStationState> radioStates = [];
     private Dictionary<RadioStation, VideoData?> currentMetaData = [];
 
@@ -22,26 +26,96 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
     {
         base.Awake();
 
-        RadioStationManager.Instance.StationAdded += OnRadioStationAdded;
-        foreach (var station in RadioStationManager.Instance.Stations)
-        {
-            OnRadioStationAdded(station);
-        }
+        RadioStates = new(radioStates);
+        RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
     }
 
     public override void OnDestroy()
     {
         base.OnDestroy();
 
-        RadioStationManager.Instance.StationAdded -= OnRadioStationAdded;
+        RadioStationManager.Instance.StationRemoved -= OnRadioStationRemoved;
+        RadioStationManager.Instance.StationUpdated -= OnRadioStationUpdated;
     }
 
-    private void OnRadioStationAdded(RadioStation station)
+    public override void OnStartServer()
     {
-        if (station.Type == RadioType.InternetRadio)
+        foreach (var station in RadioStationManager.Instance.Stations)
+        {
+            OnRadioStationUpdated(station, oldStation: null);
+        }
+    }
+
+    public override void OnStartClient()
+    {
+        if (!IsClientOnly)
             return;
 
-        radioStates[station] = new RadioStationState();
+        UserStationsManager.Instance.StationUpdated += OnClientUserStationUpdated;
+
+        // Request song state for all yt-dlp radio stations
+        foreach (var station in RadioStationManager.Instance.Stations)
+        {
+            if (station.Type != RadioType.YtDlp)
+                continue;
+
+            RequestOrSetSongState(station, new RadioStationState());
+        }
+    }
+
+    private void OnClientUserStationUpdated(API.Data.RadioStation station, bool isNew)
+    {
+        if (station.Type != RadioType.YtDlp)
+            return;
+
+        if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(station.Id!.GetStableHashCode(), out var radioStation))
+            return;
+
+        RequestOrSetSongState(radioStation, new RadioStationState());
+    }
+
+    private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
+    {
+        if (station.Type != RadioType.YtDlp)
+            return;
+
+        RadioStationState? oldState = null;
+
+        if (oldStation != null)
+        {
+            radioStates.Remove(oldStation, out oldState);
+            currentMetaData.Remove(oldStation);
+        }
+
+        if (!IsServer)
+            return;
+
+        if (oldState?.IsValid() == true)
+        {
+            // clone old state
+            oldState = oldState with { };
+
+            string? oldSong = oldStation!.Urls![oldState.SongIndex.Value];
+
+            int newIndex = Array.IndexOf(station.Urls!, oldSong);
+            oldState.SongIndex = newIndex >= 0 ? (ushort)newIndex : null;
+
+            if (oldState.SongIndex == null)
+            {
+                oldState = GetRandomRadioStationState(station, lastSongIndex: null, oldState.SongIteration + 1, startTime: 0f);
+            }
+        }
+
+        var state = oldState ?? GetRandomRadioStationState(station, lastSongIndex: null, iteration: 0, startTime: null);
+        radioStates[station] = state;
+        RequestOrSetSongState(station, state);
+    }
+
+    private void OnRadioStationRemoved(RadioStation station)
+    {
+        radioStates.Remove(station);
+        currentMetaData.Remove(station);
     }
 
     public RadioStationState? GetLocalState(RadioStation station)
@@ -66,7 +140,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         if (station.Type == RadioType.InternetRadio)
             throw new ArgumentException($"Can not set the song state of an internet radio station");
 
-        var existingState = radioStates[station];
+        radioStates.TryGetValue(station, out var existingState);
 
         if (existingState != null && existingState.IsValid() && (newState.SongIteration <= existingState.SongIteration || newState.SongIteration == null))
         {
@@ -90,11 +164,14 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
 
         radioStates[station] = newState;
+
         ReceiveSongState(conn: null, station, newState);
     }
 
-    [TargetRpc(RunLocally = true)]
-    [ObserversRpc(RunLocally = true)]
+    // OrderType is important here.
+    // If we don't set it the song state will be received before the station is sent (if a runtime station was added by a client)
+    [TargetRpc(RunLocally = true, OrderType = DataOrderType.Last)]
+    [ObserversRpc(RunLocally = true, OrderType = DataOrderType.Last)]
     public void ReceiveSongState(NetworkConnection? conn, RadioStation station, RadioStationState state)
     {
         if (state == null)
@@ -102,8 +179,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (IsClientOnly)
         {
-            Plugin.Logger.LogInfo($"Adding to current time: {NetworkManager.TimeManager.RoundTripTime / 1000f} sec(s)");
-            state.CurrentTime += NetworkManager.TimeManager.RoundTripTime / 1000f;
+            state.CurrentTime += NetworkManager.TimeManager.RoundTripTime / 2f / 1000f;
             radioStates[station] = state;
         }
 
@@ -134,7 +210,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             // We add 2 seconds because normally if the station is actively being listened to it'll switch to the next song immediately.
             // If the station is not actively being listened the state's time will go past the end of the song.
             // When doing it this way we ensure that the song isn't cut off early if the duration is not completely accurate.
-            if (metaData == null || metaData.Duration != null && state.CurrentTime > metaData.Duration + 2f)
+            if (metaData?.Duration != null && state.CurrentTime > metaData.Duration + 2f)
             {
                 var newState = GetRandomRadioStationState(station, state.SongIndex, state.SongIteration + 1, startTime: state.SongIteration == null ? null : 0);
                 RequestOrSetSongState(station, newState);
@@ -142,16 +218,16 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
     }
 
-    public static RadioStationState GetRandomRadioStationState(RadioStation Station, ushort? lastSongIndex, uint? iteration, float? startTime = null)
+    public static RadioStationState GetRandomRadioStationState(RadioStation station, ushort? lastSongIndex, uint? iteration, float? startTime = null)
     {
         var result = new RadioStationState();
         ushort index;
 
         while (true)
         {
-            index = (ushort)UnityEngine.Random.Range(0, Station.Urls!.Length);
+            index = (ushort)UnityEngine.Random.Range(0, station.Urls!.Length);
 
-            if (lastSongIndex != index || Station.Urls.Length <= 1)
+            if (lastSongIndex != index || station.Urls.Length <= 1)
                 break;
         }
 
@@ -160,7 +236,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (startTime == null)
         {
-            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls[index], out var metaData) && metaData.Duration.HasValue)
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(station.Urls[index], out var metaData) && metaData.Duration.HasValue)
                 startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
             else
             {

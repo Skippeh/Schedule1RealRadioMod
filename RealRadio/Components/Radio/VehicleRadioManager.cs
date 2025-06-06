@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using AsmResolver;
+using HashUtility;
 using RealRadio.Components.Building;
 using RealRadio.Components.UI;
 using RealRadio.Components.Vehicles;
@@ -85,7 +87,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         var options = new InteractableOption[RadioStationManager.Instance.SortedStations.Count + 1];
 
         options[0] = InteractableOption.CreateOption(
-            id: "-1",
+            id: string.Empty,
             name: "Turn off",
             sprite: TurnOffIcon
         );
@@ -101,8 +103,8 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
             }
 
             options[i + 1] = InteractableOption.CreateOption(
-                id: RadioStationManager.Instance.IndexOfSortedStation(i).ToString(CultureInfo.InvariantCulture),
-                name: station.Name!,
+                id: station.Id!,
+                name: station.Name!.EscapeRichText(),
                 description: songInfo,
                 sprite: station.Icon,
                 abbreviation: station.Abbreviation,
@@ -136,7 +138,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
 
     private void UpdateRadialMenu()
     {
-        if (GameInput.GetButtonUp(GameInput.ButtonCode.Reload) || Player.Local?.CurrentVehicle == null)
+        if (GameInput.GetButtonUp(GameInput.ButtonCode.Reload) || GameInput.IsTyping || Player.Local?.CurrentVehicle == null)
         {
             if (radialMenuOpen)
             {
@@ -147,7 +149,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
             return;
         }
 
-        if (!GameInput.GetButtonDown(GameInput.ButtonCode.Reload))
+        if (!GameInput.GetButtonDown(GameInput.ButtonCode.Reload) || GameInput.IsTyping)
             return;
 
         // Only show the radial menu if the current vehicle has a proxy
@@ -165,8 +167,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
             return;
         }
 
-        // +1 because the first option is "turn off"
-        var selectedOption = radialMenuOptions[RadioStationManager.Instance.IndexOfUnsortedStation(proxyRef.Proxy!.RadioStationIndex) + 1];
+        var selectedOption = radialMenuOptions.FirstOrDefault(x => x.Id == proxyRef.Proxy?.RadioStation?.Id) ?? radialMenuOptions[0];
 
         radialMenuOpen = true;
         RadialMenu.Instance.Show(radialMenuOptions, onOptionSelected: OnRadialOptionSelected, selectedOption: selectedOption);
@@ -174,14 +175,8 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
 
     private void OnRadialOptionSelected(InteractableOption option)
     {
-        if (!int.TryParse(option.Id, out var index))
-        {
-            Plugin.Logger.LogWarning($"Failed to parse option index: {option.Id}");
-            return;
-        }
-
         var proxyRef = Player.Local.CurrentVehicle.GetComponent<VehicleRadioProxyReference>();
-        proxyRef?.Proxy?.SetRadioStationIndex(index);
+        proxyRef?.Proxy?.SetRadioStationIdHash(option.Id == string.Empty ? null : option.Id?.GetStableHashCode());
 
         radialMenuOpen = false;
         RadialMenu.Instance.Hide();

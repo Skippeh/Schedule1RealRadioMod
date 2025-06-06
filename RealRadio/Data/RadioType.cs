@@ -1,7 +1,7 @@
 using System;
 
 [Serializable]
-public enum RadioType
+public enum RadioType : byte
 {
     InternetRadio,
     YtDlp,

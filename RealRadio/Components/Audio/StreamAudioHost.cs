@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AudioStreamer;
@@ -218,11 +219,11 @@ public class StreamAudioHost : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (var client in spawnedClients)
-            Destroy(client.gameObject);
+        foreach (var client in spawnedClients.ToList())
+            DetachClient(client.gameObject);
 
-        StopAudioStreamNow();
         AudioStream?.Dispose();
+        AudioStreamManager.Instance.RemoveHost(this);
     }
 
     public void StartAudioStream()

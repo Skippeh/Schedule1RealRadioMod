@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using HashUtility;
 using NAudio.CoreAudioApi;
 using RealRadio.Components.Audio;
 using RealRadio.Components.Radio;
@@ -198,11 +199,11 @@ public class VehicleRadioProxy : RadioProxy
             {
                 if (UnityEngine.Random.Range(0f, 1f) <= 0.5f)
                 {
-                    SetRadioStationIndex(RadioStationManager.Instance.GetRandomNPCStationIndex());
+                    SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
                 }
                 else
                 {
-                    SetRadioStationIndex(-1);
+                    SetRadioStationIdHash(null);
                 }
             }
         }
