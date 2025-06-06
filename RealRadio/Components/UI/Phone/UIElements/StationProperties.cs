@@ -272,7 +272,14 @@ public class StationProperties
 
         OpenImportPlaylistModal((urls) =>
         {
-            Plugin.Logger.LogInfo($"Import {urls.Length} urls");
+            stationUrls.Capacity = Math.Max(stationUrls.Capacity, stationUrls.Count + urls.Count);
+            foreach (string url in urls)
+            {
+                if (!stationUrls.Contains(url))
+                    stationUrls.Add(url);
+            }
+
+            urlsList.Rebuild();
         });
     }
 
@@ -312,11 +319,11 @@ public class StationProperties
         }
     }
 
-    private ModalInstance OpenImportPlaylistModal(Action<string[]> onImportUrls)
+    private ModalInstance OpenImportPlaylistModal(Action<ICollection<string>> onImportUrls)
     {
         ImportPlaylistModal modal = null!;
 
-        return Modal.Instance.ShowModal(parent.ImportPlaylistModalAsset, SetupContent, root, title: "Import playlist", confirmText: "Import", cancelText: "Cancel", onConfirm: OnConfirm);
+        return Modal.Instance.ShowModal(parent.ImportPlaylistModalAsset, SetupContent, root, title: "Import playlist", confirmText: "Import", cancelText: "Cancel", onConfirm: OnConfirm, onClosed: OnClosed);
 
         void SetupContent(VisualElement root)
         {
@@ -330,6 +337,13 @@ public class StationProperties
                 preventClose = true;
                 return;
             }
+
+            onImportUrls(modal.SongUrls);
+        }
+
+        void OnClosed()
+        {
+            modal.Dispose();
         }
     }
 
