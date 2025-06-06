@@ -90,6 +90,7 @@ MonoBehaviour:
   <UrlListItemAsset>k__BackingField: {fileID: 9197481963319205126, guid: 23773d0e60621d940b72c6fcbdd8b680, type: 3}
   <UrlEditModalAsset>k__BackingField: {fileID: 9197481963319205126, guid: 8a0f42be542171e43a272eec9c23a7f1, type: 3}
   <ImportPlaylistModalAsset>k__BackingField: {fileID: 9197481963319205126, guid: e1ff450d2df35e3409f567c74beed2f6, type: 3}
+  <ValidatePlaylistModalAsset>k__BackingField: {fileID: 9197481963319205126, guid: f0be3648cf5fa3543b2c37db80a25b4e, type: 3}
   stationListItemAsset: {fileID: 9197481963319205126, guid: 50873b09daf492549b4bd9fbf1ebf708, type: 3}
   backgroundScrollSpeed: 3
 --- !u!1 &5787661762110905851

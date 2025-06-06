@@ -302,12 +302,12 @@ public class StationProperties
         bool isNew = string.IsNullOrEmpty(url);
         return Modal.Instance.ShowModal(parent.UrlEditModalAsset, SetupContent, root, title: isNew ? "Add song" : "Edit song", confirmText: isNew ? "Add" : "Update", cancelText: "Cancel", onConfirm: OnConfirm);
 
-        void SetupContent(VisualElement root)
+        void SetupContent(ModalInstance instance)
         {
-            modal = new UrlEditModal(parent, root, url);
+            modal = new UrlEditModal(parent, instance.Content, url);
         }
 
-        void OnConfirm(ref bool preventClose)
+        void OnConfirm(ModalInstance instance, ref bool preventClose)
         {
             if (!modal.IsValid() || modal.State != UrlEditModal.UrlState.ValidAndMetaDataLoaded)
             {
@@ -321,29 +321,54 @@ public class StationProperties
 
     private ModalInstance OpenImportPlaylistModal(Action<ICollection<string>> onImportUrls)
     {
-        ImportPlaylistModal modal = null!;
+        ImportPlaylistModal importModal = null!;
 
-        return Modal.Instance.ShowModal(parent.ImportPlaylistModalAsset, SetupContent, root, title: "Import playlist", confirmText: "Import", cancelText: "Cancel", onConfirm: OnConfirm, onClosed: OnClosed);
+        bool validated = false;
+        var importModalInstance = Modal.Instance.ShowModal(parent.ImportPlaylistModalAsset, SetupContent, root, title: "Import playlist", confirmText: "Import", cancelText: "Cancel", onConfirm: OnConfirm, onClosed: OnClosed);
+        return importModalInstance;
 
-        void SetupContent(VisualElement root)
+        void SetupContent(ModalInstance instance)
         {
-            modal = new ImportPlaylistModal(parent, root, parent.UrlListItemAsset);
+            importModal = new ImportPlaylistModal(parent, instance.Content, parent.UrlListItemAsset);
         }
 
-        void OnConfirm(ref bool preventClose)
+        void OnConfirm(ModalInstance outerModal, ref bool preventClose)
         {
-            if (!modal.IsValid())
+            if (validated)
+                return;
+
+            preventClose = true;
+
+            if (!importModal.IsValid())
             {
-                preventClose = true;
                 return;
             }
 
-            onImportUrls(modal.SongUrls);
+            ValidatePlaylistModal validateModal = null!;
+            Modal.Instance.ShowModal(parent.ValidatePlaylistModalAsset, SetupValidateModal, root, title: "Validating playlists...", cancelText: "Cancel", onClosed: OnValidateModalClosed);
+
+            void SetupValidateModal(ModalInstance innerModal)
+            {
+                validateModal = new ValidatePlaylistModal(parent, innerModal.Content, importModal.SongUrls);
+
+                validateModal.OnValidated += (urls) =>
+                {
+                    validated = true;
+                    outerModal.Close(confirmed: true);
+                    innerModal.Close(confirmed: true);
+                    onImportUrls(urls);
+                };
+            }
+
+            void OnValidateModalClosed(ModalInstance instance)
+            {
+                validateModal.Dispose();
+            }
         }
 
-        void OnClosed()
+        void OnClosed(ModalInstance instance)
         {
-            modal.Dispose();
+            importModal.Dispose();
         }
     }
 
@@ -447,7 +472,7 @@ public class StationProperties
 
         Modal.Instance.ShowModal("Delete station", $"Are you sure you want to delete this station?\n\n{station.Name}", root, "Yes", "No", OnConfirm);
 
-        void OnConfirm(ref bool preventClose)
+        void OnConfirm(ModalInstance instance, ref bool preventClose)
         {
             parent.StationDeleteRequested?.Invoke(station);
         }
@@ -471,7 +496,7 @@ public class StationProperties
         pluralText = selectedUrls.Count == 1 ? "song" : "songs";
         var modal = Modal.Instance.ShowModal($"Delete {pluralText}", builder.ToString(), root, "Yes", "No", onConfirm: OnConfirm);
 
-        void OnConfirm(ref bool preventClose)
+        void OnConfirm(ModalInstance instance, ref bool preventClose)
         {
             foreach (var url in selectedUrls)
                 stationUrls.Remove(url);

@@ -32,43 +32,42 @@ public class Modal : Singleton<Modal>
         string confirmText = "OK",
         string? cancelText = null,
         ModalInstance.ConfirmedDelegate? onConfirm = null,
-        Action? onCancel = null,
-        Action? onClosed = null
+        Action<ModalInstance>? onCancel = null,
+        Action<ModalInstance>? onClosed = null
     )
     {
         return ShowModal(MessageContentTemplate, SetupContent, context, title, confirmText, cancelText, onConfirm, onCancel, onClosed);
 
-        void SetupContent(VisualElement content)
+        void SetupContent(ModalInstance instance)
         {
-            var messageLabel = content.Query<Label>(name: "Message").First() ?? throw new InvalidOperationException("Could not find message label ui element");
+            var messageLabel = instance.Content.Query<Label>(name: "Message").First() ?? throw new InvalidOperationException("Could not find message label ui element");
             messageLabel.text = message;
         }
     }
 
     public ModalInstance ShowModal(
         VisualTreeAsset contentTemplate,
-        Action<VisualElement> setupContent,
+        Action<ModalInstance> setupContent,
         VisualElement context,
         string? title = null,
         string? confirmText = null,
         string? cancelText = null,
         ModalInstance.ConfirmedDelegate? onConfirm = null,
-        Action? onCancel = null,
-        Action? onClosed = null
+        Action<ModalInstance>? onCancel = null,
+        Action<ModalInstance>? onClosed = null
     )
     {
         var modalElement = ModalTemplate.Instantiate();
         GetRootOfContext(context).Add(modalElement);
 
-        var modal = new ModalInstance(modalElement)
+        var modal = new ModalInstance(modalElement, contentTemplate.Instantiate())
         {
             Title = title,
-            Content = contentTemplate.Instantiate(),
             ConfirmText = confirmText,
             CancelText = cancelText,
         };
 
-        setupContent(modal.Content);
+        setupContent(modal);
 
         modal.Confirmed += onConfirm;
         modal.Canceled += onCancel;
@@ -77,6 +76,11 @@ public class Modal : Singleton<Modal>
         StartCoroutine(AddVisibleClassNextFrame(modalElement.Query(name: "ModalRoot").First() ?? throw new InvalidOperationException("Could not find modal root ui element")));
 
         return modal;
+    }
+
+    internal object ShowModal(object validatePlaylistModalAsset, Action<VisualElement> setupContent, VisualElement root, string title, string cancelText, Action onCancel, Action onClosed)
+    {
+        throw new NotImplementedException();
     }
 
     private IEnumerator AddVisibleClassNextFrame(VisualElement element)
@@ -115,7 +119,7 @@ public class ModalInstance
         }
     }
 
-    public VisualElement? Content
+    public VisualElement Content
     {
         get => content;
         set
@@ -169,14 +173,14 @@ public class ModalInstance
         }
     }
 
-    public delegate void ConfirmedDelegate(ref bool preventClose);
+    public delegate void ConfirmedDelegate(ModalInstance instance, ref bool preventClose);
 
     public event ConfirmedDelegate? Confirmed;
-    public event Action? Canceled;
-    public event Action? Closed;
+    public event Action<ModalInstance>? Canceled;
+    public event Action<ModalInstance>? Closed;
 
     private string? title;
-    private VisualElement? content;
+    private VisualElement content = null!;
     private string? confirmText;
     private string? cancelText;
 
@@ -188,7 +192,7 @@ public class ModalInstance
     private Button confirmButton;
     private Button cancelButton;
 
-    public ModalInstance(VisualElement root)
+    public ModalInstance(VisualElement root, VisualElement content)
     {
         this.root = root;
 
@@ -208,6 +212,8 @@ public class ModalInstance
         root.RegisterCallback<PointerUpEvent>(OnPointerUp);
 
         confirmButton.Focus();
+
+        Content = content;
     }
 
     private void OnConfirmButtonClicked(ClickEvent evt)
@@ -234,16 +240,16 @@ public class ModalInstance
         if (confirmed)
         {
             bool preventClose = false;
-            Confirmed?.Invoke(ref preventClose);
+            Confirmed?.Invoke(this, ref preventClose);
 
             if (preventClose)
                 return;
         }
         else
-            Canceled?.Invoke();
+            Canceled?.Invoke(this);
 
         root.RemoveFromHierarchy();
         GameInput.IsTyping = false;
-        Closed?.Invoke();
+        Closed?.Invoke(this);
     }
 }

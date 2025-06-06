@@ -28,6 +28,9 @@ public class RadioAppUi : MonoBehaviour
     [field: SerializeField]
     public VisualTreeAsset ImportPlaylistModalAsset { get; private set; } = null!;
 
+    [field: SerializeField]
+    public VisualTreeAsset ValidatePlaylistModalAsset { get; set; } = null!;
+
     [SerializeField]
     private VisualTreeAsset stationListItemAsset = null!;
 
