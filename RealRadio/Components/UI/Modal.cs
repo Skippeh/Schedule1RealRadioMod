@@ -173,6 +173,18 @@ public class ModalInstance
         }
     }
 
+    public bool ConfirmButtonEnabled
+    {
+        get => confirmButton.enabledSelf;
+        set
+        {
+            if (value == confirmButton.enabledSelf)
+                return;
+
+            confirmButton.SetEnabled(value);
+        }
+    }
+
     public delegate void ConfirmedDelegate(ModalInstance instance, ref bool preventClose);
 
     public event ConfirmedDelegate? Confirmed;
