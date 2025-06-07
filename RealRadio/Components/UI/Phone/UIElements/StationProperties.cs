@@ -372,27 +372,6 @@ public class StationProperties
         }
     }
 
-    [return: NotNullIfNotNull(nameof(color))]
-    private static string? GetColorString(Color? color)
-    {
-        if (color == null)
-            return null;
-
-        byte r, g, b, a;
-
-        r = (byte)(color.Value.r * 255);
-        g = (byte)(color.Value.g * 255);
-        b = (byte)(color.Value.b * 255);
-        a = (byte)(color.Value.a * 255);
-
-        string result = $"#{r:X2}{g:X2}{b:X2}";
-
-        if (a != 255)
-            result += $"{a:X2}";
-
-        return result;
-    }
-
     private void OnStationUpdated(RadioStation station, bool isNew)
     {
         if (station.Id != this.station?.Id)
