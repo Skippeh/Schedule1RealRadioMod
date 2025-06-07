@@ -31,6 +31,7 @@ public class ImportPlaylistModal : IDisposable
     private readonly VisualTreeAsset urlsListItemAsset;
     private TextField urlsField;
     private ListView urlsList;
+    private Label loadingLabel;
     private UiState state;
     private readonly List<string> songUrls = [];
     private readonly List<VideoData> songData = [];
@@ -50,6 +51,9 @@ public class ImportPlaylistModal : IDisposable
 
         urlsList = root.Query<ListView>(name: "UrlsList").First() ?? throw new InvalidOperationException("Could not find urls List ui element");
         InitUrlsList();
+
+        loadingLabel = root.Query<Label>(name: "LoadingLabel").First() ?? throw new InvalidOperationException("Could not find loading Label ui element");
+        loadingLabel.style.display = DisplayStyle.None;
     }
 
     private void InitUrlsList()
@@ -83,19 +87,22 @@ public class ImportPlaylistModal : IDisposable
             return;
         }
 
-        State = UiState.LoadingPlaylists;
+        State = UiState.TypingInField;
     }
 
     private void OnStateChanged()
     {
         CancelQuery();
 
-        switch (State)
+        if (State == UiState.TypingInField)
         {
-            case UiState.LoadingPlaylists:
-                debounceCoroutine = owner.StartCoroutine(DebounceRoutine());
-                break;
+            debounceCoroutine = owner.StartCoroutine(DebounceRoutine());
         }
+
+        if (State == UiState.LoadingPlaylists)
+            loadingLabel.style.display = DisplayStyle.Flex;
+        else
+            loadingLabel.style.display = DisplayStyle.None;
     }
 
     private IEnumerator DebounceRoutine()
@@ -113,6 +120,10 @@ public class ImportPlaylistModal : IDisposable
             .Select(uri => uri!.ToString())
             .ToArray();
 
+        if (playlistUrls.Length == 0)
+            yield break;
+
+        State = UiState.LoadingPlaylists;
         queryCoroutine = owner.StartCoroutine(QueryPlaylistUrls(playlistUrls));
     }
 
@@ -179,6 +190,7 @@ public class ImportPlaylistModal : IDisposable
     public enum UiState
     {
         FieldEmpty,
+        TypingInField,
         LoadingPlaylists,
         Invalid,
         Valid,

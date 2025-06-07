@@ -1,6 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/PlaylistImportModal/PlaylistImportModalStyle.uss?fileID=7433441132597879392&amp;guid=7741080250242844d9e40745c0af7230&amp;type=3#PlaylistImportModalStyle" />
     <ui:TextField picking-mode="Ignore" label="Playlist Urls (one per line)" name="UrlsField" multiline="true" />
-    <ui:Label tabindex="-1" text="Song list preview" parse-escape-sequences="true" display-tooltip-when-elided="true" class="field-label" />
+    <ui:VisualElement style="flex-direction: row;">
+        <ui:Label tabindex="-1" text="Song list preview" parse-escape-sequences="true" display-tooltip-when-elided="true" class="field-label" />
+        <ui:Label tabindex="-1" text=" (loading...)" name="LoadingLabel" class="field-label" />
+    </ui:VisualElement>
     <ui:ListView name="UrlsList" show-bound-collection-size="false" selection-type="None" show-alternating-row-backgrounds="ContentOnly" fixed-item-height="35" focusable="false" />
 </ui:UXML>
