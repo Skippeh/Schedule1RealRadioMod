@@ -345,7 +345,7 @@ public class StationProperties
             }
 
             ValidatePlaylistModal validateModal = null!;
-            Modal.Instance.ShowModal(parent.ValidatePlaylistModalAsset, SetupValidateModal, root, title: "Validating playlists...", cancelText: "Cancel", onClosed: OnValidateModalClosed);
+            Modal.Instance.ShowModal(parent.ValidatePlaylistModalAsset, SetupValidateModal, root, title: "Validating songs...", cancelText: "Cancel", onClosed: OnValidateModalClosed);
 
             void SetupValidateModal(ModalInstance innerModal)
             {
