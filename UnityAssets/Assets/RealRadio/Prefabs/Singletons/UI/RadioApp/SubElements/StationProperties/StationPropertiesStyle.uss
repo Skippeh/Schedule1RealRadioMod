@@ -9,7 +9,7 @@
     margin-bottom: 10px;
 }
 
-#FieldsScrollView .unity-scroll-view__content-viewport {
+#FieldsScrollView .unity-scroll-view__content-container {
     padding: 10px;
 }
 
@@ -42,8 +42,10 @@
     flex-grow: 1;
 }
 
-#UrlsList .unity-scroll-view__content-viewport {
+#UrlsList .unity-scroll-view__content-viewport,
+#UrlsList .unity-scroll-view__content-container {
     padding: 0;
+    margin: 0;
 }
 
 #UrlsTitleContainer {
