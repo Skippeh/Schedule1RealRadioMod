@@ -34,6 +34,7 @@
 }
 
 #UrlsList {
+    height: 200px;
     background-color: rgba(105, 20, 20, 0.5);
     border-radius: 5px;
     border-width: 1px;

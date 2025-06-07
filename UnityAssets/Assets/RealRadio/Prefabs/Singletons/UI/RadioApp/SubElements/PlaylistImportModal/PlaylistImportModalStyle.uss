@@ -10,7 +10,7 @@
 }
 
 #UrlsList {
-    height: 200px;
+    height: 210px;
     border-color: rgba(255, 255, 255, 0.2);
     border-width: 1px;
     border-radius: 5px;

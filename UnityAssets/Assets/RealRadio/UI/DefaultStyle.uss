@@ -142,6 +142,10 @@ Label,
     margin-right: 10px;
 }
 
+.unity-scroller__slider {
+    margin-bottom: 0;
+}
+
 .unity-scroller .unity-scroller__low-button {
     display: none;
 }

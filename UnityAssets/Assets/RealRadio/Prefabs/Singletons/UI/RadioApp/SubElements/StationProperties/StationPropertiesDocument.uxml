@@ -25,7 +25,7 @@
                     <ui:Button parse-escape-sequences="true" display-tooltip-when-elided="true" name="DeleteUrlButton" class="image-button" style="background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/trash.png?fileID=21300000&amp;guid=969df749c1f64114196a1193189765ee&amp;type=3#trash&quot;);" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" />
+            <ui:ListView name="UrlsList" selection-type="Multiple" fixed-item-height="35" show-alternating-row-backgrounds="ContentOnly" show-bound-collection-size="false" />
         </ui:VisualElement>
     </ui:ScrollView>
     <ui:VisualElement name="ButtonsContainer">
