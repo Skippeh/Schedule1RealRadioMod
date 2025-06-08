@@ -6,6 +6,7 @@ using FishNet.Serializing;
 using RealRadio.Persistence.Data;
 using ScheduleOne.Building;
 using ScheduleOne.Interaction;
+using ScheduleOne.Persistence.Datas;
 using ScheduleOne.PlayerScripts;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ public abstract class TogglableOffGridItem : OffGridItem
         base.OnStartClient();
     }
 
-    public override string GetSaveString()
+    public override BuildableItemData GetBaseData()
     {
         return new TogglableOffGridItemData(
             GUID,
@@ -34,6 +35,6 @@ public abstract class TogglableOffGridItem : OffGridItem
             IsOn,
             transform.position,
             transform.rotation.eulerAngles
-        ).GetJson();
+        );
     }
 }

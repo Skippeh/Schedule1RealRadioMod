@@ -17,6 +17,7 @@ using ScheduleOne.Audio;
 using ScheduleOne.Dialogue;
 using ScheduleOne.Interaction;
 using ScheduleOne.Management;
+using ScheduleOne.Persistence.Datas;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI;
 using ScheduleOne.UI.Compass;
@@ -84,7 +85,7 @@ public class Radio : TogglableOffGridItem, IUsable
     {
     }
 
-    public override string GetSaveString()
+    public override BuildableItemData GetBaseData()
     {
         return new RadioData(
             GUID,
@@ -95,7 +96,7 @@ public class Radio : TogglableOffGridItem, IUsable
             transform.rotation.eulerAngles,
             RadioStation?.Id!.GetStableHashCode(),
             Volume
-        ).GetJson();
+        );
     }
 
     public override void Awake()

@@ -4,6 +4,7 @@ using FishNet.Object;
 using RealRadio.Persistence.Data;
 using ScheduleOne.EntityFramework;
 using ScheduleOne.ItemFramework;
+using ScheduleOne.Persistence.Datas;
 using ScheduleOne.Properties;
 using ScheduleOne.Property;
 using UnityEngine;
@@ -31,7 +32,7 @@ public abstract class OffGridItem : BuildableItem
         base.OnStartServer();
     }
 
-    public override string GetSaveString()
+    public override BuildableItemData GetBaseData()
     {
         return new OffGridItemData(
             GUID,
@@ -39,6 +40,6 @@ public abstract class OffGridItem : BuildableItem
             loadOrder: 0,
             transform.position,
             transform.rotation.eulerAngles
-        ).GetJson();
+        );
     }
 }
