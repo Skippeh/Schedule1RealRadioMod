@@ -28,6 +28,9 @@ public class AnalogRadio : Radio
 
         stationEditSlider.LoopedAround.AddListener(OnSliderLoopedAround);
         volumeEditSlider.ValueChanged.AddListener(OnVolumeSliderValueChanged);
+
+        stationEditSlider.gameObject.SetActive(false);
+        volumeEditSlider.gameObject.SetActive(false);
     }
 
     public override void Start()
