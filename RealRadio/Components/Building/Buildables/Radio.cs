@@ -237,9 +237,6 @@ public class Radio : TogglableOffGridItem, IUsable
         if (asServer)
             return;
 
-        if (audioClient == null)
-            return;
-
         crossFade.Volume = Mathf.Clamp01(next);
     }
 
