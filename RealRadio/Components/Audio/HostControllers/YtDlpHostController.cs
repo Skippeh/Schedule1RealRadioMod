@@ -68,7 +68,8 @@ public class YtDlpHostController : HostController
     {
         base.OnDestroy();
 
-        RadioSyncManager.Instance.OnStateReceived -= OnStateReceived;
+        if (RadioSyncManager.Instance)
+            RadioSyncManager.Instance.OnStateReceived -= OnStateReceived;
     }
 
     private void OnHostStreamEnded()
