@@ -1,5 +1,6 @@
 using System;
 using FishNet.Object;
+using HashUtility;
 using RealRadio.Components.Radio;
 using RealRadio.Components.UI.WorldUI;
 using ScheduleOne;
@@ -27,6 +28,9 @@ public class AnalogRadio : Radio
 
         stationEditSlider.LoopedAround.AddListener(OnSliderLoopedAround);
         volumeEditSlider.ValueChanged.AddListener(OnVolumeSliderValueChanged);
+
+        stationEditSlider.gameObject.SetActive(false);
+        volumeEditSlider.gameObject.SetActive(false);
     }
 
     public override void Start()
@@ -41,13 +45,16 @@ public class AnalogRadio : Radio
 
     private void OnSliderLoopedAround(float direction)
     {
-        int nextIndex = RadioStationIndex + (int)direction;
-        nextIndex = (nextIndex + RadioStationManager.Instance.Stations.Count) % RadioStationManager.Instance.Stations.Count;
+        var indexOfStation = RadioStation == null ? 0 : RadioStationManager.Instance.SortedStations.IndexOf(RadioStation);
+
+        int nextIndex = indexOfStation + (int)direction;
+        nextIndex = (nextIndex + RadioStationManager.Instance.SortedStations.Count) % RadioStationManager.Instance.SortedStations.Count;
 
         if (nextIndex < 0)
-            nextIndex += RadioStationManager.Instance.Stations.Count;
+            nextIndex += RadioStationManager.Instance.SortedStations.Count;
 
-        SetRadioStationIndex(nextIndex);
+        var nextStation = RadioStationManager.Instance.SortedStations[nextIndex];
+        SetRadioStationIdHash(nextStation.Id!.GetStableHashCode());
     }
 
     private void OnVolumeSliderValueChanged(float value)
@@ -67,6 +74,7 @@ public class AnalogRadio : Radio
         if (!asServer)
         {
             stationEditSlider.gameObject.SetActive(next == Player.Local.NetworkObject);
+            volumeEditSlider.gameObject.SetActive(next == Player.Local.NetworkObject);
         }
     }
 }

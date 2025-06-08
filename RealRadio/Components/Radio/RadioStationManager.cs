@@ -13,7 +13,9 @@ namespace RealRadio.Components.Radio;
 
 public class RadioStationManager : PersistentSingleton<RadioStationManager>
 {
-    public Action<RadioStation>? StationAdded;
+    public delegate void OnStationUpdatedDelegate(RadioStation station, RadioStation? oldStation);
+
+    public event OnStationUpdatedDelegate? StationUpdated;
     public Action<RadioStation>? StationRemoved;
     public Action? OnStationsChanged;
     public ReadOnlyDictionary<uint, RadioStation> StationsByHashedId { get; private set; }
@@ -42,24 +44,30 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
         {
             foreach (var station in Plugin.Assets.DefaultRadioStations)
             {
-                AddRadioStation(station, StationSource.DefaultStation);
+                AddOrUpdateRadioStation(station, StationSource.DefaultStation);
             }
 
             InternalOnStationsChanged();
         }
     }
 
-    public void AddRadioStation(RadioStation station, StationSource source)
+    public void AddOrUpdateRadioStation(RadioStation station, StationSource source)
     {
         if (station.Id == null)
             throw new ArgumentNullException(nameof(station.Id));
 
         uint hashedId = station.Id.GetStableHashCode();
 
-        if (StationsByHashedId.ContainsKey(hashedId))
+        var oldSource = GetStationSource(station.Id);
+
+        if (oldSource is not null and not StationSource.UserCreated)
+            throw new ArgumentException($"Radio station with id {station.Id} already exists and is not a runtime created station");
+
+        if (stationsByHashedId.Remove(hashedId, out var oldStation))
         {
-            Plugin.Logger.LogWarning($"Radio station with ID '{station.Id}' already exists");
-            return;
+            stations.Remove(oldStation);
+            npcStations.Remove(hashedId);
+            sortedStations.Remove(oldStation);
         }
 
         stations.Add(station);
@@ -70,28 +78,47 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
             npcStations[hashedId] = station;
 
         stationsChanged = true;
-        StationAdded?.Invoke(station);
+        StationUpdated?.Invoke(station, oldStation);
+
+        if (oldStation != null && oldStation != station)
+        {
+            Destroy(oldStation);
+        }
     }
 
     public void RemoveRadioStation(RadioStation station)
     {
-        if (station.Id == null)
-            throw new ArgumentNullException(nameof(station.Id));
+        if (station == null)
+            throw new ArgumentNullException(nameof(station));
 
-        uint hashedId = station.Id.GetStableHashCode();
-        npcStations.Remove(hashedId);
+        RemoveRadioStationById(station.Id!);
+    }
+
+    public void RemoveRadioStationById(string id)
+    {
+        if (id == null)
+            throw new ArgumentNullException(nameof(id));
+
+        RemoveRadioStationByIdHash(id.GetStableHashCode());
+    }
+
+    public void RemoveRadioStationByIdHash(uint idHash)
+    {
+        if (!stationsByHashedId.Remove(idHash, out var station))
+            return;
+
+        npcStations.Remove(idHash);
         stations.Remove(station);
-        stationsByHashedId.Remove(hashedId);
-        stationSources.Remove(hashedId);
+        stationSources.Remove(idHash);
         stationsChanged = true;
         StationRemoved?.Invoke(station);
     }
 
-    public int GetRandomNPCStationIndex()
+    public RadioStation GetRandomNPCStation()
     {
         var index = UnityEngine.Random.Range(0, npcStations.Count);
         var station = npcStations.ElementAt(index).Value;
-        return stations.IndexOf(station);
+        return station;
     }
 
     private void LateUpdate()
@@ -129,11 +156,30 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
     /// <summary>
     /// Returns the index of the unsorted station in the list of sorted stations, or -1 if the index is out of range.
     /// </summary>
-    internal int IndexOfUnsortedStation(int unsortedIndex)
+    public int IndexOfUnsortedStation(int unsortedIndex)
     {
         if (unsortedIndex < 0 || unsortedIndex >= stations.Count)
             return -1;
 
         return sortedStations.IndexOf(stations[unsortedIndex]);
+    }
+
+    public StationSource? GetStationSource(RadioStation station)
+    {
+        if (station == null)
+            throw new ArgumentNullException(nameof(station));
+
+        return GetStationSource(station.Id);
+    }
+
+    public StationSource? GetStationSource(string? stationId)
+    {
+        if (stationId == null)
+            return null;
+
+        if (!stationSources.TryGetValue(stationId.GetStableHashCode(), out var source))
+            return null;
+
+        return source;
     }
 }

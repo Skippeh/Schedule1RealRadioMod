@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HashUtility;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
 using YoutubeDLSharp.Options;
@@ -183,5 +184,49 @@ public class YtDlp
         var uri = new Uri(url);
         url = uri.Host + uri.PathAndQuery;
         return uri.PathAndQuery.GetStableHashCode();
+    }
+
+    public async Task<VideoData[]> DownloadPlaylistUrls(string[] urls, CancellationToken token)
+    {
+        var options = new OptionSet
+        {
+            FlatPlaylist = true,
+            DumpJson = true,
+            Simulate = true,
+        };
+
+        var runResult = await youtubeDL.RunWithOptions(urls, options, token);
+
+        if (!runResult.Success)
+            throw new YtDlpDownloadPlaylistUrlsException(runResult.ErrorOutput);
+
+        List<VideoData> result = [];
+
+        foreach (var json in runResult.Data)
+        {
+            try
+            {
+                var videoData = JsonConvert.DeserializeObject<VideoData>(json)!;
+
+                if (videoData.ResultType != MetadataType.Url)
+                    continue;
+
+                // Hacky way to skip unavailable videos - checks for [* video] in title
+                // Normally you'd be able to check videoData.Availability but that's not possible when using the FlatPlaylist option,
+                // and without that option it's a LOT slower
+                if (videoData.Title.StartsWith("[") && videoData.Title.EndsWith("]") && videoData.Title.Contains("video", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                result.Add(videoData);
+            }
+            catch
+            {
+                // Ignore
+            }
+        }
+
+        return result.ToArray();
     }
 }

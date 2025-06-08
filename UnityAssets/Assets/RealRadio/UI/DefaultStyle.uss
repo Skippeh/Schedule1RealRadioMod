@@ -1,14 +1,196 @@
 Label {
     font-size: 14px;
-    -unity-font-definition: url("/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght SDF.asset");
+}
+
+Label,
+.unity-base-field,
+.unity-button {
+    -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf");
+}
+
+/* We need a more specific selector for the border radius otherwise the border-radius for the .unity-button selector overrides this */
+.unity-button.image-button {
+    border-radius: 0;
 }
 
 .image-button {
-    -unity-background-scale-mode: scale-and-crop;
+    -unity-background-scale-mode: scale-to-fit;
     background-color: transparent;
     border-width: 0;
+    opacity: 1;
+    scale: 1;
+
+    transition: all 0.1s ease-out;
 }
 
 .image-button:disabled {
     opacity: 0.5;
+}
+
+.image-button:hover {
+    transition: none;
+    scale: 0.85;
+}
+
+.image-button:active {
+    transition: none;
+    scale: 0.75;
+}
+
+.unity-button {
+    border-radius: 5px;
+    -unity-font-style: bold;
+}
+
+.unity-button.primary {
+    background-color: rgb(100, 185, 100);
+}
+
+.unity-button.primary:hover {
+    background-color: rgb(75, 150, 75);
+}
+
+.unity-button.primary:active {
+    background-color: rgb(50, 125, 50);
+}
+
+.unity-button.primary:disabled {
+    background-color: rgb(117, 202, 117);
+}
+
+.unity-button.warning {
+    background-color: rgb(204, 178, 88);
+}
+
+.unity-button.warning:hover {
+    background-color: rgb(175, 150, 75);
+}
+
+.unity-button.warning:active {
+    background-color: rgb(150, 125, 50);
+}
+
+.unity-button.warning:disabled {
+    background-color: rgb(222, 202, 117);
+}
+
+.unity-base-field {
+    flex-direction: column;
+}
+
+.unity-base-field > .unity-base-field__label,
+.field-label {
+    color: rgb(254, 244, 244);
+    -unity-font-style: bold;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+}
+
+.unity-base-field {
+    padding: 5px;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.unity-base-field > .unity-base-field__input {
+    color: #000;
+    background-color: rgb(254, 244, 244);
+    padding: 5px;
+    margin: 0;
+    border-radius: 5px;
+}
+
+.unity-base-field > .unity-toggle__input {
+    background-color: transparent;
+}
+
+.unity-base-field > .unity-toggle__input > .unity-toggle__checkmark {
+    background-color: rgb(254, 244, 244);
+    border-radius: 5px;
+}
+
+.horizontal-group {
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.horizontal-group > * {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.section-header {
+    color: rgb(254, 244, 244);
+    -unity-font-style: bold;
+    margin: 0;
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(254, 244, 244);
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+
+.unity-scroller--vertical {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 10px;
+    margin-right: 10px;
+}
+
+.unity-scroller__slider {
+    margin-bottom: 0;
+}
+
+.unity-scroller .unity-scroller__low-button {
+    display: none;
+}
+
+.unity-scroller .unity-scroller__high-button {
+    display: none;
+}
+
+.unity-scroller .unity-slider__input {
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.unity-scroller .unity-base-slider__tracker {
+    display: none;
+}
+
+.unity-scroller .unity-base-slider__dragger-border {
+    display: none;
+}
+
+.unity-scroller--vertical .unity-base-slider__dragger {
+    width: 10px;
+}
+
+.unity-scroller--horizontal .unity-base-slider__dragger {
+    height: 10px;
+}
+
+.unity-scroller .unity-base-slider__dragger {
+    border-radius: 5px;
+    opacity: 0.2;
+
+    transition: opacity 0.1s ease-in-out;
+}
+
+.unity-scroller .unity-base-slider__dragger:hover,
+.unity-scroller .unity-base-slider__dragger:active {
+    opacity: 1;
+
+    transition: none;
+}
+
+/* Hides the empty list message */
+.unity-list-view__empty-label {
+    display: none;
 }

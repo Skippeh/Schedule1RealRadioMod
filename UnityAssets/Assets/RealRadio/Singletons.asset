@@ -19,7 +19,10 @@ MonoBehaviour:
   VehicleRadioManager: {fileID: 2998304887713466882, guid: 9cd9a4a0d8fc21b4495578533220479e, type: 3}
   BuildingRadioManager: {fileID: 7566014837715925360, guid: aaa53c4ec794cde419d3eb8f04024783, type: 3}
   RadialMenu: {fileID: 8057417580075597099, guid: 49ed30c016b04eb40a0c2f148a98c93e, type: 3}
+  Modal: {fileID: 916173768281907751, guid: da36bacdc2fa1f44eaca9e165e87fa67, type: 3}
   YtDlpManager: {fileID: 3842093474929390418, guid: 1a10d02fbca21e84d989b9eba372ec5b, type: 3}
   YtDlpUiManager: {fileID: 4106068969832939728, guid: 1f84cd3bd54437e4797f4ea82456e4be, type: 3}
   APIManager: {fileID: 2987140776399028811, guid: 31dfa3af63ccc6644aca5000f04ae2ae, type: 3}
   GameMusicManager: {fileID: 8913835244707351328, guid: c6146ca416ca8b64089a1da583d4c0b6, type: 3}
+  RadioApp: {fileID: 5454286455656709247, guid: f21a0ec2df6202a4095a1fd5e6f3f1a2, type: 3}
+  UserStationsManager: {fileID: 1592960787267117964, guid: 5b1c789cbb076f649972121e7b16d276, type: 3}

@@ -1,0 +1,46 @@
+@import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
+
+:root, #ModalRoot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#ModalRoot {
+    background-color: rgba(0, 0, 0, 0.7);
+
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
+}
+
+#ModalRoot.visible {
+    opacity: 1;
+}
+
+#ContentRoot {
+    background-color:rgb(50, 50, 50);
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+}
+
+#TitleContainer {
+    margin-bottom: 10px;
+
+    -unity-font-size: 20px;
+    -unity-font-style: bold;
+    color: #fff;
+}
+
+#Content {
+    margin-bottom: 10px;
+}
+
+#ButtonsContainer {
+    flex-direction: row;
+}

@@ -39,7 +39,7 @@ public class APIManager : PersistentSingleton<APIManager>
         foreach (var station in stations)
         {
             Plugin.Logger.LogInfo($"Registering custom radio station: {station.Name} ({station.Id})");
-            RadioStationManager.Instance.AddRadioStation(station, StationSource.FileAPI);
+            RadioStationManager.Instance.AddOrUpdateRadioStation(station, StationSource.FileAPI);
         }
 
         Plugin.Logger.LogInfo($"Loaded {stations.Count} custom radio station(s)");

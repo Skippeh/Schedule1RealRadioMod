@@ -64,6 +64,14 @@ public class YtDlpHostController : HostController
         Host.OnStreamEnded += OnHostStreamEnded;
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (RadioSyncManager.Instance)
+            RadioSyncManager.Instance.OnStateReceived -= OnStateReceived;
+    }
+
     private void OnHostStreamEnded()
     {
         RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, currentSongIteration + 1, startTime: 0));
@@ -109,16 +117,17 @@ public class YtDlpHostController : HostController
 
     private void OnStateReceived(RadioStation station, RadioStationState state)
     {
-        if (station != Station)
+        if (station.Id != Station.Id)
             return;
+
+        // This event is potentially invoked before OnRadioStationUpdated
+        // so we need to update the radio station here
+        Station = station;
 
         if (state.SongIteration == currentSongIteration)
             return;
 
-        Plugin.Logger.LogInfo($"Received song state: {state}");
-
-        if (currentSongIteration == null || downloadAndPlayAudioFileCoroutine != null && Host.NumActiveClients > 0)
-            PlayState(state);
+        PlayState(state);
     }
 
     private IEnumerator DownloadAndPlayAudioFile(string url, Func<float>? getStartTime = null)

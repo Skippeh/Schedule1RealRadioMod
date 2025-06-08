@@ -12,8 +12,17 @@ public static class UITKHelper
             return null;
 
         var builder = new StringBuilder(text);
-        builder.Replace("<", "&lt;");
-        builder.Replace(">", "&gt;");
+
+        int indexOfNoParse1 = text.IndexOf("<noparse>", System.StringComparison.OrdinalIgnoreCase);
+        int indexOfNoParse2 = text.IndexOf("</noparse>", System.StringComparison.OrdinalIgnoreCase);
+
+        if (indexOfNoParse1 != -1)
+            builder.Remove(indexOfNoParse1, "<noparse>".Length);
+        if (indexOfNoParse2 != -1)
+            builder.Remove(indexOfNoParse2, "</noparse>".Length);
+
+        builder.Insert(0, "<noparse>");
+        builder.Append("</noparse>");
         return builder.ToString();
     }
 }

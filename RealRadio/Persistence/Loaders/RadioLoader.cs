@@ -1,6 +1,8 @@
+using HashUtility;
 using RealRadio.Components.Building.Buildables;
 using RealRadio.Components.Radio;
 using RealRadio.Persistence.Data;
+using ScheduleOne.Persistence.Datas;
 
 namespace RealRadio.Persistence.Loaders;
 
@@ -8,9 +10,9 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
     where TRadio : Radio
     where TRadioData : RadioData
 {
-    public override void Load(string mainPath)
+    public override void Load(DynamicSaveData data)
     {
-        base.Load(mainPath);
+        base.Load(data);
 
         if (Item == null || Data == null)
             return;
@@ -22,7 +24,7 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
         }
         else
         {
-            Item.SetRadioStationIndex(RadioStationManager.Instance.SortedStations.IndexOf(station));
+            Item.SetRadioStationIdHash(Data.StationIdHash);
         }
 
         Item.Volume = Data.Volume;

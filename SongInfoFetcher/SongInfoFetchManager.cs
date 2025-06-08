@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ public class SongInfoFetchManager
 
     private Dictionary<Regex, Dictionary<Uri, ISongInfoFetcher>> fetchers = [];
     private Dictionary<Regex, Func<Uri, ISongInfoFetcher>> fetcherFactories = [];
+    private Dictionary<ISongInfoFetcher, Task> startTasks = [];
 
     public void AddFetcher(Regex uriRegex, Func<Uri, ISongInfoFetcher> fetcherFactory)
     {
@@ -56,7 +58,18 @@ public class SongInfoFetchManager
 
                 outFetcher = fetcherFactories[fetcher.Key](uri);
                 fetcher.Value.Add(uri, outFetcher);
-                await outFetcher.Start();
+                var startTask = outFetcher.Start();
+                startTasks.Add(outFetcher, startTask);
+
+                try
+                {
+                    await startTask;
+                }
+                finally
+                {
+                    startTasks.Remove(outFetcher);
+                }
+
                 return outFetcher;
             }
         }
@@ -70,6 +83,18 @@ public class SongInfoFetchManager
         {
             if (kv.Value.Remove(uri, out var fetcher))
             {
+                if (startTasks.Remove(fetcher, out var startTask))
+                {
+                    try
+                    {
+                        await startTask;
+                    }
+                    catch
+                    {
+                        // Ignore
+                    }
+                }
+
                 await fetcher.Stop();
                 fetcher.Dispose();
                 return true;

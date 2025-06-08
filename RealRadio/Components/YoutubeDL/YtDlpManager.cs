@@ -51,10 +51,10 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         ytDlp = new YtDlp(cachePath);
         StartCoroutine(DownloadBinaries());
 
-        RadioStationManager.Instance.StationAdded += OnRadioStationAdded;
+        RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
 
         foreach (var station in RadioStationManager.Instance.Stations)
-            OnRadioStationAdded(station);
+            OnRadioStationUpdated(station, oldStation: null);
     }
 
     private void LateUpdate()
@@ -92,7 +92,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         return Path.Combine(assemblyDir, "Cache");
     }
 
-    private void OnRadioStationAdded(RadioStation station)
+    private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
         if (station.Type != RadioType.YtDlp)
             return;
@@ -218,6 +218,11 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
             var reader = new AudioFileReader(filePath);
             return (float)reader.TotalTime.TotalSeconds;
         });
+    }
+
+    public Task<VideoData[]> FetchPlaylistMetaData(string[] urls, CancellationToken token)
+    {
+        return ytDlp.DownloadPlaylistUrls(urls, token);
     }
 
     private class ReportDownloadProgress(YtDlpManager manager, string url) : IProgress<DownloadProgress>

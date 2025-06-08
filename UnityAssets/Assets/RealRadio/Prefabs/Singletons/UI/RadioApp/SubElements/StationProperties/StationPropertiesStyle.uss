@@ -1,0 +1,76 @@
+@import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
+:root {
+    flex-grow: 1;
+    background-color: rgba(135, 20, 20, 0.66);
+}
+
+#FieldsScrollView {
+    flex-grow: 1;
+    margin-bottom: 10px;
+}
+
+#FieldsScrollView .unity-scroll-view__content-container {
+    padding: 10px;
+}
+
+#ButtonsContainer {
+    flex-direction: row;
+    margin: 10px;
+    margin-top: 0;
+    flex-shrink: 0;
+    border-top-width: 2px;
+    border-top-color: rgb(145, 20, 20);
+    padding-top: 10px;
+}
+
+.input-container > * {
+    width: 100%;
+}
+
+#UrlsContainer {
+    flex-grow: 1;
+    min-height: 150px;
+    margin-bottom: 10px;
+}
+
+#UrlsList {
+    height: 200px;
+    background-color: rgba(105, 20, 20, 0.5);
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: rgba(105, 20, 20, 0.8);
+    flex-grow: 1;
+}
+
+#UrlsList .unity-scroll-view__content-viewport,
+#UrlsList .unity-scroll-view__content-container {
+    padding: 0;
+    margin: 0;
+}
+
+#UrlsTitleContainer {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#UrlsTitleContainer > * {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#UrlsTitleContainer > Label {
+    flex-grow: 1;
+}
+
+#UrlsTitleButtons {
+    flex-direction: row;
+    margin-right: 5px;
+}
+
+#UrlsTitleButtons > .image-button {
+    margin-top: 1px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    flex-shrink: 1;
+}

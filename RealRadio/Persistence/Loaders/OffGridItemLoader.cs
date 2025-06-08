@@ -4,6 +4,7 @@ using RealRadio.Components.Building;
 using RealRadio.Persistence.Data;
 using ScheduleOne.ItemFramework;
 using ScheduleOne.Persistence;
+using ScheduleOne.Persistence.Datas;
 using ScheduleOne.Persistence.Loaders;
 using UnityEngine;
 
@@ -25,34 +26,31 @@ public class OffGridItemLoader<TItem, TLoadData> : BuildableItemLoader
     /// </summary>
     protected TItem? Item { get; private set; }
 
-    public override void Load(string mainPath)
+    public override void Load(DynamicSaveData data)
     {
-        TryLoadAndCreate(mainPath, out var item);
+        TryLoadAndCreate(data, out var item);
     }
 
     [MemberNotNullWhen(true, nameof(Data), nameof(Item))]
-    protected virtual bool TryLoadAndCreate(string mainPath, out TItem? item)
+    protected virtual bool TryLoadAndCreate(DynamicSaveData data, out TItem? item)
     {
         Item = null;
         item = null;
         Data = null;
 
-        if (!TryLoadFile(mainPath, "Data", out string contents))
-            return false;
-
         try
         {
-            Data = JsonUtility.FromJson<TLoadData>(contents);
+            Data = JsonUtility.FromJson<TLoadData>(data.BaseData);
 
             if (Data == null)
             {
-                Plugin.Logger.LogError($"{GetType().Name} failed to deserialize data from '{mainPath}'");
+                Plugin.Logger.LogError($"{GetType().Name} failed to deserialize data of type '{data.DataType}'");
                 return false;
             }
         }
         catch (Exception ex)
         {
-            Plugin.Logger.LogError($"{GetType().Name} failed to read data from '{mainPath}': {ex}");
+            Plugin.Logger.LogError($"{GetType().Name} failed to read data of type '{data.DataType}': {ex}");
             return false;
         }
 
@@ -78,7 +76,7 @@ public class OffGridItemLoader<TItem, TLoadData> : BuildableItemLoader
 
         if (!Guid.TryParse(Data.GUID, out var guid))
         {
-            Plugin.Logger.LogError($"{GetType()} failed to parse guid from {mainPath}: '{Data.GUID}'");
+            Plugin.Logger.LogError($"{GetType()} failed to parse guid: '{Data.GUID}'");
             return false;
         }
 

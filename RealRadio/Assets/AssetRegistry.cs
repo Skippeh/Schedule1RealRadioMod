@@ -63,6 +63,9 @@ public class AssetRegistry : ScriptableObject
         if (result.Singletons.RadialMenu == null)
             throw new AssetRegistryLoadException("Singletons.RadialMenu is null");
 
+        if (result.Singletons.Modal == null)
+            throw new AssetRegistryLoadException("Singletons.Modal is null");
+
         if (result.Singletons.YtDlpManager == null)
             throw new AssetRegistryLoadException("Singletons.YtDlpManager is null");
 
@@ -74,6 +77,12 @@ public class AssetRegistry : ScriptableObject
 
         if (result.Singletons.GameMusicManager == null)
             throw new AssetRegistryLoadException("Singletons.GameMusicManager is null");
+
+        if (result.Singletons.RadioApp == null)
+            throw new AssetRegistryLoadException("Singletons.RadioApp is null");
+
+        if (result.Singletons.UserStationsManager == null)
+            throw new AssetRegistryLoadException("Singletons.UserStationsManager is null");
 
         if (result.Prefabs.VehicleRadioProxy == null)
             throw new AssetRegistryLoadException("Prefabs.VehicleRadio is null");
@@ -151,10 +160,13 @@ public class SingletonPrefabs : ScriptableObject
     public GameObject VehicleRadioManager;
     public GameObject BuildingRadioManager;
     public GameObject RadialMenu;
+    public GameObject Modal;
     public GameObject YtDlpManager;
     public GameObject YtDlpUiManager;
     public GameObject APIManager;
     public GameObject GameMusicManager;
+    public GameObject RadioApp;
+    public GameObject UserStationsManager;
 #nullable enable
 }
 

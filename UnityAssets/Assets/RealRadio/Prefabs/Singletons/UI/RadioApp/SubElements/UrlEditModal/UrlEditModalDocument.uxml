@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlEditModal/UrlEditModalStyle.uss?fileID=7433441132597879392&amp;guid=98ada65e0b0138a4eb9257e4e9e3d86b&amp;type=3#UrlEditModalStyle" />
+    <ui:TextField picking-mode="Ignore" label="Song Url" name="Url" />
+    <ui:Label text="Song Info" class="section-header" />
+    <ui:Label text="Loading..." name="StatusLabel" enable-rich-text="false" />
+    <ui:VisualElement name="MetadataContainer">
+        <ui:Label tabindex="-1" text="Uploader" parse-escape-sequences="true" display-tooltip-when-elided="true" class="field-label" />
+        <ui:Label tabindex="-1" text="Channel Name" name="UploaderLabel" enable-rich-text="false" />
+        <ui:Label tabindex="-1" text="Title" parse-escape-sequences="true" display-tooltip-when-elided="true" class="field-label" />
+        <ui:Label tabindex="-1" text="Video Title" name="TitleLabel" enable-rich-text="false" />
+    </ui:VisualElement>
+</ui:UXML>

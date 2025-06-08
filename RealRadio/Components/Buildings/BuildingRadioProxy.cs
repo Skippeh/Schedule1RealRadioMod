@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
+using HashUtility;
 using RealRadio.Components.Radio;
+using RealRadio.Data;
 using ScheduleOne.Audio;
 using ScheduleOne.Doors;
 using ScheduleOne.GameTime;
@@ -36,6 +38,26 @@ public class BuildingRadioProxy : RadioProxy
     {
         base.OnStartServer();
         OnDayPass();
+
+        RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        RadioStationManager.Instance.StationRemoved -= OnRadioStationRemoved;
+
+        BuildingRadioManager.Instance?.RemoveProxy(this);
+    }
+
+    private void OnRadioStationRemoved(RadioStation station)
+    {
+        if (RadioStationIdHash != station.Id!.GetStableHashCode())
+            return;
+
+        var newStation = RadioStationManager.Instance.GetRandomNPCStation();
+        SetRadioStationIdHash(newStation.Id!.GetStableHashCode());
     }
 
     private void OnMinutePass()
@@ -43,17 +65,17 @@ public class BuildingRadioProxy : RadioProxy
         if (IsClientOnly)
             return;
 
-        if (ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StopTime && RadioStationIndex != -1)
+        if (ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StopTime && RadioStationIdHash != null)
         {
-            SetRadioStationIndex(-1);
+            SetRadioStationIdHash(null);
         }
 
-        if (!startedOnceToday && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StartTime && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal < StopTime && RadioStationIndex == -1)
+        if (!startedOnceToday && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StartTime && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal < StopTime && RadioStationIdHash == null)
         {
             startedOnceToday = true;
 
             if (Building?.OccupantCount > 0 && UnityEngine.Random.Range(0f, 1f) <= 0.5f)
-                SetRadioStationIndex(RadioStationManager.Instance.GetRandomNPCStationIndex());
+                SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
         }
     }
 
@@ -150,11 +172,5 @@ public class BuildingRadioProxy : RadioProxy
         {
             ambientSound.GetComponent<AudioSource>().mute = true;
         }
-    }
-
-    protected override void OnDestroy()
-    {
-        base.OnDestroy();
-        BuildingRadioManager.Instance?.RemoveProxy(this);
     }
 }
