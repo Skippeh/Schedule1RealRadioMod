@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using YoutubeDLSharp;
+using YoutubeDLSharp.Metadata;
 
 namespace RealRadio.Components.YoutubeDL;
 
@@ -70,7 +71,10 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         set
         {
             if (value && !DownloadListEnabled)
+            {
                 downloadList.AddToClassList("enabled");
+                SortItemsContainer();
+            }
             else if (!value && DownloadListEnabled)
                 downloadList.RemoveFromClassList("enabled");
         }
@@ -100,14 +104,24 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
     {
         if (!items.TryGetValue(url, out var item))
         {
+            if (progress.State == DownloadState.Success)
+                return;
+
             VisualElement element = ListItemAsset.Instantiate();
             itemsContainer.Add(element);
             item = new ListItem(this, element);
+            element.userData = item;
             items.Add(url, item);
-
-            var metaData = YtDlpManager.Instance.AudioMetaData[url];
-            item.Name = $"{metaData.Title ?? url} ({metaData.Uploader ?? "Unknown uploader"})";
         }
+
+        item.DownloadProgress = progress;
+
+        VideoData? metaData = YtDlpManager.Instance.AudioMetaData.GetValueOrDefault(url);
+
+        if (metaData != null)
+            item.Name = $"{metaData.Title ?? url} ({metaData.Uploader ?? "Unknown uploader"})";
+        else
+            item.Name = url;
 
         item.StateText = progress.State.ToString();
         item.ProgressBarErrorState = progress.State == DownloadState.Error;
@@ -140,6 +154,31 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
             items.Remove(url);
             itemsContainer.Remove(item.Element);
         }
+
+        if (DownloadListEnabled)
+            SortItemsContainer();
+    }
+
+    private void SortItemsContainer()
+    {
+        itemsContainer.Sort((a, b) =>
+        {
+            var aItem = a.userData as ListItem;
+            var bItem = b.userData as ListItem;
+
+            if (aItem == null || bItem == null)
+                return 0;
+
+            if (aItem.DownloadProgress == null || bItem.DownloadProgress == null)
+                return 0; // Should be unreachable
+
+            var progressCompare = bItem.DownloadProgress.Progress.CompareTo(aItem.DownloadProgress.Progress);
+
+            if (progressCompare != 0)
+                return progressCompare;
+
+            return aItem.Name.CompareTo(bItem.Name);
+        });
     }
 
     private void Update()
@@ -159,6 +198,8 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
     class ListItem
     {
+        public DownloadProgress? DownloadProgress { get; set; }
+
         public string Name
         {
             get => name.text;
