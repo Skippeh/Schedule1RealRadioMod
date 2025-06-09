@@ -154,16 +154,29 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         Plugin.Logger.LogInfo($"Downloading (if not cached) audio file '{url}'...");
 
-        var metaDataTask = FetchMetaData(url);
+        OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.PreProcessing));
 
-        var metaData = await metaDataTask;
+        var metaData = await FetchMetaData(url);
+
+        OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.PreProcessing));
 
         if (metaData.IsLive == true)
         {
             throw new ArgumentException("Live streams are not supported");
         }
 
-        string filePath = await ytDlp.DownloadAudioFile(url, ytDlpCts.Token, progress: new ReportDownloadProgress(this, url));
+        string filePath;
+
+        try
+        {
+            filePath = await ytDlp.DownloadAudioFile(url, ytDlpCts.Token, progress: new ReportDownloadProgress(this, url));
+        }
+        catch (YtDlpVideoDownloadException ex)
+        {
+            OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.Error, data: string.Join("\n", ex.Errors)));
+            throw;
+        }
+
         audioFilePaths[url] = filePath;
 
         if (metaData.Duration == null)
@@ -189,6 +202,8 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
                 Plugin.Logger.LogError($"Failed to get duration from audio file '{filePath}': {ex}");
             }
         }
+
+        OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.Success));
 
         return filePath;
     }
