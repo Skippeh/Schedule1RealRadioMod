@@ -233,6 +233,8 @@ public class VehicleRadioProxy : RadioProxy
         if (player == null || !player.IsLocalPlayer)
             return;
 
+        OnEngineToggled(HasOccupants());
+
         if (RadioStation != null)
             UpdateAudioEffects();
     }
