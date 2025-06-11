@@ -84,32 +84,40 @@ public class YtDlp
 
             var task = Task.Run(async () =>
             {
-                await DownloadBinaries();
-
-                var urlHash = HashUrl(url);
-                string filePath = $"{urlHash}.m4a";
-
-                if (File.Exists(Path.Combine(audioFilesPath, filePath)))
-                    return Path.Combine(audioFilesPath, filePath);
-
-                var options = new OptionSet()
+                try
                 {
-                    CacheDir = ytDlpCachePath,
-                    AudioQuality = 5,
-                    Output = Path.Combine(audioFilesPath, filePath),
-                    Progress = true,
-                    Format = "ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b",
-                    NoWarnings = true,
-                };
+                    await DownloadBinaries();
 
-                RunResult<string> result = await youtubeDL.RunAudioDownload(url, AudioConversionFormat.M4a, cancellationToken, progress, output, options);
+                    var urlHash = HashUrl(url);
+                    string filePath = $"{urlHash}.m4a";
 
-                if (!result.Success)
-                {
-                    throw new YtDlpVideoDownloadException(result.ErrorOutput);
+                    if (File.Exists(Path.Combine(audioFilesPath, filePath)))
+                        return Path.Combine(audioFilesPath, filePath);
+
+                    var options = new OptionSet()
+                    {
+                        CacheDir = ytDlpCachePath,
+                        AudioQuality = 5,
+                        Output = Path.Combine(audioFilesPath, filePath),
+                        Progress = true,
+                        Format = "ba[acodec^=aac]/ba[acodec^=mp4a.40.]/ba/b",
+                        NoWarnings = true,
+                    };
+
+                    RunResult<string> result = await youtubeDL.RunAudioDownload(url, AudioConversionFormat.M4a, cancellationToken, progress, output, options);
+
+                    if (!result.Success)
+                    {
+                        throw new YtDlpVideoDownloadException(result.ErrorOutput);
+                    }
+
+                    return result.Data;
                 }
-
-                return result.Data;
+                finally
+                {
+                    lock (downloadAudioFileLock)
+                        downloadAudioFileTasks.Remove(url);
+                }
             });
 
             downloadAudioFileTasks[url] = task;
@@ -126,46 +134,54 @@ public class YtDlp
 
             var task = Task.Run(async () =>
             {
-                await DownloadBinaries();
-                uint urlHash = HashUrl(url);
-                string filePath = Path.Combine(audioFilesPath, $"{urlHash}.json");
-                RunResult<VideoData> result;
-
-                if (!File.Exists(Path.Combine(audioFilesPath, $"{urlHash}.json")))
+                try
                 {
-                    result = await youtubeDL.RunVideoDataFetch(url, cancellationToken);
+                    await DownloadBinaries();
+                    uint urlHash = HashUrl(url);
+                    string filePath = Path.Combine(audioFilesPath, $"{urlHash}.json");
+                    RunResult<VideoData> result;
 
-                    if (!result.Success)
-                        throw new YtDlpFetchMetaDataException(result.ErrorOutput);
-
-                    await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
-                }
-                else
-                {
-                    VideoData videoData;
-
-                    try
+                    if (!File.Exists(Path.Combine(audioFilesPath, $"{urlHash}.json")))
                     {
-                        // Try to read deserialize cached video data
-                        videoData = JsonConvert.DeserializeObject<VideoData>(await File.ReadAllTextAsync(filePath))!;
-                    }
-                    catch
-                    {
-                        // Re-fetch video data if it fails
                         result = await youtubeDL.RunVideoDataFetch(url, cancellationToken);
 
                         if (!result.Success)
                             throw new YtDlpFetchMetaDataException(result.ErrorOutput);
 
-                        // Save fetched video data again
                         await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
-                        videoData = result.Data;
+                    }
+                    else
+                    {
+                        VideoData videoData;
+
+                        try
+                        {
+                            // Try to read deserialize cached video data
+                            videoData = JsonConvert.DeserializeObject<VideoData>(await File.ReadAllTextAsync(filePath))!;
+                        }
+                        catch
+                        {
+                            // Re-fetch video data if it fails
+                            result = await youtubeDL.RunVideoDataFetch(url, cancellationToken);
+
+                            if (!result.Success)
+                                throw new YtDlpFetchMetaDataException(result.ErrorOutput);
+
+                            // Save fetched video data again
+                            await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(result.Data));
+                            videoData = result.Data;
+                        }
+
+                        result = new RunResult<VideoData>(success: true, error: [], result: videoData);
                     }
 
-                    result = new RunResult<VideoData>(success: true, error: [], result: videoData);
+                    return result.Data;
                 }
-
-                return result.Data;
+                finally
+                {
+                    lock (downloadMetaLock)
+                        downloadMetaTasks.Remove(url);
+                }
             });
 
             downloadMetaTasks[url] = task;
