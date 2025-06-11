@@ -156,7 +156,17 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.PreProcessing));
 
-        var metaData = await FetchMetaData(url);
+        VideoData metaData;
+
+        try
+        {
+            metaData = await FetchMetaData(url);
+        }
+        catch (YtDlpFetchMetaDataException ex)
+        {
+            OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.Error, data: string.Join("\n", ex.Errors)));
+            throw;
+        }
 
         OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.PreProcessing));
 
