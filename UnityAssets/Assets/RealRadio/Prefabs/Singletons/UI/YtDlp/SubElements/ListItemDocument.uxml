@@ -4,7 +4,9 @@
         <ui:VisualElement class="name-and-buttons" style="flex-grow: 1;">
             <ui:Label text="Really long name of a video that&apos;s being downloaded that will be cut off due to being so long" parse-escape-sequences="false" display-tooltip-when-elided="true" name="Name" enable-rich-text="false" />
             <ui:VisualElement name="ButtonsContainer" class="buttons-container">
-                <ui:Button focusable="false" name="RemoveButton" class="image-button enabled" style="opacity: 1;" />
+                <ui:Button focusable="false" name="RemoveButton" class="image-button enabled" style="opacity: 1; background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/x-mark.png?fileID=21300000&amp;guid=02133f80feb5c5a418ddc49b200d8f74&amp;type=3#x-mark&quot;);" />
+                <ui:Button focusable="false" name="DownloadButton" class="image-button enabled" style="opacity: 1; background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/download.png?fileID=21300000&amp;guid=58edfe83995a17f4a92a5cb8afedc041&amp;type=3#download&quot;);" />
+                <ui:Button focusable="false" name="LogButton" class="image-button enabled" style="opacity: 1; background-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/text.png?fileID=21300000&amp;guid=db71a93a7e4ba8648b4c7b9af28610a5&amp;type=3#text&quot;);" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:ProgressBar value="0.5" high-value="1" name="ProgressBar" />

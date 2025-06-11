@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RealRadio.Components.UI;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.UI;
 using UnityEngine;
@@ -109,7 +110,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
             VisualElement element = ListItemAsset.Instantiate();
             itemsContainer.Add(element);
-            item = new ListItem(this, element);
+            item = new ListItem(this, element, url);
             element.userData = item;
             items.Add(url, item);
         }
@@ -125,7 +126,14 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
         item.StateText = progress.State.ToString();
         item.ProgressBarErrorState = progress.State == DownloadState.Error;
+        item.LogButtonEnabled = progress.State == DownloadState.Error;
+        item.DownloadButtonEnabled = progress.State == DownloadState.Error;
         item.RemoveButtonEnabled = progress.State == DownloadState.Error;
+
+        if (progress.State == DownloadState.Error && !string.IsNullOrEmpty(progress.Data))
+        {
+            item.LogText += $"{progress.Data}\n";
+        }
 
         switch (progress.State)
         {
@@ -198,6 +206,8 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
 
     class ListItem
     {
+        public readonly string Url;
+
         public DownloadProgress? DownloadProgress { get; set; }
 
         public string Name
@@ -218,6 +228,8 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
             set => state.text = value;
         }
 
+        public string LogText { get; set; } = "";
+
         public bool ProgressBarErrorState
         {
             get => progressBar.classList.Contains("error");
@@ -227,6 +239,30 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
                     progressBar.AddToClassList("error");
                 else if (!value && ProgressBarErrorState)
                     progressBar.RemoveFromClassList("error");
+            }
+        }
+
+        public bool LogButtonEnabled
+        {
+            get => logButton.classList.Contains("enabled");
+            set
+            {
+                if (value && !LogButtonEnabled)
+                    logButton.AddToClassList("enabled");
+                else if (!value && LogButtonEnabled)
+                    logButton.RemoveFromClassList("enabled");
+            }
+        }
+
+        public bool DownloadButtonEnabled
+        {
+            get => downloadButton.classList.Contains("enabled");
+            set
+            {
+                if (value && !DownloadButtonEnabled)
+                    downloadButton.AddToClassList("enabled");
+                else if (!value && DownloadButtonEnabled)
+                    downloadButton.RemoveFromClassList("enabled");
             }
         }
 
@@ -248,21 +284,51 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
         private Label name;
         private Label state;
         private ProgressBar progressBar;
+        private Button logButton;
+        private Button downloadButton;
         private Button removeButton;
 
-        public ListItem(YtDlpUiManager parent, VisualElement element)
+        public ListItem(YtDlpUiManager parent, VisualElement element, string url)
         {
             this.parent = parent;
             Element = element;
+            Url = url;
 
             name = element.Query<Label>(name: "Name").First() ?? throw new InvalidOperationException("Could not find name ui element");
             state = element.Query<Label>(name: "State").First() ?? throw new InvalidOperationException("Could not find state ui element");
             progressBar = element.Query<ProgressBar>(name: "ProgressBar").First() ?? throw new InvalidOperationException("Could not find progress bar ui element");
             progressBar.value = 0f;
 
+            logButton = element.Query<Button>(name: "LogButton").First() ?? throw new InvalidOperationException("Could not find remove button ui element");
+            logButton.RegisterCallback<ClickEvent>(OnLogButtonClicked);
+            LogButtonEnabled = false;
+
+            downloadButton = element.Query<Button>(name: "DownloadButton").First() ?? throw new InvalidOperationException("Could not find download button ui element");
+            downloadButton.RegisterCallback<ClickEvent>(OnDownloadButtonClicked);
+            DownloadButtonEnabled = false;
+
             removeButton = element.Query<Button>(name: "RemoveButton").First() ?? throw new InvalidOperationException("Could not find remove button ui element");
             removeButton.RegisterCallback<ClickEvent>(OnRemoveButtonClicked);
             RemoveButtonEnabled = false;
+        }
+
+        private void OnLogButtonClicked(ClickEvent evt)
+        {
+            if (!logButton.enabledSelf)
+                return;
+
+            Modal.Instance.ShowModal(title: "Error Log", message: LogText.Trim(), context: Element.GetRoot());
+        }
+
+        private void OnDownloadButtonClicked(ClickEvent evt)
+        {
+            if (!downloadButton.enabledSelf)
+                return;
+
+            LogText = "";
+            ProgressBarErrorState = false;
+            StateText = "";
+            _ = YtDlpManager.Instance.DownloadAudioFile(Url);
         }
 
         private void OnRemoveButtonClicked(ClickEvent evt)
@@ -271,7 +337,7 @@ public class YtDlpUiManager : PersistentSingleton<YtDlpUiManager>
                 return;
 
             parent.itemsContainer.Remove(Element);
-            parent.items.Remove(parent.items.FirstOrDefault(x => x.Value.Element == Element).Key);
+            parent.items.Remove(Url);
         }
     }
 }

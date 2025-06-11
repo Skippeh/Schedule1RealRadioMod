@@ -29,7 +29,7 @@ public class Modal : Singleton<Modal>
         string title,
         string message,
         VisualElement context,
-        string confirmText = "OK",
+        string? confirmText = "OK",
         string? cancelText = null,
         ModalInstance.ConfirmedDelegate? onConfirm = null,
         Action<ModalInstance>? onCancel = null,
