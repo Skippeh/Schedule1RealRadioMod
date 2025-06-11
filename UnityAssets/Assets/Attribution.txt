@@ -10,3 +10,6 @@ Red polygonal background pattern: https://www.freepik.com/free-vector/coloured-p
 Plus icon: https://www.flaticon.com/free-icons/plus
 Trash icon: https://www.flaticon.com/free-icons/trash-can
 Playlist add icon: https://www.flaticon.com/free-icons/add-to-playlist
+Download icon: https://www.flaticon.com/free-icons/download
+X icon: X by Royyan Wijaya from https://thenounproject.com/browse/icons/term/x/ (CC BY 3.0)
+Text icon: text by Gregor Cresnar https://thenounproject.com/browse/icons/term/text/ (CC BY 3.0)
