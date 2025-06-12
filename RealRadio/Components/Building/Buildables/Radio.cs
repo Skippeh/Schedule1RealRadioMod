@@ -42,9 +42,6 @@ public class Radio : TogglableOffGridItem, IUsable
     protected StreamAudioClient? audioClient;
     protected CrossfadeAudioSources crossFade = null!;
 
-    private InteractableOptions? interactableOptions;
-    private InteractableObject? interactableObject;
-
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly)]
     public NetworkObject? NPCUserObject { get; set; }
 
@@ -117,10 +114,8 @@ public class Radio : TogglableOffGridItem, IUsable
         if (ConfigureCameraTransform == null)
             throw new InvalidOperationException("ConfigureCameraTransform is null");
 
-        interactableObject = GetComponentInChildren<InteractableObject>() ?? throw new InvalidOperationException("No InteractableObject component found in self or children");
-        interactableOptions = GetComponentInChildren<InteractableOptions>() ?? throw new InvalidOperationException("No InteractableOptions component found in self or children");
-        interactableOptions.OnInteract += OnInteract;
-        interactableOptions.OnUpdateInteractionText += OnUpdateInteractionText;
+        var interactableObject = GetComponentInChildren<InteractableObject>() ?? throw new InvalidOperationException("No InteractableObject component found in self or children");
+        interactableObject.onInteractStart.AddListener(OnInteract);
 
         RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
@@ -168,20 +163,9 @@ public class Radio : TogglableOffGridItem, IUsable
             data.Value = IsOn ? "Turn off" : "Turn on";
     }
 
-    private void OnInteract(string optionId)
+    private void OnInteract()
     {
-        switch (optionId)
-        {
-            case "toggle":
-                IsOn = !IsOn;
-                break;
-            case "configure":
-                StartConfigureIfPossible();
-                break;
-            default:
-                Plugin.Logger.LogWarning($"Unknown option id: {optionId}");
-                break;
-        }
+        StartConfigureIfPossible();
     }
 
     public override void OnStartServer()
@@ -194,6 +178,12 @@ public class Radio : TogglableOffGridItem, IUsable
     public override void OnStartClient()
     {
         base.OnStartClient();
+        /*************  ✨ Windsurf Command ⭐  *************/
+        /// <summary>
+        /// Called once when the component is initialized on the server.
+        /// Sets the initial state of the component and sends it to all clients.
+        /// </summary>
+        /*******  3d1321e1-39f2-4250-b38f-7cbab7be4771  *******/
         OnStationChanged(0, RadioStationIdHash, false);
     }
 
