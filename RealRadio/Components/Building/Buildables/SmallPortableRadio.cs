@@ -2,7 +2,7 @@ using FishNet.Object;
 
 namespace RealRadio.Components.Building.Buildables;
 
-public class AnalogRadio : Radio
+public class SmallPortableRadio : Radio
 {
     public override void Awake()
     {
