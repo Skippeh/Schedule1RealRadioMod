@@ -1,6 +1,64 @@
 @import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
-
 :root {
     background-color: black;
     color: white;
+    padding: 5px;
+}
+
+#Header {
+    flex-direction: row;
+    justify-content: space-between;
+    -unity-font-style: bold;
+}
+
+#Footer {
+}
+
+#Content {
+    flex-grow: 1;
+    border-bottom-color: rgb(190, 190, 190);
+    border-bottom-width: 2px;
+    border-top-color: rgb(190, 190, 190);
+    border-top-width: 2px;
+}
+
+#StationName {
+    font-size: 28px;
+    -unity-font-style: bold;
+    color:rgb(176, 241, 160);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#StationInfoContainer {
+    flex-direction: row;
+    margin: 0 10px;
+}
+
+#Logo {
+    margin-right: 5px;
+    width: 100px;
+    height: 100px;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#StationInfoTextContainer {
+    flex-grow: 1;
+}
+
+#StationInfoTextContainer Label {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#SongArtist {
+    -unity-font-style: bold;
+}
+
+#SongTitle {
 }
