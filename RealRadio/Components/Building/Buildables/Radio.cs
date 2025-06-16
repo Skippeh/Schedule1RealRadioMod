@@ -27,6 +27,9 @@ namespace RealRadio.Components.Building.Buildables;
 
 public class Radio : TogglableOffGridItem, IUsable
 {
+    public event Action<RadioStation?>? RadioStationChanged;
+    public event Action<float>? VolumeChanged;
+
     public RadioStation? RadioStation { get; private set; }
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ClientUnsynchronized, OnChange = nameof(OnStationChanged))]
@@ -214,6 +217,8 @@ public class Radio : TogglableOffGridItem, IUsable
 
         if (RadioStation != null)
             InitAudioClient();
+
+        RadioStationChanged?.Invoke(nextStation);
     }
 
     protected virtual void OnVolumeChanged(float prev, float next, bool asServer)
@@ -222,6 +227,8 @@ public class Radio : TogglableOffGridItem, IUsable
             return;
 
         crossFade.Volume = Mathf.Clamp01(next);
+
+        VolumeChanged?.Invoke(next);
     }
 
     private void StartConfigureIfPossible()
