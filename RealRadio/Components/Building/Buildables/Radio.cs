@@ -178,12 +178,6 @@ public class Radio : TogglableOffGridItem, IUsable
     public override void OnStartClient()
     {
         base.OnStartClient();
-        /*************  ✨ Windsurf Command ⭐  *************/
-        /// <summary>
-        /// Called once when the component is initialized on the server.
-        /// Sets the initial state of the component and sends it to all clients.
-        /// </summary>
-        /*******  3d1321e1-39f2-4250-b38f-7cbab7be4771  *******/
         OnStationChanged(0, RadioStationIdHash, false);
     }
 
