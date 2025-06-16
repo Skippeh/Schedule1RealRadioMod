@@ -5,12 +5,12 @@
         <ui:Label tabindex="-1" name="Time" text="00:00" />
     </ui:VisualElement>
     <ui:VisualElement name="Content">
-        <ui:Label tabindex="-1" name="StationName" enable-rich-text="false" text="Station Name" />
+        <ui:Label tabindex="-1" name="StationName" text="Station Name" />
         <ui:VisualElement name="StationInfoContainer" style="flex-grow: 1;">
             <ui:VisualElement name="Logo" />
             <ui:VisualElement name="StationInfoTextContainer">
-                <ui:Label tabindex="-1" text="Artist" enable-rich-text="false" name="SongArtist" />
-                <ui:Label tabindex="-1" text="Title" name="SongTitle" enable-rich-text="false" />
+                <ui:Label tabindex="-1" text="Artist" name="SongArtist" />
+                <ui:Label tabindex="-1" text="Title" name="SongTitle" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
