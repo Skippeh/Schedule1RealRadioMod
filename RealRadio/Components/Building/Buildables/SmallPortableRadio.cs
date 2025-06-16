@@ -76,6 +76,6 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
     private void OnMinutePass()
     {
         int currentTime = TimeManager.Instance.CurrentTime;
-        timeLabel.text = TimeManager.Get12HourTime(currentTime, appendDesignator: true);
+        timeLabel.text = TimeManager.Get12HourTime(currentTime);
     }
 }
