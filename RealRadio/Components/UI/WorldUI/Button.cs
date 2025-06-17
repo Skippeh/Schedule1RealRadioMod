@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using ScheduleOne;
+using ScheduleOne.PlayerScripts;
 using UnityEngine;
 
 namespace RealRadio.Components.WorldUI;
@@ -12,23 +14,43 @@ public class Button : MonoBehaviour
 
     private bool cursorIsPushedDown;
 
-    private void OnMouseDown()
-    {
-        CursorDown?.Invoke();
-        cursorIsPushedDown = true;
-    }
+    private RaycastHit[] hits = new RaycastHit[2];
+    private Collider collider = null!;
 
-    private void OnMouseUp()
+    void Awake()
     {
-        if (cursorIsPushedDown)
-            CursorUp?.Invoke();
-
-        cursorIsPushedDown = false;
+        collider = GetComponent<Collider>();
     }
 
     private void Update()
     {
         if (cursorIsPushedDown && !GameInput.GetButton(GameInput.ButtonCode.PrimaryClick))
             cursorIsPushedDown = false;
+
+        if (GameInput.GetButtonDown(GameInput.ButtonCode.PrimaryClick))
+        {
+            if (!TestRayHit())
+                return;
+
+            CursorDown?.Invoke();
+            cursorIsPushedDown = true;
+        }
+        else if (GameInput.GetButtonUp(GameInput.ButtonCode.PrimaryClick))
+        {
+            if (cursorIsPushedDown)
+                CursorUp?.Invoke();
+
+            cursorIsPushedDown = false;
+        }
+    }
+
+    private bool TestRayHit()
+    {
+        Ray ray = PlayerCamera.Instance.Camera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.RaycastNonAlloc(ray, hits, maxDistance: 1f, Layers.Default.ToLayerMask()) == 0)
+            return false;
+
+        return hits.Any(hit => hit.collider == collider);
     }
 }
