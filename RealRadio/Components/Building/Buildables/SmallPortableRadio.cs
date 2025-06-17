@@ -5,27 +5,79 @@ using GameKit.Utilities.Types;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
 using ScheduleOne.GameTime;
+using ScheduleOne.PlayerScripts;
 using UnityEngine;
 using UnityEngine.UIElements;
 using TimeManager = ScheduleOne.GameTime.TimeManager;
+using WorldButton = RealRadio.Components.WorldUI.Button;
 
 namespace RealRadio.Components.Building.Buildables;
 
 public class SmallPortableRadio : Radio
 {
+#nullable disable
+    [Header("References")]
+    [SerializeField] private WorldButton btnOk;
+    [SerializeField] private WorldButton btnLeft;
+    [SerializeField] private WorldButton btnRight;
+    [SerializeField] private WorldButton btnPower;
+    [SerializeField] private WorldButton btnVolume;
+    [SerializeField] private WorldButton btnFavorite;
+    [SerializeField] private WorldButton btnFavorite1;
+    [SerializeField] private WorldButton btnFavorite2;
+    [SerializeField] private WorldButton btnFavorite3;
+    [SerializeField] private WorldButton btnFavorite4;
+#nullable enable
+
     public override void Awake()
     {
         base.Awake();
+
+        if (btnOk == null)
+            throw new InvalidOperationException("btnOk is null");
+
+        if (btnLeft == null)
+            throw new InvalidOperationException("btnLeft is null");
+
+        if (btnRight == null)
+            throw new InvalidOperationException("btnRight is null");
+
+        if (btnPower == null)
+            throw new InvalidOperationException("btnPower is null");
+
+        if (btnVolume == null)
+            throw new InvalidOperationException("btnVolume is null");
+
+        if (btnFavorite == null)
+            throw new InvalidOperationException("btnFavorite is null");
+
+        if (btnFavorite1 == null)
+            throw new InvalidOperationException("btnFavorite1 is null");
+
+        if (btnFavorite2 == null)
+            throw new InvalidOperationException("btnFavorite2 is null");
+
+        if (btnFavorite3 == null)
+            throw new InvalidOperationException("btnFavorite3 is null");
+
+        if (btnFavorite4 == null)
+            throw new InvalidOperationException("btnFavorite4 is null");
+
+        ToggleInputState(enabled: false);
     }
 
-    public override void Start()
+    private void ToggleInputState(bool enabled)
     {
-        base.Start();
-
-        if (isGhost)
-            return;
-
-        //volumeEditSlider.Value = Volume * volumeEditSlider.MaxValue;
+        btnOk.enabled = enabled;
+        btnLeft.enabled = enabled;
+        btnRight.enabled = enabled;
+        btnPower.enabled = enabled;
+        btnVolume.enabled = enabled;
+        btnFavorite.enabled = enabled;
+        btnFavorite1.enabled = enabled;
+        btnFavorite2.enabled = enabled;
+        btnFavorite3.enabled = enabled;
+        btnFavorite4.enabled = enabled;
     }
 
     protected override void OnPlayerUserChanged(NetworkObject prev, NetworkObject next, bool asServer)
@@ -34,8 +86,7 @@ public class SmallPortableRadio : Radio
 
         if (!asServer)
         {
-            //stationEditSlider.gameObject.SetActive(next == Player.Local.NetworkObject);
-            //volumeEditSlider.gameObject.SetActive(next == Player.Local.NetworkObject);
+            ToggleInputState(enabled: next == Player.Local.NetworkObject);
         }
     }
 }
