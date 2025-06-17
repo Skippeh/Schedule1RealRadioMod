@@ -63,6 +63,17 @@ public class SmallPortableRadio : Radio
         if (btnFavorite4 == null)
             throw new InvalidOperationException("btnFavorite4 is null");
 
+        btnOk.CursorDown += OnClickOk;
+        btnLeft.CursorDown += OnClickLeft;
+        btnRight.CursorDown += OnClickRight;
+        btnPower.CursorDown += OnClickPower;
+        btnVolume.CursorDown += OnClickVolume;
+        btnFavorite.CursorDown += OnClickFavorite;
+        btnFavorite1.CursorDown += OnClickFavorite1;
+        btnFavorite2.CursorDown += OnClickFavorite2;
+        btnFavorite3.CursorDown += OnClickFavorite3;
+        btnFavorite4.CursorDown += OnClickFavorite4;
+
         ToggleInputState(enabled: false);
     }
 
@@ -89,6 +100,57 @@ public class SmallPortableRadio : Radio
             ToggleInputState(enabled: next == Player.Local.NetworkObject);
         }
     }
+
+    private void OnClickOk()
+    {
+        Plugin.Logger.LogInfo("Click ok");
+    }
+
+    private void OnClickLeft()
+    {
+        Plugin.Logger.LogInfo("Click left");
+    }
+
+    private void OnClickRight()
+    {
+        Plugin.Logger.LogInfo("Click right");
+    }
+
+    private void OnClickPower()
+    {
+        Plugin.Logger.LogInfo("Click power");
+        IsOn = !IsOn;
+    }
+
+    private void OnClickVolume()
+    {
+        Plugin.Logger.LogInfo("Click volume");
+    }
+
+    private void OnClickFavorite()
+    {
+        Plugin.Logger.LogInfo("Click favorite");
+    }
+
+    private void OnClickFavorite1()
+    {
+        Plugin.Logger.LogInfo("Click favorite 1");
+    }
+
+    private void OnClickFavorite2()
+    {
+        Plugin.Logger.LogInfo("Click favorite 2");
+    }
+
+    private void OnClickFavorite3()
+    {
+        Plugin.Logger.LogInfo("Click favorite 3");
+    }
+
+    private void OnClickFavorite4()
+    {
+        Plugin.Logger.LogInfo("Click favorite 4");
+    }
 }
 
 public class SmallPortableRadioScreenUI : MonoBehaviour
@@ -97,6 +159,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
     private SmallPortableRadio radio;
     private UIDocument document;
 
+    private VisualElement rootContainer;
     private Label timeLabel;
     private Label stationNameLabel;
     private Label artistLabel;
@@ -120,6 +183,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
     private void OnEnable()
     {
         var root = document.rootVisualElement;
+        rootContainer = root.Query(name: "Root").First() ?? throw new InvalidOperationException("Could not find root ui element");
         timeLabel = root.Query<Label>(name: "Time").First() ?? throw new InvalidOperationException("Could not find time label ui element");
         stationNameLabel = root.Query<Label>(name: "StationName").First() ?? throw new InvalidOperationException("Could not find station name label ui element");
         artistLabel = root.Query<Label>(name: "SongArtist").First() ?? throw new InvalidOperationException("Could not find artist label ui element");
@@ -149,7 +213,15 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
 
     private void OnRadioToggled(bool isOn)
     {
-        document.rootVisualElement.style.display = isOn ? DisplayStyle.Flex : DisplayStyle.None;
+        if (!isOn)
+        {
+            rootContainer.AddToClassList("hidden");
+        }
+        else
+        {
+            rootContainer.RemoveFromClassList("hidden");
+            OnMinutePass();
+        }
     }
 
     private void OnVolumeChanged(float volume)
