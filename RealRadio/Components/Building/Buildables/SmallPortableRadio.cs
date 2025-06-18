@@ -1,6 +1,8 @@
 using System;
 using FishNet.Managing.Timing;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
 using GameKit.Utilities.Types;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
@@ -15,6 +17,11 @@ namespace RealRadio.Components.Building.Buildables;
 
 public class SmallPortableRadio : Radio
 {
+    public event Action<UiState>? StateChanged;
+
+    [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStateChanged))]
+    public UiState State { get; [ServerRpc(RequireOwnership = false, RunLocally = true)] set; }
+
 #nullable disable
     [Header("References")]
     [SerializeField] private WorldButton btnOk;
@@ -103,53 +110,122 @@ public class SmallPortableRadio : Radio
 
     private void OnClickOk()
     {
-        Plugin.Logger.LogInfo("Click ok");
+        switch (State)
+        {
+            case UiState.EditVolume:
+                State = UiState.Default;
+                break;
+        }
     }
 
     private void OnClickLeft()
     {
-        Plugin.Logger.LogInfo("Click left");
+        switch (State)
+        {
+            case UiState.EditVolume:
+                SetVolume(Volume - 0.1f);
+                break;
+            case UiState.Default:
+                Plugin.Logger.LogInfo("Switch to previous station");
+                // todo: change to previous station
+                break;
+        }
     }
 
     private void OnClickRight()
     {
-        Plugin.Logger.LogInfo("Click right");
+        switch (State)
+        {
+            case UiState.EditVolume:
+                SetVolume(Volume + 0.1f);
+                break;
+            case UiState.Default:
+                Plugin.Logger.LogInfo("Switch to next station");
+                // todo: change to next station
+                break;
+        }
     }
 
     private void OnClickPower()
     {
-        Plugin.Logger.LogInfo("Click power");
         IsOn = !IsOn;
+        State = UiState.Default;
     }
 
     private void OnClickVolume()
     {
-        Plugin.Logger.LogInfo("Click volume");
+        if (State == UiState.EditVolume)
+            State = UiState.Default;
+        else
+            State = UiState.EditVolume;
     }
 
     private void OnClickFavorite()
     {
-        Plugin.Logger.LogInfo("Click favorite");
+        if (State == UiState.SetFavorite)
+            State = UiState.Default;
+        else
+            State = UiState.SetFavorite;
     }
 
     private void OnClickFavorite1()
     {
-        Plugin.Logger.LogInfo("Click favorite 1");
+        if (State != UiState.SetFavorite)
+            return;
+
+        SetFavoriteStation(0, RadioStation);
+        State = UiState.Default;
     }
 
     private void OnClickFavorite2()
     {
-        Plugin.Logger.LogInfo("Click favorite 2");
+        if (State != UiState.SetFavorite)
+            return;
+
+        SetFavoriteStation(1, RadioStation);
+        State = UiState.Default;
     }
 
     private void OnClickFavorite3()
     {
-        Plugin.Logger.LogInfo("Click favorite 3");
+        if (State != UiState.SetFavorite)
+            return;
+
+        SetFavoriteStation(2, RadioStation);
+        State = UiState.Default;
     }
 
     private void OnClickFavorite4()
     {
-        Plugin.Logger.LogInfo("Click favorite 4");
+        if (State != UiState.SetFavorite)
+            return;
+
+        SetFavoriteStation(3, RadioStation);
+        State = UiState.Default;
+    }
+
+    private void OnStateChanged(UiState prev, UiState next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        StateChanged?.Invoke(next);
+    }
+
+    private void SetFavoriteStation(int index, RadioStation? radioStation)
+    {
+        if (radioStation == null)
+            return;
+
+        // todo: set favorite
+        Plugin.Logger.LogInfo($"Set favorite in slot {index} to {radioStation}");
+    }
+
+    public enum UiState
+    {
+        Default,
+        EditVolume,
+        SetFavorite,
     }
 }
 
@@ -192,6 +268,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
 
         radio.VolumeChanged += OnVolumeChanged;
         radio.RadioStationChanged += OnRadioStationChanged;
+        radio.StateChanged += OnStateChanged;
         TimeManager.Instance.onMinutePass += OnMinutePass;
 
         OnVolumeChanged(radio.Volume);
@@ -203,6 +280,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
         TimeManager.Instance.onMinutePass -= OnMinutePass;
         radio.VolumeChanged -= OnVolumeChanged;
         radio.RadioStationChanged -= OnRadioStationChanged;
+        radio.StateChanged -= OnStateChanged;
         TimeManager.Instance.onMinutePass -= OnMinutePass;
     }
 
@@ -256,6 +334,10 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
         timeLabel.text = TimeManager.Get12HourTime(currentTime);
 
         UpdateSongInfo(radio.RadioStation);
+    }
+
+    private void OnStateChanged(SmallPortableRadio.UiState state)
+    {
     }
 
     private void UpdateSongInfo(RadioStation? station)
