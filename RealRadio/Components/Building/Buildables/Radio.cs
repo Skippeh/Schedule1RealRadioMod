@@ -36,7 +36,7 @@ public class Radio : TogglableOffGridItem, IUsable
     public uint? RadioStationIdHash { get; private set; }
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnVolumeChanged))]
-    public float Volume { get; set; }
+    public float Volume { get; private set; }
 
     public GameObject AudioClientObject = null!;
 
@@ -67,6 +67,12 @@ public class Radio : TogglableOffGridItem, IUsable
         }
 
         RadioStationIdHash = idHash;
+    }
+
+    [ServerRpc(RequireOwnership = false, RunLocally = true)]
+    public void SetVolume(float volume)
+    {
+        Volume = Mathf.Clamp01(volume);
     }
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]

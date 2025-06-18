@@ -27,6 +27,6 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
             Item.SetRadioStationIdHash(Data.StationIdHash);
         }
 
-        Item.Volume = Data.Volume;
+        Item.SetVolume(Data.Volume);
     }
 }
