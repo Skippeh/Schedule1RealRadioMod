@@ -7,7 +7,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="Content">
             <ui:Label tabindex="-1" name="StationName" text="Station Name" />
-            <ui:VisualElement name="StationInfoContainer" style="flex-grow: 1;">
+            <ui:VisualElement name="StationInfoContainer">
                 <ui:VisualElement name="Logo" />
                 <ui:VisualElement name="StationInfoTextContainer">
                     <ui:Label tabindex="-1" text="Artist" name="SongArtist" />

@@ -40,19 +40,16 @@
 
 #StationInfoContainer {
     flex-direction: row;
+    align-items: center;
     margin: 0 10px;
 }
 
 #Logo {
     margin-right: 5px;
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
     border-radius: 25px;
     background-color: rgba(255, 255, 255, 0.2);
-}
-
-#StationInfoTextContainer {
-    flex-grow: 1;
 }
 
 #StationInfoTextContainer Label {
