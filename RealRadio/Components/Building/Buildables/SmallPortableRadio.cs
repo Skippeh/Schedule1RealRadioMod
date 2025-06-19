@@ -241,6 +241,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
     private Label artistLabel;
     private Label titleLabel;
     private VisualElement logoContainer;
+    private VisualElement volumeContainer;
 #nullable enable
 
     private void Awake()
@@ -265,6 +266,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
         artistLabel = root.Query<Label>(name: "SongArtist").First() ?? throw new InvalidOperationException("Could not find artist label ui element");
         titleLabel = root.Query<Label>(name: "SongTitle").First() ?? throw new InvalidOperationException("Could not find title label ui element");
         logoContainer = root.Query(name: "Logo").First() ?? throw new InvalidOperationException("Could not find logo container ui element");
+        volumeContainer = root.Query(name: "Volume").First() ?? throw new InvalidOperationException("Could not find volume container ui element");
 
         radio.VolumeChanged += OnVolumeChanged;
         radio.RadioStationChanged += OnRadioStationChanged;
@@ -273,6 +275,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
 
         OnVolumeChanged(radio.Volume);
         OnRadioStationChanged(radio.RadioStation);
+        OnStateChanged(radio.State);
     }
 
     private void OnDisable()
@@ -304,6 +307,12 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
 
     private void OnVolumeChanged(float volume)
     {
+        string className = volume >= 0.75f ? "high" : volume >= 0.5f ? "medium" : volume > 0f ? "low" : "muted";
+        volumeContainer.RemoveFromClassList("high");
+        volumeContainer.RemoveFromClassList("medium");
+        volumeContainer.RemoveFromClassList("low");
+        volumeContainer.RemoveFromClassList("muted");
+        volumeContainer.AddToClassList(className);
     }
 
     private void OnRadioStationChanged(RadioStation? station)
@@ -338,6 +347,10 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
 
     private void OnStateChanged(SmallPortableRadio.UiState state)
     {
+        if (state == SmallPortableRadio.UiState.EditVolume)
+            volumeContainer.AddToClassList("editing");
+        else
+            volumeContainer.RemoveFromClassList("editing");
     }
 
     private void UpdateSongInfo(RadioStation? station)

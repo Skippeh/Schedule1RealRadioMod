@@ -19,9 +19,6 @@
     -unity-font-style: bold;
 }
 
-#Footer {
-}
-
 #Content {
     flex-grow: 1;
     border-bottom-color: rgb(190, 190, 190);
@@ -66,4 +63,36 @@
 }
 
 #SongTitle {
+}
+
+#Footer {
+    padding-top: 5px;
+    align-items: center;
+}
+
+#Volume {
+    align-self: flex-end;
+    width: 25px;
+    height: 25px;
+}
+
+#Volume.high {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-high.png?fileID=21300000&guid=91d7d335677f42040a53dc61bec8e448&type=3#volume-high");
+}
+
+#Volume.medium {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-medium.png?fileID=21300000&guid=5aeb0f5156c6cf845afb7d78d519d9f4&type=3#volume-medium");
+}
+
+#Volume.low {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-low.png?fileID=21300000&guid=90d6db3a0cb555e40ad8585d37420f18&type=3#volume-low");
+}
+
+#Volume.muted {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-muted.png?fileID=21300000&guid=36e3174fbc0be574aa8e7bdeff123f66&type=3#volume-muted");
+}
+
+#Volume.editing {
+    border-color: rgb(176, 241, 160);
+    border-width: 2px;
 }
