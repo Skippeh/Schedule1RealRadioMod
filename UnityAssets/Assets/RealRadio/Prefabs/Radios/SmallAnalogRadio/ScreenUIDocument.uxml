@@ -16,6 +16,9 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Footer">
+            <ui:VisualElement name="Favorite" class="numbered">
+                <ui:Label tabindex="-1" text="1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="FavoriteIndex" />
+            </ui:VisualElement>
             <ui:VisualElement name="Volume" class="high" />
         </ui:VisualElement>
     </ui:VisualElement>

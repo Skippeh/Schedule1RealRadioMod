@@ -242,6 +242,8 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
     private Label titleLabel;
     private VisualElement logoContainer;
     private VisualElement volumeContainer;
+    private VisualElement favoriteContainer;
+    private Label favoriteIndexLabel;
 #nullable enable
 
     private void Awake()
@@ -267,6 +269,8 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
         titleLabel = root.Query<Label>(name: "SongTitle").First() ?? throw new InvalidOperationException("Could not find title label ui element");
         logoContainer = root.Query(name: "Logo").First() ?? throw new InvalidOperationException("Could not find logo container ui element");
         volumeContainer = root.Query(name: "Volume").First() ?? throw new InvalidOperationException("Could not find volume container ui element");
+        favoriteContainer = root.Query(name: "Favorite").First() ?? throw new InvalidOperationException("Could not find favorite container ui element");
+        favoriteIndexLabel = favoriteContainer.Query<Label>(name: "FavoriteIndex").First() ?? throw new InvalidOperationException("Could not find favorite index label ui element");
 
         radio.VolumeChanged += OnVolumeChanged;
         radio.RadioStationChanged += OnRadioStationChanged;
@@ -351,6 +355,11 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
             volumeContainer.AddToClassList("editing");
         else
             volumeContainer.RemoveFromClassList("editing");
+
+        if (state == SmallPortableRadio.UiState.SetFavorite)
+            favoriteContainer.AddToClassList("editing");
+        else
+            favoriteContainer.RemoveFromClassList("editing");
     }
 
     private void UpdateSongInfo(RadioStation? station)
