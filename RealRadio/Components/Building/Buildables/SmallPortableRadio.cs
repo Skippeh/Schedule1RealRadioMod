@@ -76,10 +76,10 @@ public class SmallPortableRadio : Radio
         btnPower.CursorDown += OnClickPower;
         btnVolume.CursorDown += OnClickVolume;
         btnFavorite.CursorDown += OnClickFavorite;
-        btnFavorite1.CursorDown += OnClickFavorite1;
-        btnFavorite2.CursorDown += OnClickFavorite2;
-        btnFavorite3.CursorDown += OnClickFavorite3;
-        btnFavorite4.CursorDown += OnClickFavorite4;
+        btnFavorite1.CursorDown += () => OnClickFavoriteIndexButton(0);
+        btnFavorite2.CursorDown += () => OnClickFavoriteIndexButton(1);
+        btnFavorite3.CursorDown += () => OnClickFavoriteIndexButton(2);
+        btnFavorite4.CursorDown += () => OnClickFavoriteIndexButton(3);
 
         ToggleInputState(enabled: false);
     }
@@ -113,6 +113,7 @@ public class SmallPortableRadio : Radio
         switch (State)
         {
             case UiState.EditVolume:
+            case UiState.SetFavorite:
                 State = UiState.Default;
                 break;
         }
@@ -168,39 +169,12 @@ public class SmallPortableRadio : Radio
             State = UiState.SetFavorite;
     }
 
-    private void OnClickFavorite1()
+    private void OnClickFavoriteIndexButton(int index)
     {
         if (State != UiState.SetFavorite)
             return;
 
-        SetFavoriteStation(0, RadioStation);
-        State = UiState.Default;
-    }
-
-    private void OnClickFavorite2()
-    {
-        if (State != UiState.SetFavorite)
-            return;
-
-        SetFavoriteStation(1, RadioStation);
-        State = UiState.Default;
-    }
-
-    private void OnClickFavorite3()
-    {
-        if (State != UiState.SetFavorite)
-            return;
-
-        SetFavoriteStation(2, RadioStation);
-        State = UiState.Default;
-    }
-
-    private void OnClickFavorite4()
-    {
-        if (State != UiState.SetFavorite)
-            return;
-
-        SetFavoriteStation(3, RadioStation);
+        SetFavoriteStation(index, RadioStation);
         State = UiState.Default;
     }
 
