@@ -29,6 +29,7 @@ public class Radio : TogglableOffGridItem, IUsable
 {
     public event Action<RadioStation?>? RadioStationChanged;
     public event Action<float>? VolumeChanged;
+    public event Action<RadioStation?[]>? FavoriteStationsChanged;
 
     public RadioStation? RadioStation { get; private set; }
 
@@ -37,6 +38,14 @@ public class Radio : TogglableOffGridItem, IUsable
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnVolumeChanged))]
     public float Volume { get; private set; }
+
+    /// <summary>
+    /// The maximum number of favorite stations that can be set. Do not change this value at runtime.
+    /// </summary>
+    [field: SerializeField]
+    public byte MaxFavoriteStations { get; private set; }
+
+    public RadioStation?[] FavoriteStations => favoriteStations;
 
     public GameObject AudioClientObject = null!;
 
@@ -50,6 +59,9 @@ public class Radio : TogglableOffGridItem, IUsable
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnPlayerUserChanged))]
     public NetworkObject? PlayerUserObject { get; set; }
+
+    [SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnFavoriteStationsChanged))]
+    private RadioStation?[] favoriteStations = null!;
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]
     public void SetRadioStationIdHash(uint? idHash)
@@ -73,6 +85,29 @@ public class Radio : TogglableOffGridItem, IUsable
     public void SetVolume(float volume)
     {
         Volume = Mathf.Clamp01(volume);
+    }
+
+    [ServerRpc(RequireOwnership = false, RunLocally = true)]
+    public void SetFavoriteStation(byte index, RadioStation? radioStation)
+    {
+        if (index >= MaxFavoriteStations)
+        {
+            Plugin.Logger.LogWarning($"Ignoring setting favorite station at index {index} (max allowed index: {MaxFavoriteStations})");
+            return;
+        }
+
+        var newStations = new RadioStation?[MaxFavoriteStations];
+        Array.Copy(favoriteStations, newStations, length: MaxFavoriteStations);
+
+        // Unset all indices where the station is the same as the one we're trying to set
+        for (byte i = 0; i < MaxFavoriteStations; i++)
+        {
+            if (newStations[i] == radioStation)
+                newStations[i] = null;
+        }
+
+        newStations[index] = radioStation;
+        favoriteStations = newStations;
     }
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]
@@ -115,6 +150,8 @@ public class Radio : TogglableOffGridItem, IUsable
             return;
         }
 
+        favoriteStations = new RadioStation?[MaxFavoriteStations];
+
         if (AudioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
@@ -132,6 +169,23 @@ public class Radio : TogglableOffGridItem, IUsable
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
+        if (IsServer)
+        {
+            for (byte i = 0; i < favoriteStations.Length; i++)
+            {
+                RadioStation? favStation = favoriteStations[i];
+
+                if (favStation == null)
+                    continue;
+
+                if (favStation != station && favStation.Id?.GetStableHashCode() == station.Id?.GetStableHashCode())
+                {
+                    SetFavoriteStation(i, station);
+                    break;
+                }
+            }
+        }
+
         if (RadioStationIdHash == null)
             return;
 
@@ -152,6 +206,16 @@ public class Radio : TogglableOffGridItem, IUsable
         {
             Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
             SetRadioStationIdHash(null);
+        }
+
+        for (byte i = 0; i < favoriteStations.Length; i++)
+        {
+            RadioStation? favStation = favoriteStations[i];
+            if (favStation != null && favStation.Id?.GetStableHashCode() == station.Id?.GetStableHashCode())
+            {
+                SetFavoriteStation(i, null);
+                break;
+            }
         }
     }
 
@@ -235,6 +299,17 @@ public class Radio : TogglableOffGridItem, IUsable
         crossFade.Volume = Mathf.Clamp01(next);
 
         VolumeChanged?.Invoke(next);
+    }
+
+    protected virtual void OnFavoriteStationsChanged(RadioStation?[]? prev, RadioStation?[]? next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        if (next == null)
+            throw new InvalidOperationException("New favorite stations array is null. This should never happen.");
+
+        FavoriteStationsChanged?.Invoke(next);
     }
 
     private void StartConfigureIfPossible()

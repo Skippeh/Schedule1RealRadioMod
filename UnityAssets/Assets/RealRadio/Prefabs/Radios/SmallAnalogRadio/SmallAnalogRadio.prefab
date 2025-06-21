@@ -122,10 +122,13 @@ MonoBehaviour:
       m_Calls: []
   <IsOn>k__BackingField: 0
   <Volume>k__BackingField: 0
+  <MaxFavoriteStations>k__BackingField: 4
   AudioClientObject: {fileID: 6342895549113500183}
   ConfigureCameraTransform: {fileID: 463682333348077495}
   <NPCUserObject>k__BackingField: {fileID: 0}
   <PlayerUserObject>k__BackingField: {fileID: 0}
+  favoriteStations: []
+  <State>k__BackingField: 0
   btnOk: {fileID: 207458118585187984}
   btnLeft: {fileID: 4377077796930576207}
   btnRight: {fileID: 6872176339019182496}

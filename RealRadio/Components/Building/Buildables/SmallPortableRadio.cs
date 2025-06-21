@@ -4,6 +4,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Transporting;
 using GameKit.Utilities.Types;
+using HashUtility;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
 using ScheduleOne.GameTime;
@@ -169,13 +170,26 @@ public class SmallPortableRadio : Radio
             State = UiState.SetFavorite;
     }
 
-    private void OnClickFavoriteIndexButton(int index)
+    private void OnClickFavoriteIndexButton(byte index)
     {
-        if (State != UiState.SetFavorite)
-            return;
+        switch (State)
+        {
+            case UiState.SetFavorite:
+                SetFavoriteStation(index, RadioStation);
+                State = UiState.Default;
+                break;
+            case UiState.Default:
+                if (index >= FavoriteStations.Length)
+                    return;
 
-        SetFavoriteStation(index, RadioStation);
-        State = UiState.Default;
+                var station = FavoriteStations[index];
+
+                if (station == null)
+                    return;
+
+                SetRadioStationIdHash(station.Id?.GetStableHashCode());
+                break;
+        }
     }
 
     private void OnStateChanged(UiState prev, UiState next, bool asServer)
@@ -184,15 +198,6 @@ public class SmallPortableRadio : Radio
             return;
 
         StateChanged?.Invoke(next);
-    }
-
-    private void SetFavoriteStation(int index, RadioStation? radioStation)
-    {
-        if (radioStation == null)
-            return;
-
-        // todo: set favorite
-        Plugin.Logger.LogInfo($"Set favorite in slot {index} to {radioStation}");
     }
 
     public enum UiState
@@ -249,6 +254,7 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
         radio.VolumeChanged += OnVolumeChanged;
         radio.RadioStationChanged += OnRadioStationChanged;
         radio.StateChanged += OnStateChanged;
+        radio.FavoriteStationsChanged += OnFavoriteStationsChanged;
         TimeManager.Instance.onMinutePass += OnMinutePass;
 
         OnVolumeChanged(radio.Volume);
@@ -310,6 +316,19 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
 
             // todo: update station icon
         }
+
+        UpdateFavoriteUI();
+    }
+
+    private void OnFavoriteStationsChanged(RadioStation?[] stations)
+    {
+        UpdateFavoriteUI();
+    }
+
+    private void UpdateFavoriteUI()
+    {
+        int index = radio.RadioStation == null ? -1 : Array.IndexOf(radio.FavoriteStations, radio.RadioStation);
+        favoriteIndexLabel.text = index == -1 ? string.Empty : (index + 1).ToString();
     }
 
     private void OnMinutePass()

@@ -106,16 +106,26 @@ public class RadioStation : ScriptableObject
 
 public static class RadioStationNetworkExtensions
 {
-    public static void WriteRadioStation(this Writer writer, RadioStation value)
+    public static void WriteRadioStation(this Writer writer, RadioStation? value)
     {
+        if (value == null)
+        {
+            writer.WriteByte(1);
+            return;
+        }
+
         if (value.Id == null)
             throw new ArgumentNullException(nameof(value.Id), "Station id cannot be null");
 
+        writer.WriteByte(0);
         writer.Write(value.Id.GetStableHashCode());
     }
 
     public static RadioStation? ReadRadioStation(this Reader reader)
     {
+        if (reader.ReadByte() == 1)
+            return null;
+
         uint hashedId = reader.ReadUInt32();
 
         if (!RadioStationManager.InstanceExists)
