@@ -136,7 +136,8 @@ public class Radio : TogglableOffGridItem, IUsable
             transform.position,
             transform.rotation.eulerAngles,
             RadioStation?.Id!.GetStableHashCode(),
-            Volume
+            Volume,
+            FavoriteStations.Select(x => x?.Id?.GetStableHashCode() ?? 0).ToArray()
         );
     }
 
