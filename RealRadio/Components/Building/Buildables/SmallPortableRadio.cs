@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using FishNet.Managing.Timing;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
@@ -128,8 +129,7 @@ public class SmallPortableRadio : Radio
                 SetVolume(Volume - 0.1f);
                 break;
             case UiState.Default:
-                Plugin.Logger.LogInfo("Switch to previous station");
-                // todo: change to previous station
+                ChangeStationIndex(-1);
                 break;
         }
     }
@@ -142,8 +142,7 @@ public class SmallPortableRadio : Radio
                 SetVolume(Volume + 0.1f);
                 break;
             case UiState.Default:
-                Plugin.Logger.LogInfo("Switch to next station");
-                // todo: change to next station
+                ChangeStationIndex(1);
                 break;
         }
     }
@@ -198,6 +197,26 @@ public class SmallPortableRadio : Radio
             return;
 
         StateChanged?.Invoke(next);
+    }
+
+    private void ChangeStationIndex(int direction)
+    {
+        int currentIndex = RadioStation == null ? -1 : RadioStationManager.Instance.SortedStations.IndexOf(RadioStation);
+        RadioStation? nextStation;
+
+        if (currentIndex == -1)
+            nextStation = direction == -1 ? RadioStationManager.Instance.SortedStations.LastOrDefault() : RadioStationManager.Instance.SortedStations.FirstOrDefault();
+        else
+        {
+            int nextIndex = (currentIndex + direction) % RadioStationManager.Instance.SortedStations.Count;
+
+            if (nextIndex < 0)
+                nextIndex += RadioStationManager.Instance.SortedStations.Count;
+
+            nextStation = RadioStationManager.Instance.SortedStations[nextIndex];
+        }
+
+        SetRadioStationIdHash(nextStation?.Id?.GetStableHashCode());
     }
 
     public enum UiState
