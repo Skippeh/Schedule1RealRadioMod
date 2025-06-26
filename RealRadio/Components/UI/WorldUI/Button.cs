@@ -11,7 +11,7 @@ namespace RealRadio.Components.WorldUI;
 public class Button : MonoBehaviour
 {
     public event Action? CursorDown;
-    public event Action? CursorUp;
+    public event Action<bool>? CursorUp;
 
     public Vector3 ClickOffset = -Vector3.forward * 0.01f;
 
@@ -24,11 +24,14 @@ public class Button : MonoBehaviour
     private Collider collider = null!;
 
     private Vector3 initialPosition;
+    private Vector3 targetPosition;
+    private float lerpSpeed;
 
     void Awake()
     {
         collider = GetComponent<Collider>();
         initialPosition = transform.localPosition;
+        targetPosition = initialPosition;
 
         CursorDown += OnCursorDown;
         CursorUp += OnCursorUp;
@@ -36,15 +39,17 @@ public class Button : MonoBehaviour
 
     private void OnCursorDown()
     {
-        transform.localPosition = initialPosition + ClickOffset;
+        targetPosition = transform.localPosition + ClickOffset;
+        lerpSpeed = 80f;
 
         CursorUpSound?.Stop();
         CursorDownSound?.Play();
     }
 
-    private void OnCursorUp()
+    private void OnCursorUp(bool cursorHoveringOver)
     {
-        transform.localPosition = initialPosition;
+        targetPosition = initialPosition;
+        lerpSpeed = 20f;
 
         CursorDownSound?.Stop();
         CursorUpSound?.Play();
@@ -63,13 +68,19 @@ public class Button : MonoBehaviour
         else if (GameInput.GetButtonUp(GameInput.ButtonCode.PrimaryClick))
         {
             if (cursorIsPushedDown)
-                CursorUp?.Invoke();
-
-            cursorIsPushedDown = false;
+            {
+                cursorIsPushedDown = false;
+                CursorUp?.Invoke(true);
+            }
         }
 
         if (cursorIsPushedDown && !GameInput.GetButton(GameInput.ButtonCode.PrimaryClick))
+        {
             cursorIsPushedDown = false;
+            CursorUp?.Invoke(false);
+        }
+
+        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * lerpSpeed);
     }
 
     private bool TestRayHit()
