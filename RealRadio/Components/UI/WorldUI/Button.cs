@@ -11,7 +11,8 @@ namespace RealRadio.Components.WorldUI;
 public class Button : MonoBehaviour
 {
     public event Action? CursorDown;
-    public event Action<bool>? CursorUp;
+    public event Action? CursorUp;
+    public event Action? Click;
 
     public Vector3 ClickOffset = -Vector3.forward * 0.01f;
 
@@ -46,7 +47,7 @@ public class Button : MonoBehaviour
         CursorDownSound?.Play();
     }
 
-    private void OnCursorUp(bool cursorHoveringOver)
+    private void OnCursorUp()
     {
         targetPosition = initialPosition;
         lerpSpeed = 20f;
@@ -70,14 +71,17 @@ public class Button : MonoBehaviour
             if (cursorIsPushedDown)
             {
                 cursorIsPushedDown = false;
-                CursorUp?.Invoke(true);
+                CursorUp?.Invoke();
+
+                if (TestRayHit())
+                    Click?.Invoke();
             }
         }
 
         if (cursorIsPushedDown && !GameInput.GetButton(GameInput.ButtonCode.PrimaryClick))
         {
             cursorIsPushedDown = false;
-            CursorUp?.Invoke(false);
+            CursorUp?.Invoke();
         }
 
         transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * lerpSpeed);
