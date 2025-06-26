@@ -13,3 +13,4 @@ Playlist add icon: https://www.flaticon.com/free-icons/add-to-playlist
 Download icon: https://www.flaticon.com/free-icons/download
 X icon: X by Royyan Wijaya from https://thenounproject.com/browse/icons/term/x/ (CC BY 3.0)
 Text icon: text by Gregor Cresnar https://thenounproject.com/browse/icons/term/text/ (CC BY 3.0)
+Physical click sound effect: Sound Effect by soundsforstory from Pixabay (https://pixabay.com/users/soundsforstory-46312188)
