@@ -112,6 +112,9 @@ public class SmallPortableRadio : Radio
 
     private void OnClickOk()
     {
+        if (!IsOn)
+            return;
+
         switch (State)
         {
             case UiState.EditVolume:
@@ -123,6 +126,9 @@ public class SmallPortableRadio : Radio
 
     private void OnClickLeft()
     {
+        if (!IsOn)
+            return;
+
         switch (State)
         {
             case UiState.EditVolume:
@@ -136,6 +142,9 @@ public class SmallPortableRadio : Radio
 
     private void OnClickRight()
     {
+        if (!IsOn)
+            return;
+
         switch (State)
         {
             case UiState.EditVolume:
@@ -155,6 +164,9 @@ public class SmallPortableRadio : Radio
 
     private void OnClickVolume()
     {
+        if (!IsOn)
+            return;
+
         if (State == UiState.EditVolume)
             State = UiState.Default;
         else
@@ -163,6 +175,9 @@ public class SmallPortableRadio : Radio
 
     private void OnClickFavorite()
     {
+        if (!IsOn)
+            return;
+
         if (State == UiState.SetFavorite)
             State = UiState.Default;
         else
@@ -171,6 +186,9 @@ public class SmallPortableRadio : Radio
 
     private void OnClickFavoriteIndexButton(byte index)
     {
+        if (!IsOn)
+            return;
+
         switch (State)
         {
             case UiState.SetFavorite:
