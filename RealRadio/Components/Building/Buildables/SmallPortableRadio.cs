@@ -72,16 +72,16 @@ public class SmallPortableRadio : Radio
         if (btnFavorite4 == null)
             throw new InvalidOperationException("btnFavorite4 is null");
 
-        btnOk.CursorDown += OnClickOk;
-        btnLeft.CursorDown += OnClickLeft;
-        btnRight.CursorDown += OnClickRight;
-        btnPower.CursorDown += OnClickPower;
-        btnVolume.CursorDown += OnClickVolume;
-        btnFavorite.CursorDown += OnClickFavorite;
-        btnFavorite1.CursorDown += () => OnClickFavoriteIndexButton(0);
-        btnFavorite2.CursorDown += () => OnClickFavoriteIndexButton(1);
-        btnFavorite3.CursorDown += () => OnClickFavoriteIndexButton(2);
-        btnFavorite4.CursorDown += () => OnClickFavoriteIndexButton(3);
+        btnOk.Click += OnClickOk;
+        btnLeft.Click += OnClickLeft;
+        btnRight.Click += OnClickRight;
+        btnPower.Click += OnClickPower;
+        btnVolume.Click += OnClickVolume;
+        btnFavorite.Click += OnClickFavorite;
+        btnFavorite1.Click += () => OnClickFavoriteIndexButton(0);
+        btnFavorite2.Click += () => OnClickFavoriteIndexButton(1);
+        btnFavorite3.Click += () => OnClickFavoriteIndexButton(2);
+        btnFavorite4.Click += () => OnClickFavoriteIndexButton(3);
 
         ToggleInputState(enabled: false);
     }
