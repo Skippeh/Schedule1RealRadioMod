@@ -76,9 +76,11 @@ public class Button : MonoBehaviour
     {
         Ray ray = PlayerCamera.Instance.Camera.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.RaycastNonAlloc(ray, hits, maxDistance: 1f, Layers.Default.ToLayerMask()) == 0)
+        int numHits = Physics.RaycastNonAlloc(ray, hits, maxDistance: 1f, Layers.Default.ToLayerMask());
+
+        if (numHits == 0)
             return false;
 
-        return hits.Any(hit => hit.collider == collider);
+        return hits.Take(numHits).Any(hit => hit.collider == collider);
     }
 }
