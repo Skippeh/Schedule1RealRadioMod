@@ -42,6 +42,7 @@
 }
 
 #Logo {
+    flex-shrink: 0;
     margin-right: 5px;
     width: 75px;
     height: 75px;
@@ -50,19 +51,20 @@
 }
 
 #StationInfoTextContainer Label {
-    font-size: 18px;
+    font-size: 16px;
     margin: 0;
     padding: 0;
+}
+
+#SongArtist {
+    -unity-font-style: bold;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 }
 
-#SongArtist {
-    -unity-font-style: bold;
-}
-
 #SongTitle {
+    white-space: wrap;
 }
 
 #Footer {
