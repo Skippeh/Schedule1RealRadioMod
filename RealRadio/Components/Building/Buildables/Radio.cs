@@ -224,7 +224,7 @@ public class Radio : TogglableOffGridItem, IUsable
     {
         if (PlayerUserObject == Player.Local.NetworkObject)
         {
-            if (GameInput.GetButtonDown(GameInput.ButtonCode.Escape))
+            if (GameInput.GetButtonDown(GameInput.ButtonCode.Escape) || GameInput.GetButtonDown(GameInput.ButtonCode.SecondaryClick))
             {
                 StopConfiguring();
             }
