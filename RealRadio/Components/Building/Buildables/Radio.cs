@@ -14,6 +14,7 @@ using RealRadio.Events;
 using RealRadio.Persistence.Data;
 using ScheduleOne;
 using ScheduleOne.Audio;
+using ScheduleOne.DevUtilities;
 using ScheduleOne.Dialogue;
 using ScheduleOne.Interaction;
 using ScheduleOne.Management;
@@ -166,6 +167,24 @@ public class Radio : TogglableOffGridItem, IUsable
 
         RadioStationManager.Instance.StationUpdated += OnRadioStationUpdated;
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
+
+        GameInput.RegisterExitListener(OnInputExit);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        RadioStationManager.Instance.StationUpdated -= OnRadioStationUpdated;
+        RadioStationManager.Instance.StationRemoved -= OnRadioStationRemoved;
+        GameInput.DeregisterExitListener(OnInputExit);
+    }
+
+    private void OnInputExit(ExitAction exitAction)
+    {
+        if (exitAction.Used || PlayerUserObject != Player.Local.NetworkObject)
+            return;
+
+        exitAction.Used = true;
+        StopConfiguring();
     }
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
@@ -222,13 +241,6 @@ public class Radio : TogglableOffGridItem, IUsable
 
     public virtual void Update()
     {
-        if (PlayerUserObject == Player.Local.NetworkObject)
-        {
-            if (GameInput.GetButtonDown(GameInput.ButtonCode.Escape) || GameInput.GetButtonDown(GameInput.ButtonCode.SecondaryClick))
-            {
-                StopConfiguring();
-            }
-        }
     }
 
     private void OnUpdateInteractionText(InteractableOption? option, EventRefData<string> data)
