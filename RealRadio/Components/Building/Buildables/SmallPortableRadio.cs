@@ -24,6 +24,7 @@ public class SmallPortableRadio : Radio
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStateChanged))]
     public UiState State { get; [ServerRpc(RequireOwnership = false, RunLocally = true)] set; }
 
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value null
 #nullable disable
     [Header("References")]
     [SerializeField] private WorldButton btnOk;
@@ -37,6 +38,7 @@ public class SmallPortableRadio : Radio
     [SerializeField] private WorldButton btnFavorite3;
     [SerializeField] private WorldButton btnFavorite4;
 #nullable enable
+#pragma warning restore CS0649
 
     public override void Awake()
     {
