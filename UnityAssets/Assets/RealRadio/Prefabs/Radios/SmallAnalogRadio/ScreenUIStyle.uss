@@ -45,7 +45,7 @@
 #StationInfoContainer {
     flex-direction: row;
     align-items: center;
-    margin: 0 10px;
+    margin: 0 5px;
 }
 
 #StationInfoTextContainer Label {
