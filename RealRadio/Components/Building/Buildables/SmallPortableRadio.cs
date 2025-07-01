@@ -134,7 +134,7 @@ public class SmallPortableRadio : Radio
         switch (State)
         {
             case UiState.EditVolume:
-                SetVolume(Volume - 0.1f);
+                SetVolume(Mathf.RoundToMultipleOf(Volume - 0.1f, 0.1f));
                 break;
             case UiState.Default:
                 ChangeStationIndex(-1);
@@ -150,7 +150,7 @@ public class SmallPortableRadio : Radio
         switch (State)
         {
             case UiState.EditVolume:
-                SetVolume(Volume + 0.1f);
+                SetVolume(Mathf.RoundToMultipleOf(Volume + 0.1f, 0.1f));
                 break;
             case UiState.Default:
                 ChangeStationIndex(1);
