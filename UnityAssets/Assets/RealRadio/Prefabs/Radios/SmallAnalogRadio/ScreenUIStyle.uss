@@ -16,7 +16,14 @@
 #Header {
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     -unity-font-style: bold;
+}
+
+#Battery {
+    width: 25px;
+    height: 14px;
+    --unity-image-size: scale-to-fit;
 }
 
 #Content {
