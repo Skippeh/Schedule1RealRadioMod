@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/ScreenUIStyle.uss?fileID=7433441132597879392&amp;guid=ad586c4d76443ff47be4947a88609c03&amp;type=3#ScreenUIStyle" />
+    <ui:VisualElement name="Root">
+        <ui:VisualElement name="Header">
+            <ui:Label tabindex="-1" name="Time" text="00:00" />
+            <ui:Image name="Battery" style="--unity-image: url(&quot;project://database/Assets/RealRadio/Sprites/UI/battery-full.psd?fileID=21300000&amp;guid=8bb2753ed7fd3a24397b9c553ed0336b&amp;type=3#battery-full&quot;);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Content">
+            <ui:Label tabindex="-1" name="StationName" text="Station Name" />
+            <ui:VisualElement name="StationInfoContainer">
+                <ui:VisualElement name="StationInfoTextContainer">
+                    <ui:Label tabindex="-1" text="Artist" name="SongArtist" />
+                    <ui:Label tabindex="-1" text="Title" name="SongTitle" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Footer">
+            <ui:VisualElement name="Favorite" class="numbered">
+                <ui:Label tabindex="-1" text="1" parse-escape-sequences="true" display-tooltip-when-elided="true" name="FavoriteIndex" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Volume" class="high" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

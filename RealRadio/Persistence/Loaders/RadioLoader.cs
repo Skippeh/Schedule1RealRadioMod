@@ -1,3 +1,4 @@
+using System;
 using HashUtility;
 using RealRadio.Components.Building.Buildables;
 using RealRadio.Components.Radio;
@@ -27,6 +28,23 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
             Item.SetRadioStationIdHash(Data.StationIdHash);
         }
 
-        Item.Volume = Data.Volume;
+        Item.SetVolume(Data.Volume);
+
+        for (byte i = 0; i < Math.Min(Item.MaxFavoriteStations, Data.FavoriteStations.Length); ++i)
+        {
+            uint hashId = Data.FavoriteStations[i];
+
+            if (hashId == 0)
+                continue;
+
+            if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(hashId, out var favStation))
+            {
+                Plugin.Logger.LogWarning($"Could not find favorite radio station with id {hashId}");
+            }
+            else
+            {
+                Item.SetFavoriteStation(i, favStation);
+            }
+        }
     }
 }

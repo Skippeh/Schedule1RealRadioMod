@@ -1,0 +1,126 @@
+@import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
+:root {
+    background-color: black;
+}
+
+#Root {
+    color: white;
+    padding: 5px;
+    flex-grow: 1;
+}
+
+#Root.hidden {
+    display: none;
+}
+
+#Header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    -unity-font-style: bold;
+}
+
+#Battery {
+    width: 25px;
+    height: 14px;
+    --unity-image-size: scale-to-fit;
+}
+
+#Content {
+    flex-grow: 1;
+    border-bottom-color: rgb(190, 190, 190);
+    border-bottom-width: 2px;
+    border-top-color: rgb(190, 190, 190);
+    border-top-width: 2px;
+}
+
+#StationName {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(176, 241, 160);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#StationInfoContainer {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 5px;
+}
+
+#StationInfoTextContainer Label {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+}
+
+#SongArtist {
+    -unity-font-style: bold;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#SongTitle {
+    white-space: wrap;
+}
+
+#Footer {
+    flex-direction: row;
+    padding-top: 5px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#Volume {
+    width: 25px;
+    height: 25px;
+}
+
+#Volume.high {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-high.png?fileID=21300000&guid=91d7d335677f42040a53dc61bec8e448&type=3#volume-high");
+}
+
+#Volume.medium {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-medium.png?fileID=21300000&guid=5aeb0f5156c6cf845afb7d78d519d9f4&type=3#volume-medium");
+}
+
+#Volume.low {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-low.png?fileID=21300000&guid=90d6db3a0cb555e40ad8585d37420f18&type=3#volume-low");
+}
+
+#Volume.muted {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/volume-muted.png?fileID=21300000&guid=36e3174fbc0be574aa8e7bdeff123f66&type=3#volume-muted");
+}
+
+#Volume.editing {
+    border-color: rgb(176, 241, 160);
+    border-width: 2px;
+}
+
+#Favorite {
+    background-image: url("project://database/Assets/RealRadio/Sprites/UI/heart.png?fileID=21300000&guid=b68261bd07cce5e4fae801475e06f547&type=3#heart");
+    width: 25px;
+    height: 25px;
+    -unity-background-image-tint-color: rgb(255, 0, 85);
+}
+
+#Favorite.editing {
+    border-color: rgb(176, 241, 160);
+    border-width: 2px;
+}
+
+#Favorite.numbered #FavoriteIndex {
+    display: flex;
+}
+
+#FavoriteIndex {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: none;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    font-size: 13px;
+}
