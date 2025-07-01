@@ -258,7 +258,6 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
     private Label stationNameLabel;
     private Label artistLabel;
     private Label titleLabel;
-    private VisualElement logoContainer;
     private VisualElement volumeContainer;
     private VisualElement favoriteContainer;
     private Label favoriteIndexLabel;
@@ -285,7 +284,6 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
         stationNameLabel = root.Query<Label>(name: "StationName").First() ?? throw new InvalidOperationException("Could not find station name label ui element");
         artistLabel = root.Query<Label>(name: "SongArtist").First() ?? throw new InvalidOperationException("Could not find artist label ui element");
         titleLabel = root.Query<Label>(name: "SongTitle").First() ?? throw new InvalidOperationException("Could not find title label ui element");
-        logoContainer = root.Query(name: "Logo").First() ?? throw new InvalidOperationException("Could not find logo container ui element");
         volumeContainer = root.Query(name: "Volume").First() ?? throw new InvalidOperationException("Could not find volume container ui element");
         favoriteContainer = root.Query(name: "Favorite").First() ?? throw new InvalidOperationException("Could not find favorite container ui element");
         favoriteIndexLabel = favoriteContainer.Query<Label>(name: "FavoriteIndex").First() ?? throw new InvalidOperationException("Could not find favorite index label ui element");
@@ -345,15 +343,11 @@ public class SmallPortableRadioScreenUI : MonoBehaviour
             stationNameLabel.text = "<i>No Station Selected</i>";
             artistLabel.text = "";
             titleLabel.text = "";
-            logoContainer.style.display = DisplayStyle.None;
         }
         else
         {
             stationNameLabel.text = station.Name.EscapeRichText();
-            logoContainer.style.display = DisplayStyle.Flex;
             UpdateSongInfo(station);
-
-            // todo: update station icon
         }
 
         UpdateFavoriteUI();
