@@ -21,7 +21,7 @@ public class Button : MonoBehaviour
 
     private bool cursorIsPushedDown;
 
-    private RaycastHit[] hits = new RaycastHit[2];
+    private RaycastHit[] hits = new RaycastHit[8];
     private Collider collider = null!;
 
     private Vector3 initialPosition;
