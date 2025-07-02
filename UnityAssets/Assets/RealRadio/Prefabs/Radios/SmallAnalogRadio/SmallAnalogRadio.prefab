@@ -121,8 +121,8 @@ MonoBehaviour:
   onDestroyed:
     m_PersistentCalls:
       m_Calls: []
-  <IsOn>k__BackingField: 0
-  <Volume>k__BackingField: 0
+  <IsOn>k__BackingField: 1
+  <Volume>k__BackingField: 0.5
   <MaxFavoriteStations>k__BackingField: 4
   AudioClientObject: {fileID: 6342895549113500183}
   ConfigureCameraTransform: {fileID: 463682333348077495}

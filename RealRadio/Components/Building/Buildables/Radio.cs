@@ -169,6 +169,8 @@ public class Radio : TogglableOffGridItem, IUsable
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
 
         GameInput.RegisterExitListener(OnInputExit);
+
+        OnVolumeChanged(0, Volume, asServer: false);
     }
 
     protected virtual void OnDestroy()
