@@ -36,6 +36,13 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
     /// </summary>
     public Action? StationsChanged { get; set; }
 
+    /// <summary>
+    /// Called when saved user stations have been loaded (even if they're empty or loading failed).
+    /// </summary>
+    public Action? OnStationsLoaded;
+
+    public bool SaveDataLoaded { get; private set; }
+
     public string SaveFolderName => SaveFileName;
 
     public string SaveFileName => "RealRadioUserStations";
@@ -61,6 +68,8 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
 
         StationUpdated += OnStationUpdated;
         StationRemoved += OnStationRemoved;
+
+        OnStationsLoaded += () => SaveDataLoaded = true;
     }
 
     private void OnStationUpdated(RadioStation station, bool isNew)
