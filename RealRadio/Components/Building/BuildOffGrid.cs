@@ -23,7 +23,7 @@ public class BuildStartOffGrid : BuildStart_Base
     /// <summary>
     /// The optimal placement angle in degrees, for the X and Z axes.
     /// </summary>
-    public float? OptimalRotationXZ = 0f;
+    public float OptimalRotationXZ = 0f;
 
     /// <summary>
     /// Max allowed rotation offset in degrees.
@@ -291,11 +291,8 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
 
     private bool TestForValidAngle(Quaternion rotation)
     {
-        float? optimalXZ = buildStart.OptimalRotationXZ;
+        float optimalXZ = buildStart.OptimalRotationXZ;
         float lenience = buildStart.AllowedRotationLenience;
-
-        if (optimalXZ == null)
-            return true;
 
         bool validAngle = false;
 
@@ -316,10 +313,10 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
             eulerAngles.z = Math.Abs(eulerAngles.z - 360f);
         }
 
-        var diffX = Math.Abs(eulerAngles.x - optimalXZ.Value);
-        var diffZ = Math.Abs(eulerAngles.z - optimalXZ.Value);
+        var diffX = Math.Abs(eulerAngles.x - optimalXZ);
+        var diffZ = Math.Abs(eulerAngles.z - optimalXZ);
 
-        if (diffX < lenience && diffZ < lenience)
+        if (diffX < lenience || diffZ < lenience)
         {
             validAngle = true;
         }
