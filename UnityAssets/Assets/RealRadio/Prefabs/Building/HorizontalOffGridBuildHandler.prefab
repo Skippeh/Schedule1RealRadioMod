@@ -49,8 +49,9 @@ MonoBehaviour:
   DetectionMask:
     serializedVersion: 2
     m_Bits: 16777345
-  OptimalRotationXZ: 0
-  AllowedRotationLenience: 15
+  MinMaxNormalX: {x: -0.34, y: 0.34}
+  MinMaxNormalY: {x: 0.66, y: 1}
+  MinMaxNormalZ: {x: -0.34, y: 0.34}
   RotationIncrement: 22.5
   RestrictToProperties: 1
 --- !u!114 &5988583829538916978
