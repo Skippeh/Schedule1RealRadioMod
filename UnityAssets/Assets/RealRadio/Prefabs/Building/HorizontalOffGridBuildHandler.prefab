@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5988583829538916978}
   - component: {fileID: -3885268231505521845}
   m_Layer: 0
-  m_Name: OffGridBuildHandler
+  m_Name: HorizontalOffGridBuildHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
