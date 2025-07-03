@@ -13,11 +13,27 @@ MonoBehaviour:
   m_Name: Shop Listings
   m_EditorClassIdentifier: 
   Listings:
-  - name: Scuffed Radio
+  - name: Small Analog Radio
     Item: {fileID: 11400000, guid: da4cffd948e63fa4488de523b9ca4919, type: 2}
     OverridePrice: 0
-    OverriddenPrice: 200
-    StockQuantity: 10
+    OverriddenPrice: 0
+    LimitedStock: 0
+    DefaultStock: 0
+    RestockRate: 0
     EnforceMinimumGameCreationVersion: 0
     MinimumGameCreationVersion: 0
     CanBeDelivered: 1
+    UseIconTint: 0
+    IconTint: {r: 0, g: 0, b: 0, a: 0}
+  - name: Wall Speaker
+    Item: {fileID: 11400000, guid: ffd1e358220173849a3faa21072eefbd, type: 2}
+    OverridePrice: 0
+    OverriddenPrice: 0
+    LimitedStock: 0
+    DefaultStock: 0
+    RestockRate: 0
+    EnforceMinimumGameCreationVersion: 0
+    MinimumGameCreationVersion: 0
+    CanBeDelivered: 1
+    UseIconTint: 0
+    IconTint: {r: 0, g: 0, b: 0, a: 0}
