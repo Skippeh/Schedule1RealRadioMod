@@ -199,7 +199,9 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         }
 
         lastRotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * Quaternion.Euler(0, desiredRotation, 0);
-        lastPosition = hit.point - buildStart.BuildableItem.BuildPoint.localPosition;
+        var buildPointTransform = buildStart.BuildableItem.BuildPoint.transform;
+        Vector3 buildOffset = lastRotation * buildPointTransform.localPosition;
+        lastPosition = hit.point - buildOffset;
 
         if (TestForObstructions())
         {
