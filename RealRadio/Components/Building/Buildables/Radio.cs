@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
@@ -31,6 +32,9 @@ public class Radio : TogglableOffGridItem, IUsable
     public event Action<RadioStation?>? RadioStationChanged;
     public event Action<float>? VolumeChanged;
     public event Action<RadioStation?[]>? FavoriteStationsChanged;
+    public event Action<Speaker>? SpeakerAdded;
+    public event Action<Speaker>? SpeakerRemoved;
+    public event Action? SpeakersChanged;
 
     public RadioStation? RadioStation { get; private set; }
 
@@ -39,6 +43,8 @@ public class Radio : TogglableOffGridItem, IUsable
 
     [field: SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnVolumeChanged))]
     public float Volume { get; private set; }
+
+    public IReadOnlyCollection<Speaker> Speakers => speakers;
 
     /// <summary>
     /// The maximum number of favorite stations that can be set. Do not change this value at runtime.
@@ -63,6 +69,8 @@ public class Radio : TogglableOffGridItem, IUsable
 
     [SyncVar(Channel = Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnFavoriteStationsChanged))]
     private RadioStation?[] favoriteStations = null!;
+
+    private HashSet<Speaker> speakers = [];
 
     [ServerRpc(RequireOwnership = false, RunLocally = true)]
     public void SetRadioStationIdHash(uint? idHash)
@@ -169,6 +177,8 @@ public class Radio : TogglableOffGridItem, IUsable
         RadioStationManager.Instance.StationRemoved += OnRadioStationRemoved;
 
         GameInput.RegisterExitListener(OnInputExit);
+
+        SpeakersChanged += OnSpeakersChanged;
 
         OnVolumeChanged(0, Volume, asServer: false);
     }
@@ -394,5 +404,31 @@ public class Radio : TogglableOffGridItem, IUsable
         }
 
         audioClient = null;
+    }
+
+    public void AddSpeaker(Speaker speaker)
+    {
+        if (speakers.Add(speaker))
+        {
+            SpeakerAdded?.Invoke(speaker);
+            SpeakersChanged?.Invoke();
+        }
+    }
+
+    public void RemoveSpeaker(Speaker speaker)
+    {
+        if (speakers.Remove(speaker))
+        {
+            SpeakerRemoved?.Invoke(speaker);
+            SpeakersChanged?.Invoke();
+        }
+    }
+
+    private void OnSpeakersChanged()
+    {
+        if (speakers.Count > 0)
+            AudioClientObject.SetActive(false);
+        else
+            AudioClientObject.SetActive(true);
     }
 }

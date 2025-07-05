@@ -82,6 +82,7 @@ public class Speaker : OffGridItem
         master.VolumeChanged += OnVolumeChanged;
         master.Toggled += OnToggled;
         master.RadioStationChanged += OnRadioStationChanged;
+        master.AddSpeaker(this);
 
         OnVolumeChanged(master.Volume);
         OnToggled(master.IsOn);
@@ -96,6 +97,7 @@ public class Speaker : OffGridItem
         master.VolumeChanged -= OnVolumeChanged;
         master.Toggled -= OnToggled;
         master.RadioStationChanged -= OnRadioStationChanged;
+        master.RemoveSpeaker(this);
 
         audioClient.Host?.DetachClient(audioClient.gameObject);
     }
