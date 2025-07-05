@@ -1,4 +1,6 @@
 using System;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using RealRadio.Components.Audio;
 using RealRadio.Data;
 using ScheduleOne.Audio;
@@ -8,25 +10,23 @@ namespace RealRadio.Components.Building.Buildables;
 
 public class Speaker : OffGridItem
 {
-    public Radio? Master
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterChanged))]
+    public Radio? Master { get; [ServerRpc(RequireOwnership = false, RunLocally = true)] set; }
+
+    private void OnMasterChanged(Radio? prev, Radio? next, bool asServer)
     {
-        get => master;
-        set
-        {
-            if (master == value)
-                return;
+        if (asServer)
+            return;
 
-            if (master != null)
-                UnbindFromMaster();
+        Plugin.Logger.LogInfo($"Master changed from {prev?.ToString() ?? "null"} to {next?.ToString() ?? "null"}");
 
-            master = value;
+        if (prev != null)
+            UnbindFromMaster(prev);
 
-            if (master != null)
-                BindToMaster();
-        }
+        if (next != null)
+            BindToMaster(next);
     }
 
-    private Radio? master;
     [SerializeField] private StreamAudioClient audioClient = null!;
     [SerializeField] private AudioSourceController audioSourceController = null!;
 
@@ -49,7 +49,7 @@ public class Speaker : OffGridItem
             return;
 
         if (Master != null)
-            BindToMaster();
+            BindToMaster(Master);
     }
 
     void OnDisable()
@@ -58,7 +58,7 @@ public class Speaker : OffGridItem
             return;
 
         if (Master != null)
-            UnbindFromMaster();
+            UnbindFromMaster(Master);
     }
 
     void Update()
@@ -68,15 +68,15 @@ public class Speaker : OffGridItem
             if (Master == null)
             {
                 // Debug: find first small portable radio and set it as master
-                var smallPortableRadios = FindObjectOfType<SmallPortableRadio>();
+                var smallPortableRadio = FindObjectOfType<SmallPortableRadio>();
 
-                if (smallPortableRadios != null)
-                    Master = smallPortableRadios.GetComponent<Radio>();
+                if (smallPortableRadio != null)
+                    Master = smallPortableRadio.GetComponent<Radio>();
             }
         }
     }
 
-    private void BindToMaster()
+    private void BindToMaster(Radio master)
     {
         if (master == null)
             throw new InvalidOperationException("Master is null");
@@ -90,7 +90,7 @@ public class Speaker : OffGridItem
         OnRadioStationChanged(master.RadioStation);
     }
 
-    private void UnbindFromMaster()
+    private void UnbindFromMaster(Radio master)
     {
         if (master == null)
             throw new InvalidOperationException("Master is null");
@@ -119,13 +119,13 @@ public class Speaker : OffGridItem
 
     private void UpdateAudioClientBinding()
     {
-        if (master == null || !master.IsOn || master.RadioStation == null)
+        if (Master == null || !Master.IsOn || Master.RadioStation == null)
         {
             audioClient.Host?.DetachClient(audioClient.gameObject);
         }
         else
         {
-            StreamAudioHost? masterAudioHost = master.RadioStation == null ? null : AudioStreamManager.Instance.GetOrCreateHost(master.RadioStation);
+            StreamAudioHost? masterAudioHost = Master.RadioStation == null ? null : AudioStreamManager.Instance.GetOrCreateHost(Master.RadioStation);
 
             if (audioClient.Host != masterAudioHost)
             {
