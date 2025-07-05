@@ -18,8 +18,6 @@ public class Speaker : OffGridItem
         if (asServer)
             return;
 
-        Plugin.Logger.LogInfo($"Master changed from {prev?.ToString() ?? "null"} to {next?.ToString() ?? "null"}");
-
         if (prev != null)
             UnbindFromMaster(prev);
 
