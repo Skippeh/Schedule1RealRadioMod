@@ -10,23 +10,13 @@ namespace RealRadio.Components.Building.Buildables;
 
 public class Speaker : OffGridItem
 {
-    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterChanged))]
-    public Radio? Master { get; [ServerRpc(RequireOwnership = false, RunLocally = true)] set; }
-
-    private void OnMasterChanged(Radio? prev, Radio? next, bool asServer)
-    {
-        if (asServer)
-            return;
-
-        if (prev != null)
-            UnbindFromMaster(prev);
-
-        if (next != null)
-            BindToMaster(next);
-    }
+    public Radio? Master { get; private set; }
 
     [SerializeField] private StreamAudioClient audioClient = null!;
     [SerializeField] private AudioSourceController audioSourceController = null!;
+
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged))]
+    private Guid? masterGuid;
 
     override public void Awake()
     {
@@ -39,6 +29,51 @@ public class Speaker : OffGridItem
             throw new InvalidOperationException("AudioSourceController is null");
 
         audioClient.ConvertToMono = true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetMaster(Radio? master)
+    {
+        masterGuid = master?.GUID;
+    }
+
+    private void OnMasterGuidChanged(Guid? prev, Guid? next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        Plugin.Logger.LogInfo($"Master GUID changed from {prev} to {next}");
+
+        var oldMaster = Master;
+
+        if (next == null)
+            Master = null;
+        else
+            Master = GUIDManager.GetObject<Radio>(next.Value);
+
+        try
+        {
+            if (!ReferenceEquals(oldMaster, Master))
+                OnMasterChanged(oldMaster, Master);
+            else
+                Plugin.Logger.LogInfo($"Master did not change ({Master})");
+        }
+        catch (Exception ex)
+        {
+            Plugin.Logger.LogError(ex);
+        }
+    }
+
+    private void OnMasterChanged(Radio? prev, Radio? next)
+    {
+        string prevName = !prev ? "Destroyed Object" : prev?.name ?? "null";
+        Plugin.Logger.LogInfo($"Master changed from {prevName} to {next?.name}");
+
+        if (!ReferenceEquals(prev, null))
+            UnbindFromMaster(prev);
+
+        if (next != null)
+            BindToMaster(next);
     }
 
     void OnEnable()
@@ -69,7 +104,7 @@ public class Speaker : OffGridItem
                 var smallPortableRadio = FindObjectOfType<SmallPortableRadio>();
 
                 if (smallPortableRadio != null)
-                    Master = smallPortableRadio.GetComponent<Radio>();
+                    SetMaster(smallPortableRadio.GetComponent<Radio>());
             }
         }
     }
@@ -82,6 +117,7 @@ public class Speaker : OffGridItem
         master.VolumeChanged += OnVolumeChanged;
         master.Toggled += OnToggled;
         master.RadioStationChanged += OnRadioStationChanged;
+        master.BeforeDestroy += OnMasterDestroyed;
         master.AddSpeaker(this);
 
         OnVolumeChanged(master.Volume);
@@ -91,13 +127,17 @@ public class Speaker : OffGridItem
 
     private void UnbindFromMaster(Radio master)
     {
-        if (master == null)
+        if (ReferenceEquals(master, null))
             throw new InvalidOperationException("Master is null");
 
-        master.VolumeChanged -= OnVolumeChanged;
-        master.Toggled -= OnToggled;
-        master.RadioStationChanged -= OnRadioStationChanged;
-        master.RemoveSpeaker(this);
+        if (master)
+        {
+            master.VolumeChanged -= OnVolumeChanged;
+            master.Toggled -= OnToggled;
+            master.RadioStationChanged -= OnRadioStationChanged;
+            master.BeforeDestroy -= OnMasterDestroyed;
+            master.RemoveSpeaker(this);
+        }
 
         audioClient.Host?.DetachClient(audioClient.gameObject);
     }
@@ -115,6 +155,18 @@ public class Speaker : OffGridItem
     private void OnRadioStationChanged(RadioStation? radioStation)
     {
         UpdateAudioClientBinding();
+    }
+
+    private void OnMasterDestroyed()
+    {
+        if (IsServer)
+            SetMaster(null);
+        else
+        {
+            var master = Master;
+            Master = null;
+            OnMasterChanged(master, null);
+        }
     }
 
     private void UpdateAudioClientBinding()

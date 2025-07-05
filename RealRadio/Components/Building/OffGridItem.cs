@@ -13,6 +13,8 @@ namespace RealRadio.Components.Building;
 
 public abstract class OffGridItem : BuildableItem
 {
+    public event Action? BeforeDestroy;
+
     public void InitializeOffGridItem(ItemInstance itemInstance, Vector3 position, Quaternion rotation, Guid guid)
     {
         if (Initialized)
@@ -30,6 +32,14 @@ public abstract class OffGridItem : BuildableItem
     public override void OnStartServer()
     {
         base.OnStartServer();
+    }
+
+    /// <summary>
+    /// Note: When overridden make sure to call this base method first
+    /// </summary>
+    protected virtual void OnDestroy()
+    {
+        BeforeDestroy?.Invoke();
     }
 
     public override BuildableItemData GetBaseData()
