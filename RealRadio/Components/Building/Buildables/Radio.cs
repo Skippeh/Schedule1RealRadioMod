@@ -383,7 +383,7 @@ public class Radio : TogglableOffGridItem, IUsable
         if (RadioStation?.Url == null)
             throw new InvalidOperationException("Can not init. RadioStation or RadioStation.Url is null");
 
-        if (IsOn)
+        if (IsOn && Speakers.Count == 0)
             AudioClientObject.SetActive(true);
         else
             AudioClientObject.SetActive(false);
