@@ -47,7 +47,12 @@ public class Speaker : OffGridItem
         if (next == null)
             Master = null;
         else
+        {
             Master = GUIDManager.GetObject<Radio>(next.Value);
+
+            if (Master == null)
+                throw new ArgumentException($"Could not find radio with guid: {next.Value}");
+        }
 
         try
         {
