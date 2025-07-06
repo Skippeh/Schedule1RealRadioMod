@@ -54,15 +54,8 @@ public class Speaker : OffGridItem
                 throw new ArgumentException($"Could not find radio with guid: {next.Value}");
         }
 
-        try
-        {
-            if (!ReferenceEquals(oldMaster, Master))
-                OnMasterChanged(oldMaster, Master);
-        }
-        catch (Exception ex)
-        {
-            Plugin.Logger.LogError(ex);
-        }
+        if (!ReferenceEquals(oldMaster, Master))
+            OnMasterChanged(oldMaster, Master);
     }
 
     private void OnMasterChanged(Radio? prev, Radio? next)
