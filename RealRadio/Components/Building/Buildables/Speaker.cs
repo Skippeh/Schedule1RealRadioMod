@@ -42,8 +42,6 @@ public class Speaker : OffGridItem
         if (asServer)
             return;
 
-        Plugin.Logger.LogInfo($"Master GUID changed from {prev} to {next}");
-
         var oldMaster = Master;
 
         if (next == null)
@@ -55,8 +53,6 @@ public class Speaker : OffGridItem
         {
             if (!ReferenceEquals(oldMaster, Master))
                 OnMasterChanged(oldMaster, Master);
-            else
-                Plugin.Logger.LogInfo($"Master did not change ({Master})");
         }
         catch (Exception ex)
         {
@@ -66,9 +62,6 @@ public class Speaker : OffGridItem
 
     private void OnMasterChanged(Radio? prev, Radio? next)
     {
-        string prevName = !prev ? "Destroyed Object" : prev?.name ?? "null";
-        Plugin.Logger.LogInfo($"Master changed from {prevName} to {next?.name}");
-
         if (!ReferenceEquals(prev, null))
             UnbindFromMaster(prev);
 
