@@ -1,0 +1,27 @@
+#Root {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#WindowRoot {
+}
+
+#WindowHeader {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+}
+
+#WindowHeader Label {
+    padding: 0;
+    margin: 0;
+    -unity-font-style: bold;
+}
+
+#WindowContent {
+    background-color: rgba(50, 50, 50, 0.7);
+    padding: 10px;
+    flex-grow: 1;
+}

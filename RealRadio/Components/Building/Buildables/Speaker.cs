@@ -3,20 +3,37 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using RealRadio.Components.Audio;
 using RealRadio.Data;
+using ScheduleOne;
 using ScheduleOne.Audio;
+using ScheduleOne.DevUtilities;
+using ScheduleOne.Interaction;
+using ScheduleOne.Management;
+using ScheduleOne.PlayerScripts;
+using ScheduleOne.UI.Compass;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace RealRadio.Components.Building.Buildables;
 
-public class Speaker : OffGridItem
+public class Speaker : OffGridItem, IUsable
 {
     public Radio? Master { get; private set; }
 
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly)]
+    public NetworkObject? NPCUserObject { get; set; }
+
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnPlayerUserChanged))]
+    public NetworkObject? PlayerUserObject { get; set; }
+
     [SerializeField] private StreamAudioClient audioClient = null!;
     [SerializeField] private AudioSourceController audioSourceController = null!;
+    [SerializeField] private SpeakerConfigureUI configureUI = null!;
+    [SerializeField] private Transform configureCameraTransform = null!;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged))]
     private Guid? masterGuid;
+
+    private InteractableOptions interactableOptions = null!;
 
     override public void Awake()
     {
@@ -27,6 +44,15 @@ public class Speaker : OffGridItem
 
         if (audioSourceController == null)
             throw new InvalidOperationException("AudioSourceController is null");
+
+        if (configureUI == null)
+            throw new InvalidOperationException("ConfigureUI is null");
+
+        if (configureCameraTransform == null)
+            throw new InvalidOperationException("ConfigureCameraTransform is null");
+
+        interactableOptions = GetComponentInChildren<InteractableOptions>() ?? throw new InvalidOperationException("No InteractableObject component found in self or children");
+        interactableOptions.OnInteract += OnInteract;
 
         audioClient.ConvertToMono = true;
     }
@@ -65,6 +91,73 @@ public class Speaker : OffGridItem
 
         if (next != null)
             BindToMaster(next);
+    }
+
+    protected virtual void OnPlayerUserChanged(NetworkObject? prev, NetworkObject? next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        if (next == Player.Local.NetworkObject)
+        {
+            configureUI.gameObject.SetActive(true);
+            OnStartConfigure();
+        }
+        else
+        {
+            configureUI.gameObject.SetActive(false);
+
+            if (prev == Player.Local.NetworkObject)
+                OnEndConfigure();
+        }
+    }
+
+    private void OnInteract(string id)
+    {
+        if (id == "configure")
+            StartConfigureIfPossible();
+    }
+
+    private void StartConfigureIfPossible()
+    {
+        if (((IUsable)this).IsInUse)
+            return;
+
+        Plugin.Logger.LogInfo("Start configure speaker");
+        SetPlayerUser(Player.Local.NetworkObject);
+    }
+
+    public void StopConfiguring()
+    {
+        if (PlayerUserObject != Player.Local.NetworkObject)
+            return;
+
+        Plugin.Logger.LogInfo("Stop configure speaker");
+        SetPlayerUser(null);
+    }
+
+    protected virtual void OnStartConfigure()
+    {
+        PlayerCamera.Instance.AddActiveUIElement(name);
+        PlayerCamera.Instance.FreeMouse();
+        Vector3 configureRotation = configureCameraTransform.rotation.eulerAngles;
+        configureRotation.z = 0;
+        PlayerCamera.Instance.OverrideTransform(configureCameraTransform.position, Quaternion.Euler(configureRotation), lerpTime: 0.2f);
+        PlayerCamera.Instance.OverrideFOV(60f, 0.2f);
+        PlayerInventory.Instance.SetInventoryEnabled(false);
+        PlayerMovement.Instance.canMove = false;
+        CompassManager.Instance.SetVisible(false);
+    }
+
+    protected virtual void OnEndConfigure()
+    {
+        PlayerCamera.Instance.RemoveActiveUIElement(name);
+        PlayerCamera.Instance.LockMouse();
+        PlayerCamera.Instance.StopTransformOverride(0.2f);
+        PlayerCamera.Instance.StopFOVOverride(0.2f);
+        PlayerInventory.Instance.SetInventoryEnabled(true);
+        PlayerMovement.Instance.canMove = true;
+        CompassManager.Instance.SetVisible(true);
     }
 
     void OnEnable()
@@ -176,5 +269,51 @@ public class Speaker : OffGridItem
                 masterAudioHost?.AddClient(audioClient.gameObject);
             }
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerUser(NetworkObject? playerObject)
+    {
+        PlayerUserObject = playerObject;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetNPCUser(NetworkObject? playerObject)
+    {
+        NPCUserObject = playerObject;
+    }
+}
+
+public class SpeakerConfigureUI : MonoBehaviour
+{
+    [SerializeField] private UIDocument document = null!;
+
+    private Speaker speaker = null!;
+
+    void Awake()
+    {
+        if (document == null)
+            throw new InvalidOperationException("No UIDocument component found on game object");
+
+        speaker = GetComponentInParent<Speaker>() ?? throw new InvalidOperationException("No Speaker component found in self or parents");
+    }
+
+    void OnEnable()
+    {
+        GameInput.RegisterExitListener(OnExitInput);
+    }
+
+    void OnDisable()
+    {
+        GameInput.DeregisterExitListener(OnExitInput);
+    }
+
+    private void OnExitInput(ExitAction exitAction)
+    {
+        if (exitAction.Used || speaker.PlayerUserObject != Player.Local.NetworkObject)
+            return;
+
+        exitAction.Used = true;
+        speaker.StopConfiguring();
     }
 }
