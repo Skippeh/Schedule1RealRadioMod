@@ -333,6 +333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5842378507992222648}
   - component: {fileID: 8768533847977175351}
+  - component: {fileID: 6969171755080259243}
   m_Layer: 0
   m_Name: BoundingCollider
   m_TagString: Untagged
@@ -376,6 +377,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2795, y: 0.1575, z: 0.0813}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6969171755080259243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1411287135716648670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b6efe429e9f24765f4389c31241fedc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3372910105349487644
 GameObject:
   m_ObjectHideFlags: 0
