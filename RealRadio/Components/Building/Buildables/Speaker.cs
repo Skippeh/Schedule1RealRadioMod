@@ -8,6 +8,7 @@ using ScheduleOne.Audio;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.Interaction;
 using ScheduleOne.Management;
+using ScheduleOne.NPCs.Behaviour;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI.Compass;
 using UnityEngine;
@@ -18,6 +19,12 @@ namespace RealRadio.Components.Building.Buildables;
 public class Speaker : OffGridItem, IUsable
 {
     public Radio? Master { get; private set; }
+
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnSelectedAudioChannelChanged))]
+    public AudioChannel SelectedAudioChannel { get; [ServerRpc(RequireOwnership = false)] set; } = AudioChannel.Both;
+
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStereoOutputChanged))]
+    public bool StereoOutput { get; [ServerRpc(RequireOwnership = false)] set; } = false;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly)]
     public NetworkObject? NPCUserObject { get; set; }
@@ -54,7 +61,11 @@ public class Speaker : OffGridItem, IUsable
         interactableOptions = GetComponentInChildren<InteractableOptions>() ?? throw new InvalidOperationException("No InteractableObject component found in self or children");
         interactableOptions.OnInteract += OnInteract;
 
-        audioClient.ConvertToMono = true;
+        configureUI.ChannelChanged += OnAudioChannelConfigured;
+        configureUI.StereoOutputChanged += OnStereoOutputConfigured;
+
+        OnSelectedAudioChannelChanged(SelectedAudioChannel, SelectedAudioChannel, false);
+        OnStereoOutputChanged(StereoOutput, StereoOutput, false);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -91,6 +102,23 @@ public class Speaker : OffGridItem, IUsable
 
         if (next != null)
             BindToMaster(next);
+    }
+
+    private void OnSelectedAudioChannelChanged(AudioChannel prev, AudioChannel next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        audioClient.LeftChannelVolume = next is AudioChannel.Left or AudioChannel.Both ? 1f : 0f;
+        audioClient.RightChannelVolume = next is AudioChannel.Right or AudioChannel.Both ? 1f : 0f;
+    }
+
+    private void OnStereoOutputChanged(bool prev, bool next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        audioClient.ConvertToMono = !next;
     }
 
     protected virtual void OnPlayerUserChanged(NetworkObject? prev, NetworkObject? next, bool asServer)
@@ -253,6 +281,17 @@ public class Speaker : OffGridItem, IUsable
         }
     }
 
+    private void OnAudioChannelConfigured(AudioChannel channel)
+    {
+        SelectedAudioChannel = channel;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void OnStereoOutputConfigured(bool enabled)
+    {
+        StereoOutput = enabled;
+    }
+
     private void UpdateAudioClientBinding()
     {
         if (Master == null || !Master.IsOn || Master.RadioStation == null)
@@ -282,13 +321,30 @@ public class Speaker : OffGridItem, IUsable
     {
         NPCUserObject = playerObject;
     }
+
+    public enum AudioChannel
+    {
+        Both,
+        Left,
+        Right,
+    }
 }
 
 public class SpeakerConfigureUI : MonoBehaviour
 {
+    public event Action<Speaker.AudioChannel>? ChannelChanged;
+    public event Action<bool>? StereoOutputChanged;
+    public event Action? ConnectSpeakerClicked;
+
     [SerializeField] private UIDocument document = null!;
 
     private Speaker speaker = null!;
+
+#nullable disable
+    private RadioButtonGroup channelGroup;
+    private Toggle stereoOutputToggle;
+    private Button connectSpeakerButton;
+#nullable enable
 
     void Awake()
     {
@@ -300,6 +356,19 @@ public class SpeakerConfigureUI : MonoBehaviour
 
     void OnEnable()
     {
+        var root = document.rootVisualElement;
+        channelGroup = root.Query<RadioButtonGroup>(name: "ChannelGroup").First() ?? throw new InvalidOperationException("Could not find channel group ui element");
+        channelGroup.RegisterValueChangedCallback((e) => ChannelChanged?.Invoke((Speaker.AudioChannel)e.newValue));
+
+        stereoOutputToggle = root.Query<Toggle>(name: "StereoOutput").First() ?? throw new InvalidOperationException("Could not find stereo output toggle ui element");
+        stereoOutputToggle.RegisterValueChangedCallback((e) => StereoOutputChanged?.Invoke(e.newValue));
+
+        connectSpeakerButton = root.Query<Button>(name: "ConnectSpeaker").First() ?? throw new InvalidOperationException("Could not find connect speaker button ui element");
+        connectSpeakerButton.clicked += () => ConnectSpeakerClicked?.Invoke();
+
+        channelGroup.value = (int)speaker.SelectedAudioChannel;
+        stereoOutputToggle.value = speaker.StereoOutput;
+
         GameInput.RegisterExitListener(OnExitInput);
     }
 
