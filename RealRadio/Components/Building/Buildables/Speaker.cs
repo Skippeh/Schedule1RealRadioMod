@@ -286,7 +286,6 @@ public class Speaker : OffGridItem, IUsable
         SelectedAudioChannel = channel;
     }
 
-    [ServerRpc(RequireOwnership = false)]
     private void OnStereoOutputConfigured(bool enabled)
     {
         StereoOutput = enabled;
