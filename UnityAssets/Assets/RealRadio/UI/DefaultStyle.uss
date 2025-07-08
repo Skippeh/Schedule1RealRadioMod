@@ -102,6 +102,20 @@ Label,
     border-radius: 5px;
 }
 
+.unity-radio-button-group > .unity-base-field__input {
+    background-color: transparent;
+    padding: 0;
+}
+
+.unity-radio-button {
+    margin: 0;
+}
+
+.unity-radio-button > .unity-base-field__input {
+    background-color: transparent;
+    color: white;
+}
+
 .unity-base-field > .unity-toggle__input {
     background-color: transparent;
 }

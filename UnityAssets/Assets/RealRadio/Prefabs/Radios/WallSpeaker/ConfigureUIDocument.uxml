@@ -5,7 +5,11 @@
             <ui:VisualElement name="WindowHeader">
                 <ui:Label tabindex="-1" text="Configure Speaker" />
             </ui:VisualElement>
-            <ui:VisualElement name="WindowContent" />
+            <ui:VisualElement name="WindowContent">
+                <ui:RadioButtonGroup label="Audio Channel" value="-1" choices="Both,Left,Right" name="ChannelGroup" />
+                <ui:Toggle label="Stereo Output" name="StereoOutput" />
+                <ui:Button text="Connect Speaker" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConnectSpeaker" class="primary" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
