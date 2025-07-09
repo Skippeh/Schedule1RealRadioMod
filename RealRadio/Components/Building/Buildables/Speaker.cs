@@ -10,6 +10,7 @@ using ScheduleOne.Interaction;
 using ScheduleOne.Management;
 using ScheduleOne.NPCs.Behaviour;
 using ScheduleOne.PlayerScripts;
+using ScheduleOne.UI;
 using ScheduleOne.UI.Compass;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -63,6 +64,7 @@ public class Speaker : OffGridItem, IUsable
 
         configureUI.ChannelChanged += OnAudioChannelConfigured;
         configureUI.StereoOutputChanged += OnStereoOutputConfigured;
+        configureUI.ConnectSpeakerClicked += OnConnectSpeakerClicked;
 
         OnSelectedAudioChannelChanged(SelectedAudioChannel, SelectedAudioChannel, false);
         OnStereoOutputChanged(StereoOutput, StereoOutput, false);
@@ -172,6 +174,7 @@ public class Speaker : OffGridItem, IUsable
         configureRotation.z = 0;
         PlayerCamera.Instance.OverrideTransform(configureCameraTransform.position, Quaternion.Euler(configureRotation), lerpTime: 0.2f);
         PlayerCamera.Instance.OverrideFOV(60f, 0.2f);
+        PlayerCamera.Instance.AddActiveUIElement(name);
         PlayerInventory.Instance.SetInventoryEnabled(false);
         PlayerMovement.Instance.canMove = false;
         CompassManager.Instance.SetVisible(false);
@@ -183,6 +186,7 @@ public class Speaker : OffGridItem, IUsable
         PlayerCamera.Instance.LockMouse();
         PlayerCamera.Instance.StopTransformOverride(0.2f);
         PlayerCamera.Instance.StopFOVOverride(0.2f);
+        PlayerCamera.Instance.RemoveActiveUIElement(name);
         PlayerInventory.Instance.SetInventoryEnabled(true);
         PlayerMovement.Instance.canMove = true;
         CompassManager.Instance.SetVisible(true);
@@ -289,6 +293,13 @@ public class Speaker : OffGridItem, IUsable
     private void OnStereoOutputConfigured(bool enabled)
     {
         StereoOutput = enabled;
+    }
+
+    private void OnConnectSpeakerClicked()
+    {
+        StopConfiguring();
+        SpeakerConnectionManager.Instance.EnableEditMode(gameObject, finishedCallback: HUD.Instance.HideTopScreenText);
+        HUD.Instance.ShowTopScreenText("Click a radio or another connected speaker to connect the speaker to it");
     }
 
     private void UpdateAudioClientBinding()
