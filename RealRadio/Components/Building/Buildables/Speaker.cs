@@ -298,8 +298,7 @@ public class Speaker : OffGridItem, IUsable
     private void OnConnectSpeakerClicked()
     {
         StopConfiguring();
-        SpeakerConnectionManager.Instance.EnableEditMode(gameObject, finishedCallback: HUD.Instance.HideTopScreenText);
-        HUD.Instance.ShowTopScreenText("Click a radio or another connected speaker to connect the speaker to it");
+        SpeakerConnectionManager.Instance.EnableEditMode(this);
     }
 
     private void UpdateAudioClientBinding()
