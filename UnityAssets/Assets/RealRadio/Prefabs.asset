@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: Prefabs
   m_EditorClassIdentifier: 
   VehicleRadioProxy: {fileID: 5669161005892128424, guid: 6d3919facbb435f4b852e58bc3b42fa2, type: 3}
+  SelectionArrow: {fileID: 4413356803464595821, guid: 104c1504bc9513949bf7fdc5d1d29b26, type: 3}

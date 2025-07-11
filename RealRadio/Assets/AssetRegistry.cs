@@ -90,6 +90,9 @@ public class AssetRegistry : ScriptableObject
         if (result.Prefabs.VehicleRadioProxy == null)
             throw new AssetRegistryLoadException("Prefabs.VehicleRadio is null");
 
+        if (result.Prefabs.SelectionArrow == null)
+            throw new AssetRegistryLoadException("Prefabs.SelectionArrow is null");
+
         result.DefaultRadioStations = assetBundle.LoadAllAssets<RadioStation>();
 
         return result;
@@ -193,5 +196,6 @@ public class Prefabs : ScriptableObject
 {
 #nullable disable
     public GameObject VehicleRadioProxy;
+    public GameObject SelectionArrow;
 #nullable enable
 }
