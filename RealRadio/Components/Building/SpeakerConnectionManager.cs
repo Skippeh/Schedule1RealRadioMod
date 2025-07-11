@@ -12,7 +12,6 @@ namespace RealRadio.Components.Building;
 public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 {
     public event Action<Speaker, Buildables.Radio>? SpeakerConnected;
-    public event Action<Speaker, Buildables.Radio>? SpeakerDisconnected;
 
     private bool editModeEnabled;
     private Action? finishedCallback;
@@ -85,7 +84,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         DisableEditMode();
     }
 
-    public void EnableEditMode(BuildableItem? initialSelectedItem = null, Action? finishedCallback = null)
+    public void EnableEditMode(BuildableItem? initialSelectedItem = null, Action<Speaker, Buildables.Radio>? connectedCallback = null)
     {
         if (initialSelectedItem != null && initialSelectedItem is not Speaker or Buildables.Radio)
             throw new ArgumentException($"{nameof(initialSelectedItem)} ({initialSelectedItem}) must be a {nameof(Speaker)} or {nameof(Buildables.Radio)}");
@@ -96,10 +95,12 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         editModeEnabled = true;
         SelectedBuildableItem = initialSelectedItem;
 
-        this.finishedCallback += OnFinished;
+        SpeakerConnected += connectedCallback;
+        finishedCallback += OnFinished;
         void OnFinished()
         {
-            this.finishedCallback -= OnFinished;
+            SpeakerConnected -= connectedCallback;
+            finishedCallback -= OnFinished;
             finishedCallback?.Invoke();
         }
 
