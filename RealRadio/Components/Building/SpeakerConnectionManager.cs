@@ -81,10 +81,10 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
             return;
 
         exitAction.Used = true;
-        DisableEditMode();
+        StopEditMode();
     }
 
-    public void EnableEditMode(BuildableItem? initialSelectedItem = null, Action<Speaker, Buildables.Radio>? connectedCallback = null)
+    public void StartEditMode(BuildableItem? initialSelectedItem = null, Action<Speaker, Buildables.Radio>? connectedCallback = null)
     {
         if (initialSelectedItem != null && initialSelectedItem is not Speaker or Buildables.Radio)
             throw new ArgumentException($"{nameof(initialSelectedItem)} ({initialSelectedItem}) must be a {nameof(Speaker)} or {nameof(Buildables.Radio)}");
@@ -107,7 +107,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         PlayerCamera.Instance.AddActiveUIElement(name);
     }
 
-    public void DisableEditMode()
+    public void StopEditMode()
     {
         if (!editModeEnabled)
             return;

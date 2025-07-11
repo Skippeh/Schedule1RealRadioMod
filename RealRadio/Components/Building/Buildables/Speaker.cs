@@ -298,11 +298,11 @@ public class Speaker : OffGridItem, IUsable
     private void OnConnectSpeakerClicked()
     {
         StopConfiguring();
-        SpeakerConnectionManager.Instance.EnableEditMode(this, SpeakerConnectedCallback);
+        SpeakerConnectionManager.Instance.StartEditMode(this, SpeakerConnectedCallback);
 
         void SpeakerConnectedCallback(Speaker speaker, Radio radio)
         {
-            SpeakerConnectionManager.Instance.DisableEditMode();
+            SpeakerConnectionManager.Instance.StopEditMode();
         }
     }
 
