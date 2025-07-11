@@ -1,8 +1,11 @@
 using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using RealRadio.Components.Building.Buildables;
 using ScheduleOne;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.EntityFramework;
+using ScheduleOne.ItemFramework;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI;
 using UnityEngine;
@@ -15,7 +18,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private bool editModeEnabled;
     private Action? finishedCallback;
-    private RaycastHit[] hits = new RaycastHit[1];
+    private RaycastHit[] hits = new RaycastHit[4];
     private GameObject? HoveredObject
     {
         get => hoveredObject;
@@ -64,6 +67,20 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     private GameObject? hoveredObject;
     private BuildableItem? hoveredBuildableItem;
     private BuildableItem? selectedBuildableItem;
+    private GameObject selectionArrow = null!;
+    private Animator? arrowAnimator;
+    private int spawnAnimationHash;
+
+    public override void Awake()
+    {
+        base.Awake();
+
+        selectionArrow = Instantiate(Plugin.Assets!.Prefabs.SelectionArrow);
+        selectionArrow.SetActive(false);
+        arrowAnimator = selectionArrow.GetComponentInChildren<Animator>();
+
+        spawnAnimationHash = Animator.StringToHash("Base Layer.SpawnAnimation");
+    }
 
     void OnEnable()
     {
@@ -127,12 +144,31 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         if (!editModeEnabled)
             return;
 
-        if (Physics.RaycastNonAlloc(PlayerCamera.Instance.transform.position, PlayerCamera.Instance.transform.forward, hits, maxDistance: 2f, Layers.Default.ToLayerMask()) == 0)
+        int numHits = Physics.RaycastNonAlloc(PlayerCamera.Instance.transform.position, PlayerCamera.Instance.transform.forward, hits, maxDistance: 4f, Layers.Default.ToLayerMask());
+
+        if (numHits == 0)
+        {
+            HoveredObject = null;
             return;
+        }
 
-        ref RaycastHit hit = ref hits[0];
+        bool found = false;
 
-        HoveredObject = hit.collider?.gameObject;
+        for (int i = 0; i < numHits; ++i)
+        {
+            if (hits[i].collider.GetComponentInParent<BuildableItem>() != null)
+            {
+                HoveredObject = hits[i].collider.gameObject;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            HoveredObject = null;
+            return;
+        }
 
         if (!GameInput.GetButtonDown(GameInput.ButtonCode.PrimaryClick))
             return;
@@ -141,7 +177,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         {
             SelectedBuildableItem = (BuildableItem?)HoveredSpeaker ?? HoveredRadio;
         }
-        else
+        else if (IsValidConnectionTarget(HoveredBuildableItem))
         {
             if (SelectedSpeaker != null && HoveredRadio != null)
             {
@@ -172,6 +208,27 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private void OnHoveredBuildableItemChanged()
     {
+        if (IsValidConnectionTarget(HoveredBuildableItem))
+        {
+            selectionArrow.SetActive(true);
+            Vector3 position = GetTopPosition(HoveredBuildableItem);
+            selectionArrow.transform.position = position;
+
+            arrowAnimator?.Play(spawnAnimationHash);
+        }
+        else
+        {
+            selectionArrow.SetActive(false);
+        }
+    }
+
+    private Vector3 GetTopPosition(BuildableItem item)
+    {
+        Vector3 position = item.BoundingCollider.bounds.center;
+        BuildableItem prefab = ((BuildableItemDefinition)item.ItemInstance.Definition).BuiltItem;
+        Vector3 size = Vector3.Scale(prefab.BoundingCollider.size, prefab.BoundingCollider.transform.lossyScale);
+        position.y += size.y / 2f * item.transform.lossyScale.y;
+        return position;
     }
 
     private void OnSelectedBuildableItemChanged()
@@ -201,5 +258,24 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     private string GetItemName(BuildableItem item)
     {
         return item.ItemInstance.Definition.Name;
+    }
+
+    private bool IsValidConnectionTarget([NotNullWhen(true)] BuildableItem? item)
+    {
+        if (item == null)
+            return false;
+
+        if (item == SelectedBuildableItem)
+            return false;
+
+        if (SelectedBuildableItem == null)
+            return SelectedSpeaker || SelectedRadio;
+
+        bool selectedIsSpeaker = SelectedSpeaker != null;
+
+        if (selectedIsSpeaker)
+            return item is Buildables.Radio || item is Speaker speaker && speaker.Master != null;
+
+        return item is Speaker;
     }
 }
