@@ -93,6 +93,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     void OnDisable()
     {
         GameInput.DeregisterExitListener(OnExitInput);
+        StopEditMode();
     }
 
     private void OnExitInput(ExitAction exitAction)
