@@ -55,8 +55,9 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
             if (selectedBuildableItem == value)
                 return;
 
+            var oldValue = selectedBuildableItem;
             selectedBuildableItem = value;
-            OnSelectedBuildableItemChanged();
+            OnSelectedBuildableItemChanged(oldValue);
         }
     }
 
@@ -237,10 +238,21 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         return position;
     }
 
-    private void OnSelectedBuildableItemChanged()
+    private void OnSelectedBuildableItemChanged(BuildableItem? prev)
     {
         if (EditModeEnabled)
             HUD.Instance.ShowTopScreenText(GetHudText());
+
+        if (prev != null && prev is OffGridItem prevOffGridItem)
+            prevOffGridItem.BeforeDestroy -= OnSelectedItemDestroying;
+
+        if (SelectedBuildableItem != null && SelectedBuildableItem is OffGridItem nextOffGridItem)
+            nextOffGridItem.BeforeDestroy += OnSelectedItemDestroying;
+    }
+
+    private void OnSelectedItemDestroying()
+    {
+        SelectedBuildableItem = null;
     }
 
     private string GetHudText()
