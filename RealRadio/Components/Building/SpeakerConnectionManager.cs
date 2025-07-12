@@ -280,7 +280,14 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         else
         {
             if (SelectedSpeaker != null)
-                return $"Select a radio or another connected speaker to connect to {GetItemName(SelectedSpeaker)}";
+            {
+                string connectedText = "connected";
+
+                if (SelectedSpeaker.Master != null)
+                    connectedText += " or disconnected";
+
+                return $"Select a radio or another {connectedText} speaker to connect to {GetItemName(SelectedSpeaker)}";
+            }
 
             if (SelectedRadio != null)
                 return $"Select a speaker to connect to {GetItemName(SelectedRadio)}";
@@ -308,7 +315,19 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         bool selectedIsSpeaker = SelectedSpeaker != null;
 
         if (selectedIsSpeaker)
-            return item is Buildables.Radio || item is Speaker speaker && speaker.Master != null;
+        {
+            if (item is Buildables.Radio)
+                return true;
+
+            if (item is Speaker speaker)
+            {
+                // Allow connecting a connected speaker to a disconnected speaker
+                if (SelectedSpeaker?.Master != null)
+                    return speaker.Master == null;
+
+                return speaker.Master != null;
+            }
+        }
 
         return item is Speaker;
     }
