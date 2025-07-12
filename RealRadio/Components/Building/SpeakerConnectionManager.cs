@@ -17,7 +17,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 {
     public event Action<Speaker, Buildables.Radio>? SpeakerConnected;
 
-    private bool editModeEnabled;
+    public bool EditModeEnabled { get; private set; }
+
     private Action? finishedCallback;
     private RaycastHit[] hits = new RaycastHit[4];
     private GameObject? HoveredObject
@@ -95,7 +96,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private void OnExitInput(ExitAction exitAction)
     {
-        if (!editModeEnabled || exitAction.Used || exitAction.exitType != ExitType.Escape)
+        if (!EditModeEnabled || exitAction.Used || exitAction.exitType != ExitType.Escape)
             return;
 
         exitAction.Used = true;
@@ -107,10 +108,10 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         if (initialSelectedItem != null && initialSelectedItem is not Speaker or Buildables.Radio)
             throw new ArgumentException($"{nameof(initialSelectedItem)} ({initialSelectedItem}) must be a {nameof(Speaker)} or {nameof(Buildables.Radio)}");
 
-        if (editModeEnabled)
+        if (EditModeEnabled)
             return;
 
-        editModeEnabled = true;
+        EditModeEnabled = true;
         SelectedBuildableItem = initialSelectedItem;
 
         SpeakerConnected += connectedCallback;
@@ -129,10 +130,10 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     public void StopEditMode()
     {
-        if (!editModeEnabled)
+        if (!EditModeEnabled)
             return;
 
-        editModeEnabled = false;
+        EditModeEnabled = false;
         SelectedBuildableItem = null;
         HoveredBuildableItem = null;
         HoveredObject = null;
@@ -146,7 +147,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     void Update()
     {
-        if (!editModeEnabled)
+        if (!EditModeEnabled)
             return;
 
         int numHits = Physics.RaycastNonAlloc(PlayerCamera.Instance.transform.position, PlayerCamera.Instance.transform.forward, hits, maxDistance: 4f, Layers.Default.ToLayerMask());
@@ -238,7 +239,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private void OnSelectedBuildableItemChanged()
     {
-        if (editModeEnabled)
+        if (EditModeEnabled)
             HUD.Instance.ShowTopScreenText(GetHudText());
     }
 
