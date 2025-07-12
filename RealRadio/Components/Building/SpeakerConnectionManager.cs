@@ -221,10 +221,16 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private void OnHoveredBuildableItemChanged()
     {
-        if (IsValidConnectionTarget(HoveredBuildableItem))
+        ShowArrowOnObjectIfValid(HoveredBuildableItem);
+        HoveredItemChanged?.Invoke(HoveredBuildableItem);
+    }
+
+    private void ShowArrowOnObjectIfValid(BuildableItem? item)
+    {
+        if (IsValidConnectionTarget(item))
         {
             selectionArrow.SetActive(true);
-            Vector3 position = GetTopPosition(HoveredBuildableItem);
+            Vector3 position = GetTopPosition(item);
             selectionArrow.transform.position = position;
 
             arrowAnimator?.Play(spawnAnimationHash);
@@ -233,8 +239,6 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         {
             selectionArrow.SetActive(false);
         }
-
-        HoveredItemChanged?.Invoke(HoveredBuildableItem);
     }
 
     private Vector3 GetTopPosition(BuildableItem item)
@@ -250,6 +254,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     {
         if (EditModeEnabled)
             HUD.Instance.ShowTopScreenText(GetHudText());
+
+        ShowArrowOnObjectIfValid(HoveredBuildableItem);
 
         if (prev != null && prev is OffGridItem prevOffGridItem)
             prevOffGridItem.BeforeDestroy -= OnSelectedItemDestroying;
