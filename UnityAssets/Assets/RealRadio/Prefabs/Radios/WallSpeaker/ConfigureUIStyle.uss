@@ -28,3 +28,11 @@
     padding: 10px;
     flex-grow: 1;
 }
+
+#ButtonsContainer {
+    flex-direction: row;
+}
+
+#ConnectSpeaker {
+    flex-grow: 1;
+}

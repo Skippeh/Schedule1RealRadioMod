@@ -21,6 +21,8 @@ namespace RealRadio.Components.Building.Buildables;
 
 public class Speaker : OffGridItem, IUsable
 {
+    public event Action<Radio?>? MasterChanged;
+
     public Radio? Master { get; private set; }
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnSelectedAudioChannelChanged), SendRate = 0)]
@@ -68,6 +70,7 @@ public class Speaker : OffGridItem, IUsable
         configureUI.ChannelChanged += OnAudioChannelConfigured;
         configureUI.StereoOutputChanged += OnStereoOutputConfigured;
         configureUI.ConnectSpeakerClicked += OnConnectSpeakerClicked;
+        configureUI.DisconnectSpeakerClicked += OnDisconnectSpeakerClicked;
     }
 
     public override void OnStartClient()
@@ -151,6 +154,8 @@ public class Speaker : OffGridItem, IUsable
 
         if (next != null)
             BindToMaster(next);
+
+        MasterChanged?.Invoke(next);
     }
 
     private void OnSelectedAudioChannelChanged(AudioChannel prev, AudioChannel next, bool asServer)
@@ -344,6 +349,11 @@ public class Speaker : OffGridItem, IUsable
         }
     }
 
+    private void OnDisconnectSpeakerClicked()
+    {
+        SetMaster(null);
+    }
+
     private void UpdateAudioClientBinding()
     {
         if (Master == null || !Master.IsOn || Master.RadioStation == null)
@@ -387,6 +397,7 @@ public class SpeakerConfigureUI : MonoBehaviour
     public event Action<Speaker.AudioChannel>? ChannelChanged;
     public event Action<bool>? StereoOutputChanged;
     public event Action? ConnectSpeakerClicked;
+    public event Action? DisconnectSpeakerClicked;
 
     [SerializeField] private UIDocument document = null!;
 
@@ -396,6 +407,7 @@ public class SpeakerConfigureUI : MonoBehaviour
     private RadioButtonGroup channelGroup;
     private Toggle stereoOutputToggle;
     private Button connectSpeakerButton;
+    private Button disconnectSpeakerButton;
 #nullable enable
 
     void Awake()
@@ -418,14 +430,21 @@ public class SpeakerConfigureUI : MonoBehaviour
         connectSpeakerButton = root.Query<Button>(name: "ConnectSpeaker").First() ?? throw new InvalidOperationException("Could not find connect speaker button ui element");
         connectSpeakerButton.clicked += () => ConnectSpeakerClicked?.Invoke();
 
+        disconnectSpeakerButton = root.Query<Button>(name: "DisconnectSpeaker").First() ?? throw new InvalidOperationException("Could not find disconnect speaker button ui element");
+        disconnectSpeakerButton.clicked += () => DisconnectSpeakerClicked?.Invoke();
+
         channelGroup.value = (int)speaker.SelectedAudioChannel;
         stereoOutputToggle.value = speaker.StereoOutput;
 
+        speaker.MasterChanged += OnMasterChanged;
         GameInput.RegisterExitListener(OnExitInput);
+
+        OnMasterChanged(speaker.Master);
     }
 
     void OnDisable()
     {
+        speaker.MasterChanged -= OnMasterChanged;
         GameInput.DeregisterExitListener(OnExitInput);
     }
 
@@ -436,5 +455,10 @@ public class SpeakerConfigureUI : MonoBehaviour
 
         exitAction.Used = true;
         speaker.StopConfiguring();
+    }
+
+    private void OnMasterChanged(Radio? master)
+    {
+        disconnectSpeakerButton.SetEnabled(speaker.Master != null);
     }
 }

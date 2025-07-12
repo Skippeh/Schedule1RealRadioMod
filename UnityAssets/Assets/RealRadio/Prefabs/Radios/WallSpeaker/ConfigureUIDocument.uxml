@@ -8,7 +8,10 @@
             <ui:VisualElement name="WindowContent">
                 <ui:RadioButtonGroup label="Audio Channel" value="-1" choices="Both,Left,Right" name="ChannelGroup" />
                 <ui:Toggle label="Stereo Output" name="StereoOutput" />
-                <ui:Button text="Connect Speaker" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConnectSpeaker" class="primary" />
+                <ui:VisualElement name="ButtonsContainer">
+                    <ui:Button text="Connect Speaker" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConnectSpeaker" class="primary" />
+                    <ui:Button text="Disconnect" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DisconnectSpeaker" class="warning" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
