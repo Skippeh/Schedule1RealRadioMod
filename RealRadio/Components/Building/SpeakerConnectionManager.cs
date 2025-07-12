@@ -8,6 +8,7 @@ using ScheduleOne.EntityFramework;
 using ScheduleOne.ItemFramework;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI;
+using ScheduleOne.UI.Compass;
 using UnityEngine;
 
 namespace RealRadio.Components.Building;
@@ -122,6 +123,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         }
 
         PlayerCamera.Instance.AddActiveUIElement(name);
+        CompassManager.Instance.SetVisible(false);
+        PlayerInventory.Instance.SetInventoryEnabled(false);
     }
 
     public void StopEditMode()
@@ -135,6 +138,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         HoveredObject = null;
         PlayerCamera.Instance.RemoveActiveUIElement(name);
         HUD.Instance.HideTopScreenText();
+        CompassManager.Instance.SetVisible(true);
+        PlayerInventory.Instance.SetInventoryEnabled(true);
 
         finishedCallback?.Invoke();
     }
