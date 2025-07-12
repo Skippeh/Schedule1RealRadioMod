@@ -97,11 +97,15 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private void OnExitInput(ExitAction exitAction)
     {
-        if (!EditModeEnabled || exitAction.Used || exitAction.exitType != ExitType.Escape)
+        if (!EditModeEnabled || exitAction.Used)
             return;
 
         exitAction.Used = true;
-        StopEditMode();
+
+        if (exitAction.exitType == ExitType.Escape)
+            StopEditMode();
+        else if (exitAction.exitType == ExitType.RightClick)
+            SelectedBuildableItem = null;
     }
 
     public void StartEditMode(BuildableItem? initialSelectedItem = null, Action<Speaker, Buildables.Radio>? connectedCallback = null)
