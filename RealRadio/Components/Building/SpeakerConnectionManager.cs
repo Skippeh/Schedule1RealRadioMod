@@ -100,7 +100,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         if (!EditModeEnabled || exitAction.Used)
             return;
 
-        exitAction.Used = true;
+        exitAction.Used = exitAction.exitType is ExitType.Escape or ExitType.RightClick;
 
         if (exitAction.exitType == ExitType.Escape)
             StopEditMode();
