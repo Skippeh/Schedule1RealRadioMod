@@ -16,6 +16,8 @@ namespace RealRadio.Components.Building;
 public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 {
     public event Action<Speaker, Buildables.Radio>? SpeakerConnected;
+    public event Action<BuildableItem?>? SelectedItemChanged;
+    public event Action<BuildableItem?>? HoveredItemChanged;
 
     public bool EditModeEnabled { get; private set; }
 
@@ -231,6 +233,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         {
             selectionArrow.SetActive(false);
         }
+
+        HoveredItemChanged?.Invoke(HoveredBuildableItem);
     }
 
     private Vector3 GetTopPosition(BuildableItem item)
@@ -252,6 +256,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
         if (SelectedBuildableItem != null && SelectedBuildableItem is OffGridItem nextOffGridItem)
             nextOffGridItem.BeforeDestroy += OnSelectedItemDestroying;
+
+        SelectedItemChanged?.Invoke(SelectedBuildableItem);
     }
 
     private void OnSelectedItemDestroying()
