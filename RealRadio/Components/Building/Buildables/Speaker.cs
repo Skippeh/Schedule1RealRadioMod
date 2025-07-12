@@ -186,10 +186,16 @@ public class Speaker : OffGridItem, IUsable
         PlayerCamera.Instance.LockMouse();
         PlayerCamera.Instance.StopTransformOverride(0.2f);
         PlayerCamera.Instance.StopFOVOverride(0.2f);
-        PlayerCamera.Instance.RemoveActiveUIElement(name);
-        PlayerInventory.Instance.SetInventoryEnabled(true);
         PlayerMovement.Instance.canMove = true;
-        CompassManager.Instance.SetVisible(true);
+
+        // Hack: This method is called after SpeakerConnectionManager is enabled (which disables these two) due to the PlayerUserObject SyncVar change invocation happening later.
+        // Check if SpeakerConnectionManager is enabled and don't re-enable them if so.
+        // todo: Find a better way that doesn't involve classes checking if edit mode is enabled to re-enable stuff.
+        if (!SpeakerConnectionManager.Instance.EditModeEnabled)
+        {
+            PlayerInventory.Instance.SetInventoryEnabled(true);
+            CompassManager.Instance.SetVisible(true);
+        }
     }
 
     void OnEnable()
