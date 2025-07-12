@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Diagnostics;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using RealRadio.Components.Audio;
@@ -21,16 +23,16 @@ public class Speaker : OffGridItem, IUsable
 {
     public Radio? Master { get; private set; }
 
-    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnSelectedAudioChannelChanged))]
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnSelectedAudioChannelChanged), SendRate = 0)]
     public AudioChannel SelectedAudioChannel { get; [ServerRpc(RequireOwnership = false)] set; } = AudioChannel.Both;
 
-    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStereoOutputChanged))]
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStereoOutputChanged), SendRate = 0)]
     public bool StereoOutput { get; [ServerRpc(RequireOwnership = false)] set; } = false;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly)]
     public NetworkObject? NPCUserObject { get; set; }
 
-    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnPlayerUserChanged))]
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnPlayerUserChanged), SendRate = 0)]
     public NetworkObject? PlayerUserObject { get; set; }
 
     [SerializeField] private StreamAudioClient audioClient = null!;
@@ -38,10 +40,11 @@ public class Speaker : OffGridItem, IUsable
     [SerializeField] private SpeakerConfigureUI configureUI = null!;
     [SerializeField] private Transform configureCameraTransform = null!;
 
-    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged))]
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged), SendRate = 0)]
     private Guid? masterGuid;
 
     private InteractableOptions interactableOptions = null!;
+    private Coroutine? findRadioCoroutine;
 
     override public void Awake()
     {
@@ -65,9 +68,16 @@ public class Speaker : OffGridItem, IUsable
         configureUI.ChannelChanged += OnAudioChannelConfigured;
         configureUI.StereoOutputChanged += OnStereoOutputConfigured;
         configureUI.ConnectSpeakerClicked += OnConnectSpeakerClicked;
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
 
         OnSelectedAudioChannelChanged(SelectedAudioChannel, SelectedAudioChannel, false);
         OnStereoOutputChanged(StereoOutput, StereoOutput, false);
+        OnMasterGuidChanged(masterGuid, masterGuid, false);
+        OnPlayerUserChanged(PlayerUserObject, PlayerUserObject, false);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -84,17 +94,54 @@ public class Speaker : OffGridItem, IUsable
         var oldMaster = Master;
 
         if (next == null)
+        {
             Master = null;
+
+            if (!ReferenceEquals(oldMaster, Master))
+                OnMasterChanged(oldMaster, Master);
+        }
         else
         {
-            Master = GUIDManager.GetObject<Radio>(next.Value);
+            if (IsServer)
+            {
+                Radio radio = GUIDManager.GetObject<Radio>(next.Value);
 
-            if (Master == null)
-                throw new ArgumentException($"Could not find radio with guid: {next.Value}");
+                if (radio == null)
+                    throw new ArgumentException($"[SERVER] Could not find radio with guid: {next.Value}");
+
+                Master = radio;
+
+                if (!ReferenceEquals(oldMaster, Master))
+                    OnMasterChanged(oldMaster, Master);
+            }
+            else
+            {
+                if (findRadioCoroutine != null)
+                    StopCoroutine(findRadioCoroutine);
+
+                findRadioCoroutine = StartCoroutine(WaitForRadioThenSetMaster());
+
+                IEnumerator WaitForRadioThenSetMaster()
+                {
+                    // Max waiting time in seconds for radio to be found.
+                    // This needs to be relatively high due to items being registered in the Start method on clients,
+                    // which isn't called immediately when joining the server and depends on how long the client takes to receive network data from server.
+                    const float MAX_WAIT_TIME = 10f;
+
+                    float startTime = Time.unscaledTime;
+                    Radio? radio = null;
+                    yield return new WaitUntil(() => Time.unscaledTime - startTime > MAX_WAIT_TIME || (radio = GUIDManager.GetObject<Radio>(next.Value)) != null);
+
+                    if (radio == null)
+                        throw new ArgumentException($"[CLIENT] Could not find radio with guid: {next.Value}");
+
+                    Master = radio;
+
+                    if (!ReferenceEquals(oldMaster, Master))
+                        OnMasterChanged(oldMaster, Master);
+                }
+            }
         }
-
-        if (!ReferenceEquals(oldMaster, Master))
-            OnMasterChanged(oldMaster, Master);
     }
 
     private void OnMasterChanged(Radio? prev, Radio? next)
@@ -128,7 +175,7 @@ public class Speaker : OffGridItem, IUsable
         if (asServer)
             return;
 
-        if (next == Player.Local.NetworkObject)
+        if (next != null && next == Player.Local?.NetworkObject)
         {
             configureUI.gameObject.SetActive(true);
             OnStartConfigure();
@@ -137,7 +184,7 @@ public class Speaker : OffGridItem, IUsable
         {
             configureUI.gameObject.SetActive(false);
 
-            if (prev == Player.Local.NetworkObject)
+            if (Player.Local != null && prev == Player.Local?.NetworkObject)
                 OnEndConfigure();
         }
     }
