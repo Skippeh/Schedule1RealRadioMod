@@ -121,7 +121,6 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         {
             SpeakerConnected -= connectedCallback;
             finishedCallback -= OnFinished;
-            finishedCallback?.Invoke();
         }
 
         PlayerCamera.Instance.AddActiveUIElement(name);
