@@ -263,21 +263,6 @@ public class Speaker : OffGridItem, IUsable
             UnbindFromMaster(Master);
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            if (Master == null)
-            {
-                // Debug: find first small portable radio and set it as master
-                var smallPortableRadio = FindObjectOfType<SmallPortableRadio>();
-
-                if (smallPortableRadio != null)
-                    SetMaster(smallPortableRadio.GetComponent<Radio>());
-            }
-        }
-    }
-
     private void BindToMaster(Radio master)
     {
         if (master == null)
