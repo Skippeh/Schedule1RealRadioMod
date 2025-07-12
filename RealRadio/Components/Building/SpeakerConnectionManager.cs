@@ -283,11 +283,11 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         if (item == null)
             return false;
 
-        if (item == SelectedBuildableItem)
+        if (SelectedBuildableItem != null && item == SelectedBuildableItem)
             return false;
 
         if (SelectedBuildableItem == null)
-            return SelectedSpeaker || SelectedRadio;
+            return item is Buildables.Radio or Speaker;
 
         bool selectedIsSpeaker = SelectedSpeaker != null;
 
