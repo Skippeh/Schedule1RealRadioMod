@@ -12,3 +12,4 @@ Playlist add icon: https://www.flaticon.com/free-icons/add-to-playlist
 Download icon: https://www.flaticon.com/free-icons/download
 X icon: X by Royyan Wijaya from https://thenounproject.com/browse/icons/term/x/ (CC BY 3.0)
 Text icon: text by Gregor Cresnar https://thenounproject.com/browse/icons/term/text/ (CC BY 3.0)
+Rotate icon: Rotate by Chondon Backla from https://thenounproject.com/browse/icons/term/rotate/ (CC BY 3.0)

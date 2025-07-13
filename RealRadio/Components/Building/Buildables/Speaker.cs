@@ -37,16 +37,24 @@ public class Speaker : OffGridItem, IUsable
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnPlayerUserChanged), SendRate = 0)]
     public NetworkObject? PlayerUserObject { get; set; }
 
+    [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, SendRate = 0.1f, OnChange = nameof(OnMountRotationChanged))]
+    public Vector2 MountRotation { get; private set; }
+
+    [field: SerializeField] public Vector2 MountRotationLimitsX { get; private set; }
+    [field: SerializeField] public Vector2 MountRotationLimitsY { get; private set; }
+
     [SerializeField] private StreamAudioClient audioClient = null!;
     [SerializeField] private AudioSourceController audioSourceController = null!;
     [SerializeField] private SpeakerConfigureUI configureUI = null!;
     [SerializeField] private Transform configureCameraTransform = null!;
+    [SerializeField] private Transform mountTransform = null!;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged), SendRate = 0)]
     private Guid? masterGuid;
 
     private InteractableOptions interactableOptions = null!;
     private Coroutine? findRadioCoroutine;
+    private bool configuringMountAngle;
 
     override public void Awake()
     {
@@ -63,6 +71,9 @@ public class Speaker : OffGridItem, IUsable
 
         if (configureCameraTransform == null)
             throw new InvalidOperationException("ConfigureCameraTransform is null");
+
+        if (mountTransform == null)
+            throw new InvalidOperationException("MountTransform is null");
 
         interactableOptions = GetComponentInChildren<InteractableOptions>() ?? throw new InvalidOperationException("No InteractableObject component found in self or children");
         interactableOptions.OnInteract += OnInteract;
@@ -81,6 +92,7 @@ public class Speaker : OffGridItem, IUsable
         OnStereoOutputChanged(StereoOutput, StereoOutput, false);
         OnMasterGuidChanged(masterGuid, masterGuid, false);
         OnPlayerUserChanged(PlayerUserObject, PlayerUserObject, false);
+        OnMountRotationChanged(MountRotation, MountRotation, false);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -182,22 +194,36 @@ public class Speaker : OffGridItem, IUsable
 
         if (next != null && next == Player.Local?.NetworkObject)
         {
-            configureUI.gameObject.SetActive(true);
             OnStartConfigure();
         }
         else
         {
-            configureUI.gameObject.SetActive(false);
-
             if (Player.Local != null && prev == Player.Local?.NetworkObject)
                 OnEndConfigure();
         }
     }
 
+    private void OnMountRotationChanged(Vector2 prev, Vector2 next, bool asServer)
+    {
+        if (asServer)
+            return;
+
+        // todo: lerp if change came from another player
+        mountTransform.localRotation = Quaternion.Euler(next.x, next.y, 0);
+    }
+
     private void OnInteract(string id)
     {
         if (id == "configure")
+        {
+            configuringMountAngle = false;
             StartConfigureIfPossible();
+        }
+        else if (id == "configureMountAngle")
+        {
+            configuringMountAngle = true;
+            StartConfigureIfPossible();
+        }
     }
 
     private void StartConfigureIfPossible()
@@ -220,24 +246,45 @@ public class Speaker : OffGridItem, IUsable
 
     protected virtual void OnStartConfigure()
     {
-        PlayerCamera.Instance.AddActiveUIElement(name);
-        PlayerCamera.Instance.FreeMouse();
-        Vector3 configureRotation = configureCameraTransform.rotation.eulerAngles;
-        configureRotation.z = 0;
-        PlayerCamera.Instance.OverrideTransform(configureCameraTransform.position, Quaternion.Euler(configureRotation), lerpTime: 0.2f);
-        PlayerCamera.Instance.OverrideFOV(60f, 0.2f);
+        if (!configuringMountAngle)
+        {
+            configureUI.gameObject.SetActive(true);
+
+            PlayerCamera.Instance.FreeMouse();
+            Vector3 configureRotation = configureCameraTransform.rotation.eulerAngles;
+            configureRotation.z = 0;
+            PlayerCamera.Instance.OverrideTransform(configureCameraTransform.position, Quaternion.Euler(configureRotation), lerpTime: 0.2f);
+            PlayerCamera.Instance.OverrideFOV(60f, 0.2f);
+        }
+        else
+        {
+            PlayerCamera.Instance.OverrideTransform(PlayerCamera.Instance.transform.position, PlayerCamera.Instance.transform.rotation, 0);
+        }
+
         PlayerCamera.Instance.AddActiveUIElement(name);
         PlayerInventory.Instance.SetInventoryEnabled(false);
         PlayerMovement.Instance.canMove = false;
         CompassManager.Instance.SetVisible(false);
+
+        GameInput.RegisterExitListener(OnExitInput);
     }
 
     protected virtual void OnEndConfigure()
     {
+        if (!configuringMountAngle)
+        {
+            configureUI.gameObject.SetActive(false);
+
+            PlayerCamera.Instance.LockMouse();
+            PlayerCamera.Instance.StopFOVOverride(0.2f);
+            PlayerCamera.Instance.StopTransformOverride(0.2f);
+        }
+        else
+        {
+            PlayerCamera.Instance.StopTransformOverride(0);
+        }
+
         PlayerCamera.Instance.RemoveActiveUIElement(name);
-        PlayerCamera.Instance.LockMouse();
-        PlayerCamera.Instance.StopTransformOverride(0.2f);
-        PlayerCamera.Instance.StopFOVOverride(0.2f);
         PlayerMovement.Instance.canMove = true;
 
         // Hack: This method is called after SpeakerConnectionManager is enabled (which disables these two) due to the PlayerUserObject SyncVar change invocation happening later.
@@ -248,6 +295,19 @@ public class Speaker : OffGridItem, IUsable
             PlayerInventory.Instance.SetInventoryEnabled(true);
             CompassManager.Instance.SetVisible(true);
         }
+
+        configuringMountAngle = false;
+    }
+
+    private void OnExitInput(ExitAction exitAction)
+    {
+        if (exitAction.Used || PlayerUserObject != Player.Local.NetworkObject)
+            return;
+
+        exitAction.Used = true;
+        StopConfiguring();
+
+        GameInput.DeregisterExitListener(OnExitInput);
     }
 
     void OnEnable()
@@ -266,6 +326,33 @@ public class Speaker : OffGridItem, IUsable
 
         if (Master != null)
             UnbindFromMaster(Master);
+    }
+
+    void Update()
+    {
+        if (isGhost)
+            return;
+
+        UpdateMountAngle();
+    }
+
+    private void UpdateMountAngle()
+    {
+        if (PlayerUserObject != Player.Local.NetworkObject || !configuringMountAngle)
+            return;
+
+        var inputDelta = GameInput.MouseDelta;
+        inputDelta *= 0.5f;
+
+        var previousRotation = MountRotation;
+        var newRotation = MountRotation;
+        newRotation += new Vector2(inputDelta.y, -inputDelta.x);
+
+        newRotation.x = Mathf.Clamp(newRotation.x, MountRotationLimitsX.x, MountRotationLimitsX.y);
+        newRotation.y = Mathf.Clamp(newRotation.y, MountRotationLimitsY.x, MountRotationLimitsY.y);
+        MountRotation = newRotation;
+
+        OnMountRotationChanged(previousRotation, MountRotation, asServer: false);
     }
 
     private void BindToMaster(Radio master)
@@ -437,7 +524,6 @@ public class SpeakerConfigureUI : MonoBehaviour
         stereoOutputToggle.value = speaker.StereoOutput;
 
         speaker.MasterChanged += OnMasterChanged;
-        GameInput.RegisterExitListener(OnExitInput);
 
         OnMasterChanged(speaker.Master);
     }
@@ -445,16 +531,6 @@ public class SpeakerConfigureUI : MonoBehaviour
     void OnDisable()
     {
         speaker.MasterChanged -= OnMasterChanged;
-        GameInput.DeregisterExitListener(OnExitInput);
-    }
-
-    private void OnExitInput(ExitAction exitAction)
-    {
-        if (exitAction.Used || speaker.PlayerUserObject != Player.Local.NetworkObject)
-            return;
-
-        exitAction.Used = true;
-        speaker.StopConfiguring();
     }
 
     private void OnMasterChanged(Radio? master)

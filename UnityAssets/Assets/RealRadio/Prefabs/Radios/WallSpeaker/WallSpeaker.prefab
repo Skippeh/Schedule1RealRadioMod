@@ -124,10 +124,14 @@ MonoBehaviour:
   <StereoOutput>k__BackingField: 0
   <NPCUserObject>k__BackingField: {fileID: 0}
   <PlayerUserObject>k__BackingField: {fileID: 0}
+  <MountRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
+  <MountRotationLimitsX>k__BackingField: {x: -11, y: 10}
+  <MountRotationLimitsY>k__BackingField: {x: -90, y: 90}
   audioClient: {fileID: 6517685607046391815}
   audioSourceController: {fileID: 818495258506845837}
   configureUI: {fileID: 5386980649347118342}
   configureCameraTransform: {fileID: 9107249176849558780}
+  mountTransform: {fileID: 6644404786612902874}
 --- !u!1 &1730957361254394933
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +247,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1.099752, z: 1.684195}
-  m_Center: {x: 0, y: -0.4829056, z: -1.90499}
+  m_Center: {x: 0, y: -0.6, z: -1.90499}
 --- !u!114 &4726267966156078372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,7 +606,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1.0997516, z: 1.6841946}
-  m_Center: {x: 0, y: -0.48290557, z: -1.90499}
+  m_Center: {x: 0, y: -0.6, z: -1.90499}
 --- !u!114 &8287502954671532671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,6 +653,7 @@ MonoBehaviour:
   InteractableObject: {fileID: 8287502954671532671}
   <Options>k__BackingField:
   - {fileID: 11400000, guid: 0e982848fc147274bbd4f35c4e7fe25f, type: 2}
+  - {fileID: 11400000, guid: 4af8f7b8960a77847b9f1fed005f4145, type: 2}
 --- !u!1001 &6171886073553035816
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -753,6 +758,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3ef5dab46c3e6f3469dd508dba84b553, type: 3}
       propertyPath: m_Name
       value: WallSpeakerMount
+      objectReference: {fileID: 0}
+    - target: {fileID: 3172852760559992922, guid: 3ef5dab46c3e6f3469dd508dba84b553, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
