@@ -38,7 +38,7 @@ public class Speaker : OffGridItem, IUsable
     public NetworkObject? PlayerUserObject { get; set; }
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, SendRate = 0.1f, OnChange = nameof(OnMountRotationChanged))]
-    public Vector2 MountRotation { get; private set; }
+    public Vector2 MountRotation { get; [ServerRpc(RequireOwnership = false)] private set; }
 
     [field: SerializeField] public Vector2 MountRotationLimitsX { get; private set; }
     [field: SerializeField] public Vector2 MountRotationLimitsY { get; private set; }
@@ -54,7 +54,9 @@ public class Speaker : OffGridItem, IUsable
 
     private InteractableOptions interactableOptions = null!;
     private Coroutine? findRadioCoroutine;
+    private Coroutine? lerpMountAngleCoroutine;
     private bool configuringMountAngle;
+    private Vector2 localMountRotation;
 
     override public void Awake()
     {
@@ -208,8 +210,32 @@ public class Speaker : OffGridItem, IUsable
         if (asServer)
             return;
 
-        // todo: lerp if change came from another player
-        mountTransform.localRotation = Quaternion.Euler(next.x, next.y, 0);
+        if (PlayerUserObject != null && PlayerUserObject == Player.Local?.NetworkObject)
+        {
+            mountTransform.localRotation = Quaternion.Euler(next.x, next.y, 0);
+        }
+        else
+        {
+            if (lerpMountAngleCoroutine != null)
+                StopCoroutine(lerpMountAngleCoroutine);
+
+            lerpMountAngleCoroutine = StartCoroutine(LerpRotation());
+
+            IEnumerator LerpRotation()
+            {
+                float t = 0f;
+
+                while (t < 0.1f)
+                {
+                    localMountRotation = Vector2.Lerp(prev, next, t * 10f);
+                    mountTransform.localRotation = Quaternion.Euler(localMountRotation.x, localMountRotation.y, 0);
+                    t += Time.deltaTime;
+                    yield return null;
+                }
+
+                lerpMountAngleCoroutine = null;
+            }
+        }
     }
 
     private void OnInteract(string id)
@@ -344,15 +370,16 @@ public class Speaker : OffGridItem, IUsable
         var inputDelta = GameInput.MouseDelta;
         inputDelta *= 0.5f;
 
-        var previousRotation = MountRotation;
-        var newRotation = MountRotation;
+        var previousRotation = localMountRotation;
+        var newRotation = localMountRotation;
         newRotation += new Vector2(inputDelta.y, -inputDelta.x);
 
         newRotation.x = Mathf.Clamp(newRotation.x, MountRotationLimitsX.x, MountRotationLimitsX.y);
         newRotation.y = Mathf.Clamp(newRotation.y, MountRotationLimitsY.x, MountRotationLimitsY.y);
+        localMountRotation = newRotation;
         MountRotation = newRotation;
 
-        OnMountRotationChanged(previousRotation, MountRotation, asServer: false);
+        OnMountRotationChanged(previousRotation, localMountRotation, asServer: false);
     }
 
     private void BindToMaster(Radio master)
