@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/RealRadio/Prefabs/Singletons/UI/SpeakerConnectionManager/SpeakerConnectionManagerStyle.uss?fileID=7433441132597879392&amp;guid=35190e795a74ae9428de048787964ca4&amp;type=3#SpeakerConnectionManagerStyle" />
+    <ui:VisualElement picking-mode="Ignore" name="Root">
+        <ui:VisualElement name="DistanceContainer">
+            <ui:Label tabindex="-1" text="Approaching max distance" name="DistanceWarning" />
+            <ui:Label tabindex="-1" text="30.0" name="Distance" enable-rich-text="false" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

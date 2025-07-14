@@ -10,6 +10,7 @@ using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI;
 using ScheduleOne.UI.Compass;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace RealRadio.Components.Building;
 
@@ -18,6 +19,14 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     public event Action<Speaker, Buildables.Radio>? SpeakerConnected;
     public event Action<BuildableItem?>? SelectedItemChanged;
     public event Action<BuildableItem?>? HoveredItemChanged;
+
+    public float MaxConnectionDistance;
+    public Color MaxDistanceColor;
+    public Color MinDistanceColor;
+
+    [SerializeField] private UIDocument activeUi = null!;
+    private VisualElement distanceContainer = null!;
+    private Label distanceLabel = null!;
 
     public bool EditModeEnabled { get; private set; }
 
@@ -85,6 +94,15 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         arrowAnimator = selectionArrow.GetComponentInChildren<Animator>();
 
         spawnAnimationHash = Animator.StringToHash("Base Layer.SpawnAnimation");
+
+        if (activeUi == null)
+            throw new InvalidOperationException("actuveUi is null");
+    }
+
+    private void AssignUiElements()
+    {
+        distanceContainer = activeUi.rootVisualElement.Query<VisualElement>(name: "DistanceContainer").First() ?? throw new InvalidOperationException("Could not find distance container ui element");
+        distanceLabel = distanceContainer.Query<Label>(name: "Distance").First() ?? throw new InvalidOperationException("Could not find distance label ui element");
     }
 
     void OnEnable()
@@ -133,6 +151,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         PlayerCamera.Instance.AddActiveUIElement(name);
         CompassManager.Instance.SetVisible(false);
         PlayerInventory.Instance.SetInventoryEnabled(false);
+        activeUi.gameObject.SetActive(true);
+        AssignUiElements();
     }
 
     public void StopEditMode()
@@ -148,6 +168,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         HUD.Instance.HideTopScreenText();
         CompassManager.Instance.SetVisible(true);
         PlayerInventory.Instance.SetInventoryEnabled(true);
+        activeUi.gameObject.SetActive(false);
 
         finishedCallback?.Invoke();
     }
@@ -156,6 +177,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     {
         if (!EditModeEnabled)
             return;
+
+        UpdateUI();
 
         int numHits = Physics.RaycastNonAlloc(PlayerCamera.Instance.transform.position, PlayerCamera.Instance.transform.forward, hits, maxDistance: 4f, Layers.Default.ToLayerMask());
 
@@ -203,6 +226,38 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
                 HoveredSpeaker.SetMaster(SelectedRadio);
                 SpeakerConnected?.Invoke(HoveredSpeaker, SelectedRadio);
                 SelectedBuildableItem = null;
+            }
+        }
+    }
+
+    private void UpdateUI()
+    {
+        bool distanceVisible = false;
+        float remainingDistance = 0;
+        Color distanceColor = Color.white;
+
+        try
+        {
+            if (SelectedBuildableItem == null)
+                return;
+
+            Vector3 targetPosition = HoveredObject?.transform.position ?? PlayerCamera.Instance.transform.position;
+            remainingDistance = Mathf.Max(0, MaxConnectionDistance - Vector3.Distance(SelectedBuildableItem.transform.position, targetPosition));
+
+            if (remainingDistance < 10f)
+            {
+                distanceVisible = true;
+                distanceColor = Color.Lerp(MinDistanceColor, MaxDistanceColor, remainingDistance / 10f);
+            }
+        }
+        finally
+        {
+            distanceContainer.visible = distanceVisible;
+
+            if (distanceVisible)
+            {
+                distanceLabel.text = remainingDistance.ToString("0.0");
+                distanceLabel.style.color = distanceColor;
             }
         }
     }
@@ -318,6 +373,9 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
         if (SelectedBuildableItem == null)
             return item is Buildables.Radio or Speaker;
+
+        if (MaxConnectionDistance > 0 && Vector3.Distance(SelectedBuildableItem.transform.position, item.transform.position) > MaxConnectionDistance)
+            return false;
 
         bool selectedIsSpeaker = SelectedSpeaker != null;
 
