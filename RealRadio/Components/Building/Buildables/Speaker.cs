@@ -52,7 +52,7 @@ public class Speaker : OffGridItem, IUsable
     [SerializeField] private Transform mountTransform = null!;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged), SendRate = 0)]
-    private Guid? masterGuid;
+    public Guid? MasterGuid { get; set; }
 
     private InteractableOptions interactableOptions = null!;
     private Coroutine? findRadioCoroutine;
@@ -94,7 +94,7 @@ public class Speaker : OffGridItem, IUsable
 
         OnSelectedAudioChannelChanged(SelectedAudioChannel, SelectedAudioChannel, false);
         OnStereoOutputChanged(StereoOutput, StereoOutput, false);
-        OnMasterGuidChanged(masterGuid, masterGuid, false);
+        OnMasterGuidChanged(MasterGuid, MasterGuid, false);
         OnPlayerUserChanged(PlayerUserObject, PlayerUserObject, false);
         OnMountRotationChanged(MountRotation, MountRotation, false);
     }
@@ -117,7 +117,7 @@ public class Speaker : OffGridItem, IUsable
     [ServerRpc(RequireOwnership = false)]
     public void SetMaster(Radio? master)
     {
-        masterGuid = master?.GUID;
+        MasterGuid = master?.GUID;
     }
 
     [ServerRpc(RequireOwnership = false)]
