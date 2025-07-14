@@ -5,12 +5,14 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using RealRadio.Components.Audio;
 using RealRadio.Data;
+using RealRadio.Persistence.Loaders;
 using ScheduleOne;
 using ScheduleOne.Audio;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.Interaction;
 using ScheduleOne.Management;
 using ScheduleOne.NPCs.Behaviour;
+using ScheduleOne.Persistence.Datas;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI;
 using ScheduleOne.UI.Compass;
@@ -38,7 +40,7 @@ public class Speaker : OffGridItem, IUsable
     public NetworkObject? PlayerUserObject { get; set; }
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, SendRate = 0.1f, OnChange = nameof(OnMountRotationChanged))]
-    public Vector2 MountRotation { get; [ServerRpc(RequireOwnership = false)] private set; }
+    public Vector2 MountRotation { get; [ServerRpc(RequireOwnership = false)] set; }
 
     [field: SerializeField] public Vector2 MountRotationLimitsX { get; private set; }
     [field: SerializeField] public Vector2 MountRotationLimitsY { get; private set; }
@@ -95,6 +97,21 @@ public class Speaker : OffGridItem, IUsable
         OnMasterGuidChanged(masterGuid, masterGuid, false);
         OnPlayerUserChanged(PlayerUserObject, PlayerUserObject, false);
         OnMountRotationChanged(MountRotation, MountRotation, false);
+    }
+
+    public override BuildableItemData GetBaseData()
+    {
+        return new SpeakerData(
+            GUID,
+            ItemInstance,
+            loadOrder: 1, // this needs to be loaded after radios due to the implicit dependence
+            transform.position,
+            transform.rotation.eulerAngles,
+            Master?.GUID,
+            SelectedAudioChannel,
+            StereoOutput,
+            MountRotation
+        );
     }
 
     [ServerRpc(RequireOwnership = false)]
