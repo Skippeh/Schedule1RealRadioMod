@@ -51,9 +51,10 @@ public class InteractableOptions : MonoBehaviour
         if (!InteractableObject)
         {
             InteractableObject = GetComponentInChildren<InteractableObject>() ?? throw new InvalidOperationException("No InteractableObject component found in self or children");
-            InteractableObject.onInteractStart.AddListener(OnInteractStart);
-            InteractableObject.onInteractEnd.AddListener(OnInteractEnd);
         }
+
+        InteractableObject.onInteractStart.AddListener(OnInteractStart);
+        InteractableObject.onInteractEnd.AddListener(OnInteractEnd);
 
         PauseMenu.Instance.onPause.AddListener(OnGamePause);
 

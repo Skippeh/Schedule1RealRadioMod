@@ -14,6 +14,7 @@ internal static class Persistence
         new OffGridItemLoader<OffGridItem, OffGridItemData>();
         new TogglableOffGridItemLoader<TogglableOffGridItem, TogglableOffGridItemData>();
         new RadioLoader<Radio, RadioData>();
+        new SpeakerLoader<Speaker, SpeakerData>();
     }
 
     public static void AddItemInitializers(LoadManager loadManager)

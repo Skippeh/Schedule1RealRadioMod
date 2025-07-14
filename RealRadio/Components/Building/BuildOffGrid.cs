@@ -21,14 +21,19 @@ public class BuildStartOffGrid : BuildStart_Base
     public LayerMask DetectionMask = (Layers.Default | Layers.Tile | Layers.Terrain).ToLayerMask();
 
     /// <summary>
-    /// The optimal placement angle in degrees, for the X and Z axes.
+    /// The min and max surface normal for the X axis.
     /// </summary>
-    public float? OptimalRotationXZ = 0f;
+    public Vector2 MinMaxNormalX = new Vector2(-1, 1);
 
     /// <summary>
-    /// Max allowed rotation offset in degrees.
+    /// The min and max surface normal for the Y axis.
     /// </summary>
-    public float AllowedRotationLenience = 15f;
+    public Vector2 MinMaxNormalY = new Vector2(-1, 1);
+
+    /// <summary>
+    /// The min and max surface normal for the Z axis.
+    /// </summary>
+    public Vector2 MinMaxNormalZ = new Vector2(-1, 1);
 
     /// <summary>
     /// Rotation speed in increments per keypress
@@ -199,7 +204,9 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         }
 
         lastRotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * Quaternion.Euler(0, desiredRotation, 0);
-        lastPosition = hit.point - buildStart.BuildableItem.BuildPoint.localPosition;
+        var buildPointTransform = buildStart.BuildableItem.BuildPoint.transform;
+        Vector3 buildOffset = lastRotation * buildPointTransform.localPosition;
+        lastPosition = hit.point - buildOffset;
 
         if (TestForObstructions())
         {
@@ -207,7 +214,7 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
             return;
         }
 
-        if (!TestForValidAngle(lastRotation))
+        if (!TestForValidAngle(hit.normal))
         {
             positionIsValid = false;
             return;
@@ -289,42 +296,19 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         }
     }
 
-    private bool TestForValidAngle(Quaternion rotation)
+    private bool TestForValidAngle(Vector3 surfaceNormal)
     {
-        float? optimalXZ = buildStart.OptimalRotationXZ;
-        float lenience = buildStart.AllowedRotationLenience;
 
-        if (optimalXZ == null)
-            return true;
+        if (surfaceNormal.x < buildStart.MinMaxNormalX.x || surfaceNormal.x > buildStart.MinMaxNormalX.y)
+            return false;
 
-        bool validAngle = false;
+        if (surfaceNormal.y < buildStart.MinMaxNormalY.x || surfaceNormal.y > buildStart.MinMaxNormalY.y)
+            return false;
 
-        Vector3 eulerAngles = rotation.eulerAngles;
+        if (surfaceNormal.z < buildStart.MinMaxNormalZ.x || surfaceNormal.z > buildStart.MinMaxNormalZ.y)
+            return false;
 
-        if (eulerAngles.x >= 180f)
-        {
-            eulerAngles.x = Math.Abs(eulerAngles.x - 360f);
-        }
-
-        if (eulerAngles.y >= 180f)
-        {
-            eulerAngles.y = Math.Abs(eulerAngles.y - 360f);
-        }
-
-        if (eulerAngles.z >= 180f)
-        {
-            eulerAngles.z = Math.Abs(eulerAngles.z - 360f);
-        }
-
-        var diffX = Math.Abs(eulerAngles.x - optimalXZ.Value);
-        var diffZ = Math.Abs(eulerAngles.z - optimalXZ.Value);
-
-        if (diffX < lenience && diffZ < lenience)
-        {
-            validAngle = true;
-        }
-
-        return validAngle;
+        return true;
     }
 
     private bool TestForValidSurface(Collider surface)

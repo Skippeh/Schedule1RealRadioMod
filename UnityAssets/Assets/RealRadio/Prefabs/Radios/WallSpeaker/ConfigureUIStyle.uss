@@ -1,0 +1,38 @@
+@import url("project://database/Assets/RealRadio/UI/DefaultStyle.uss?fileID=7433441132597879392&guid=00bd6457649287b459f64a5ff17f8c7f&type=3#DefaultStyle");
+
+#Root {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#WindowRoot {
+    min-width: 500px;
+}
+
+#WindowHeader {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+}
+
+#WindowHeader Label {
+    padding: 0;
+    margin: 0;
+    -unity-font-style: bold;
+}
+
+#WindowContent {
+    background-color: rgba(50, 50, 50, 0.7);
+    padding: 10px;
+    flex-grow: 1;
+}
+
+#ButtonsContainer {
+    flex-direction: row;
+}
+
+#ConnectSpeaker {
+    flex-grow: 1;
+}

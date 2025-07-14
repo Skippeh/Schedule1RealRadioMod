@@ -84,8 +84,14 @@ public class AssetRegistry : ScriptableObject
         if (result.Singletons.UserStationsManager == null)
             throw new AssetRegistryLoadException("Singletons.UserStationsManager is null");
 
+        if (result.Singletons.SpeakerConnectionManager == null)
+            throw new AssetRegistryLoadException("Singletons.SpeakerConnectionManager is null");
+
         if (result.Prefabs.VehicleRadioProxy == null)
             throw new AssetRegistryLoadException("Prefabs.VehicleRadio is null");
+
+        if (result.Prefabs.SelectionArrow == null)
+            throw new AssetRegistryLoadException("Prefabs.SelectionArrow is null");
 
         result.DefaultRadioStations = assetBundle.LoadAllAssets<RadioStation>();
 
@@ -167,6 +173,7 @@ public class SingletonPrefabs : ScriptableObject
     public GameObject GameMusicManager;
     public GameObject RadioApp;
     public GameObject UserStationsManager;
+    public GameObject SpeakerConnectionManager;
 #nullable enable
 }
 
@@ -189,5 +196,6 @@ public class Prefabs : ScriptableObject
 {
 #nullable disable
     public GameObject VehicleRadioProxy;
+    public GameObject SelectionArrow;
 #nullable enable
 }

@@ -184,6 +184,7 @@ public class Plugin : BaseUnityPlugin
         Instantiate(Assets.Singletons.RadialMenu);
         Instantiate(Assets.Singletons.Modal);
         Instantiate(Assets.Singletons.GameMusicManager);
+        Instantiate(Assets.Singletons.SpeakerConnectionManager);
     }
 
     private void CreatePersistentSingletons()

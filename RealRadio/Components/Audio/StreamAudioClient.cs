@@ -10,6 +10,8 @@ namespace RealRadio.Components.Audio
     public class StreamAudioClient : MonoBehaviour
     {
         public bool ConvertToMono { get; set; }
+        public float LeftChannelVolume { get; set; } = 1f;
+        public float RightChannelVolume { get; set; } = 1f;
 
         public StreamAudioHost? Host
         {
@@ -147,6 +149,15 @@ namespace RealRadio.Components.Audio
                 for (int i = 0; i < data.Length; ++i)
                 {
                     data[i] *= host.AudioData[i];
+
+                    if (i % 2 == 0 && !Mathf.Approximately(LeftChannelVolume, 1f))
+                    {
+                        data[i] *= LeftChannelVolume;
+                    }
+                    else if (i % 2 == 1 && !Mathf.Approximately(RightChannelVolume, 1f))
+                    {
+                        data[i] *= RightChannelVolume;
+                    }
                 }
             }
             else
@@ -157,10 +168,20 @@ namespace RealRadio.Components.Audio
 
                     for (int j = 0; j < channels; ++j)
                     {
-                        average += host.AudioData[i * channels + j];
-                    }
+                        float channelValue = host.AudioData[i * channels + j];
 
-                    average /= channels;
+                        if (j % 2 == 0 && !Mathf.Approximately(LeftChannelVolume, 1f))
+                        {
+                            channelValue *= LeftChannelVolume;
+                        }
+                        else if (j % 2 == 1 && !Mathf.Approximately(RightChannelVolume, 1f))
+                        {
+                            channelValue *= RightChannelVolume;
+                        }
+
+                        channelValue /= channels;
+                        average += channelValue;
+                    }
 
                     for (int j = 0; j < channels; ++j)
                     {
