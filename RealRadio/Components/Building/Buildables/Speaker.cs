@@ -27,9 +27,17 @@ public class Speaker : OffGridItem, IUsable
 
     public Radio? Master { get; private set; }
 
+    /// <summary>
+    /// The audio channel to use for this speaker. Do not set this directly, otherwise the change won't be synced over network.
+    /// Use <see cref="SetSelectedAudioChannel"/>
+    /// </summary>
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnSelectedAudioChannelChanged), SendRate = 0)]
     public AudioChannel SelectedAudioChannel { get; set; } = AudioChannel.Both;
 
+    /// <summary>
+    /// Whether or not this speaker outputs stereo audio. Do not set this directly, otherwise the change won't be synced over network.
+    /// Use <see cref="SetStereoOutput"/>
+    /// </summary>
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStereoOutputChanged), SendRate = 0)]
     public bool StereoOutput { get; set; } = false;
 
@@ -39,6 +47,10 @@ public class Speaker : OffGridItem, IUsable
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnPlayerUserChanged), SendRate = 0)]
     public NetworkObject? PlayerUserObject { get; set; }
 
+    /// <summary>
+    /// The rotation of the speaker mount. Do not set this directly, otherwise the change won't be synced over network.
+    /// Use <see cref="SetMountRotation"/>
+    /// </summary>
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, SendRate = 0.1f, OnChange = nameof(OnMountRotationChanged))]
     public Vector2 MountRotation { get; set; }
 
@@ -51,6 +63,9 @@ public class Speaker : OffGridItem, IUsable
     [SerializeField] private Transform configureCameraTransform = null!;
     [SerializeField] private Transform mountTransform = null!;
 
+    /// <summary>
+    /// The Guid of the master radio. Do not set this directly. Use <see cref="SetMaster"/>.
+    /// </summary>
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnMasterGuidChanged), SendRate = 0)]
     public Guid? MasterGuid { get; set; }
 
