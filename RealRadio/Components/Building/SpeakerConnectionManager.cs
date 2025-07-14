@@ -178,8 +178,12 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
         if (!EditModeEnabled)
             return;
 
+        UpdateHoveredObject();
         UpdateUI();
+    }
 
+    private void UpdateHoveredObject()
+    {
         int numHits = Physics.RaycastNonAlloc(PlayerCamera.Instance.transform.position, PlayerCamera.Instance.transform.forward, hits, maxDistance: 4f, Layers.Default.ToLayerMask());
 
         if (numHits == 0)
