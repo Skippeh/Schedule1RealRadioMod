@@ -243,6 +243,13 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private Vector3 GetTopPosition(BuildableItem item)
     {
+        var arrowTransform = item.GetComponentInChildren<SpeakerConnectionArrowTransform>();
+
+        if (arrowTransform != null)
+        {
+            return arrowTransform.transform.position;
+        }
+
         Vector3 position = item.BoundingCollider.bounds.center;
         BuildableItem prefab = ((BuildableItemDefinition)item.ItemInstance.Definition).BuiltItem;
         Vector3 size = Vector3.Scale(prefab.BoundingCollider.size, prefab.BoundingCollider.transform.lossyScale);
@@ -331,4 +338,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
         return item is Speaker;
     }
+}
+
+public class SpeakerConnectionArrowTransform : MonoBehaviour
+{
 }
