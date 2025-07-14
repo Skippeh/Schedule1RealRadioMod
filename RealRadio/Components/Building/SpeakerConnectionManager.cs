@@ -243,7 +243,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     private Vector3 GetTopPosition(BuildableItem item)
     {
-        var arrowTransform = item.GetComponentInChildren<SpeakerConnectionArrowTransform>();
+        var arrowTransform = item.GetComponent<SpeakerConnectionArrowTransform>()?.GetTransform();
 
         if (arrowTransform != null)
         {
@@ -342,4 +342,11 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
 public class SpeakerConnectionArrowTransform : MonoBehaviour
 {
+    [SerializeField]
+    private Transform? overrideTransform;
+
+    public Transform GetTransform()
+    {
+        return overrideTransform ?? transform;
+    }
 }

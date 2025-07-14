@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4401398946208367640}
   - component: {fileID: 731779720292416113}
   - component: {fileID: 3060968634576037990}
+  - component: {fileID: 5487900211743953530}
   m_Layer: 0
   m_Name: WallSpeaker
   m_TagString: Untagged
@@ -132,6 +133,19 @@ MonoBehaviour:
   configureUI: {fileID: 5386980649347118342}
   configureCameraTransform: {fileID: 9107249176849558780}
   mountTransform: {fileID: 6644404786612902874}
+--- !u!114 &5487900211743953530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207975431703600869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -231963635, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overrideTransform: {fileID: 2088993402261682918}
 --- !u!1 &1730957361254394933
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,7 +345,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2088993402261682918}
-  - component: {fileID: 5109605521185719797}
   m_Layer: 0
   m_Name: ConnectionArrowTransform
   m_TagString: Untagged
@@ -354,18 +367,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5921187678727062979}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5109605521185719797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4157385744417788540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -231963635, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4406273793615288472
 GameObject:
   m_ObjectHideFlags: 0
