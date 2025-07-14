@@ -347,6 +347,7 @@ public class Speaker : OffGridItem, IUsable
         PlayerInventory.Instance.SetInventoryEnabled(false);
         PlayerMovement.Instance.canMove = false;
         CompassManager.Instance.SetVisible(false);
+        HUD.Instance.SetCrosshairVisible(false);
 
         GameInput.RegisterExitListener(OnExitInput);
     }
@@ -368,6 +369,7 @@ public class Speaker : OffGridItem, IUsable
 
         PlayerCamera.Instance.RemoveActiveUIElement(name);
         PlayerMovement.Instance.canMove = true;
+        HUD.Instance.SetCrosshairVisible(true);
 
         // Hack: This method is called after SpeakerConnectionManager is enabled (which disables these two) due to the PlayerUserObject SyncVar change invocation happening later.
         // Check if SpeakerConnectionManager is enabled and don't re-enable them if so.
