@@ -302,6 +302,10 @@ public class Speaker : OffGridItem, IUsable
             configuringMountAngle = true;
             StartConfigureIfPossible();
         }
+        else if (id == "resetMountAngle")
+        {
+            SetMountRotation(Vector2.zero);
+        }
     }
 
     private void StartConfigureIfPossible()

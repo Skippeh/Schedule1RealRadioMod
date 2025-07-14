@@ -124,7 +124,7 @@ MonoBehaviour:
   <StereoOutput>k__BackingField: 0
   <NPCUserObject>k__BackingField: {fileID: 0}
   <PlayerUserObject>k__BackingField: {fileID: 0}
-  <MountRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
+  <MountRotation>k__BackingField: {x: 0, y: 0}
   <MountRotationLimitsX>k__BackingField: {x: -11, y: 10}
   <MountRotationLimitsY>k__BackingField: {x: -90, y: 90}
   audioClient: {fileID: 6517685607046391815}
@@ -654,6 +654,7 @@ MonoBehaviour:
   <Options>k__BackingField:
   - {fileID: 11400000, guid: 0e982848fc147274bbd4f35c4e7fe25f, type: 2}
   - {fileID: 11400000, guid: 4af8f7b8960a77847b9f1fed005f4145, type: 2}
+  - {fileID: 11400000, guid: 2c8ef9fc0261ee747b5e2ed227bce53f, type: 2}
 --- !u!1001 &6171886073553035816
 PrefabInstance:
   m_ObjectHideFlags: 0
