@@ -328,11 +328,8 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
             if (item is Speaker speaker)
             {
-                // Allow connecting a connected speaker to a disconnected speaker
-                if (SelectedSpeaker?.Master != null)
-                    return speaker.Master == null;
-
-                return speaker.Master != null;
+                // Allow connecting two speakers as long as atleast one is connected
+                return speaker.Master != null || SelectedSpeaker?.Master != null;
             }
         }
 
