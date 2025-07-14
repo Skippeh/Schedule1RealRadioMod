@@ -28,10 +28,10 @@ public class Speaker : OffGridItem, IUsable
     public Radio? Master { get; private set; }
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnSelectedAudioChannelChanged), SendRate = 0)]
-    public AudioChannel SelectedAudioChannel { get; [ServerRpc(RequireOwnership = false)] set; } = AudioChannel.Both;
+    public AudioChannel SelectedAudioChannel { get; set; } = AudioChannel.Both;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, OnChange = nameof(OnStereoOutputChanged), SendRate = 0)]
-    public bool StereoOutput { get; [ServerRpc(RequireOwnership = false)] set; } = false;
+    public bool StereoOutput { get; set; } = false;
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly)]
     public NetworkObject? NPCUserObject { get; set; }
@@ -40,7 +40,7 @@ public class Speaker : OffGridItem, IUsable
     public NetworkObject? PlayerUserObject { get; set; }
 
     [field: SyncVar(Channel = FishNet.Transporting.Channel.Reliable, ReadPermissions = ReadPermission.Observers, WritePermissions = WritePermission.ServerOnly, SendRate = 0.1f, OnChange = nameof(OnMountRotationChanged))]
-    public Vector2 MountRotation { get; [ServerRpc(RequireOwnership = false)] set; }
+    public Vector2 MountRotation { get; set; }
 
     [field: SerializeField] public Vector2 MountRotationLimitsX { get; private set; }
     [field: SerializeField] public Vector2 MountRotationLimitsY { get; private set; }
@@ -118,6 +118,27 @@ public class Speaker : OffGridItem, IUsable
     public void SetMaster(Radio? master)
     {
         masterGuid = master?.GUID;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetSelectedAudioChannel(AudioChannel channel)
+    {
+        if (!Enum.IsDefined(typeof(AudioChannel), channel))
+            throw new ArgumentException($"Invalid audio channel: {channel}");
+
+        SelectedAudioChannel = channel;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetStereoOutput(bool stereoOutput)
+    {
+        StereoOutput = stereoOutput;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetMountRotation(Vector2 mountRotation)
+    {
+        MountRotation = mountRotation;
     }
 
     private void OnMasterGuidChanged(Guid? prev, Guid? next, bool asServer)
@@ -227,11 +248,7 @@ public class Speaker : OffGridItem, IUsable
         if (asServer)
             return;
 
-        if (PlayerUserObject != null && PlayerUserObject == Player.Local?.NetworkObject)
-        {
-            mountTransform.localRotation = Quaternion.Euler(next.x, next.y, 0);
-        }
-        else
+        if (PlayerUserObject == null || PlayerUserObject != (Player.Local?.NetworkObject))
         {
             if (lerpMountAngleCoroutine != null)
                 StopCoroutine(lerpMountAngleCoroutine);
@@ -249,6 +266,9 @@ public class Speaker : OffGridItem, IUsable
                     t += Time.deltaTime;
                     yield return null;
                 }
+
+                localMountRotation = next;
+                mountTransform.localRotation = Quaternion.Euler(localMountRotation.x, localMountRotation.y, 0);
 
                 lerpMountAngleCoroutine = null;
             }
@@ -394,9 +414,12 @@ public class Speaker : OffGridItem, IUsable
         newRotation.x = Mathf.Clamp(newRotation.x, MountRotationLimitsX.x, MountRotationLimitsX.y);
         newRotation.y = Mathf.Clamp(newRotation.y, MountRotationLimitsY.x, MountRotationLimitsY.y);
         localMountRotation = newRotation;
-        MountRotation = newRotation;
 
-        OnMountRotationChanged(previousRotation, localMountRotation, asServer: false);
+        if (newRotation != previousRotation)
+        {
+            SetMountRotation(newRotation);
+            mountTransform.localRotation = Quaternion.Euler(localMountRotation.x, localMountRotation.y, 0);
+        }
     }
 
     private void BindToMaster(Radio master)
@@ -461,12 +484,12 @@ public class Speaker : OffGridItem, IUsable
 
     private void OnAudioChannelConfigured(AudioChannel channel)
     {
-        SelectedAudioChannel = channel;
+        SetSelectedAudioChannel(channel);
     }
 
     private void OnStereoOutputConfigured(bool enabled)
     {
-        StereoOutput = enabled;
+        SetStereoOutput(enabled);
     }
 
     private void OnConnectSpeakerClicked()
