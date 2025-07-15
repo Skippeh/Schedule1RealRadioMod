@@ -3,6 +3,7 @@ using MelonLoader;
 [assembly: MelonInfo(typeof(RealRadio.Plugin.ML.MLMod), "RealRadio", "1.0.0", "Skipcast")]
 [assembly: MelonGame("TVGS", "Schedule I")]
 [assembly: HarmonyDontPatchAll]
+[assembly: MelonPlatformDomain(MelonPlatformDomainAttribute.CompatibleDomains.MONO)]
 
 namespace RealRadio.Plugin.ML;
 
