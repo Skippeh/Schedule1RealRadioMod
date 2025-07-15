@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>RealRadio.Plugin.BepInEx</AssemblyName>
+    <RootNamespace>RealRadio.Plugin.BepInEx</RootNamespace>
+    <Version>1.0.0</Version>
+    <Product>Real Radio</Product>
+    <RestoreAdditionalProjectSources>
+      $(RestoreAdditionalProjectSources);
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../RealRadio.Plugin/RealRadio.Plugin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CopyToPluginFolder Include="$(TargetDir)\RealRadio.Plugin.BepInEx.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <CopyToPluginFolder Include="$(TargetDir)\RealRadio.Plugin.BepInEx.pdb" />
+  </ItemGroup>
+
+  <Target Name="CopyToPluginFolder" AfterTargets="PostBuildEvent" Condition="'$(CI)' == '' And '$(BEPINEX)' == '1'" Outputs="%(PluginFolder.Identity)">
+    <PropertyGroup>
+      <Destination>%(PluginFolder.Identity)</Destination>
+    </PropertyGroup>
+    <Message Importance="high" Text="Copying files to plugin folder: $(Destination)" />
+    <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFiles="@(CopyToPluginFolder->'$(Destination)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+</Project>
