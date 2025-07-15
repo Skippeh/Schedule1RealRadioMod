@@ -1,4 +1,3 @@
-using FishNet.Managing;
 using FishNet.Transporting;
 using FishNet.Transporting.Multipass;
 using FishNet.Transporting.Tugboat;

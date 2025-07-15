@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NAudio.Wave;
-using Newtonsoft.Json;
 using RealRadio.Components.Radio;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;

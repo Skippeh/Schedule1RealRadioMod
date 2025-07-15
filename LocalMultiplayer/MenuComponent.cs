@@ -5,21 +5,16 @@ using System.Linq;
 using System.Text;
 using FishNet;
 using FishNet.Component.Scenes;
-using FishNet.Managing.Scened;
 using FishNet.Transporting;
 using FishNet.Transporting.Multipass;
 using FishNet.Transporting.Tugboat;
-using FishNet.Transporting.Yak;
 using ScheduleOne.Audio;
-using ScheduleOne.DevUtilities;
 using ScheduleOne.Networking;
 using ScheduleOne.Persistence;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
 
 namespace LocalMultiplayer;
 

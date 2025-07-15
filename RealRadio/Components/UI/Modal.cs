@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using RealRadio.Events;
 using ScheduleOne;
 using ScheduleOne.DevUtilities;
 using UnityEngine;

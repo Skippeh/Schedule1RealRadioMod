@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using HashUtility;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using YoutubeDLSharp;
 using YoutubeDLSharp.Metadata;
 using YoutubeDLSharp.Options;

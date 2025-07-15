@@ -1,16 +1,11 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using RealRadio.Components.Radio;
 using RealRadio.Components.YoutubeDL;
 using RealRadio.Data;
 using RealRadio.Events;
-using ScheduleOne;
-using ScheduleOne.Interaction;
 using UnityEngine;
 
 namespace RealRadio.Components.Audio.HostControllers;

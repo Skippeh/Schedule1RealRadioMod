@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 using RealRadio.Components.Audio.HostControllers;
 using RealRadio.Components.Radio;

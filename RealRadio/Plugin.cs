@@ -10,8 +10,6 @@ using HarmonyLib;
 using RealRadio.Assets;
 using RealRadio.Components.UI.Phone;
 using RealRadio.Patches;
-using ScheduleOne.NPCs.CharacterClasses;
-using ScheduleOne.Persistence;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.UI.Phone;
 using UnityEngine;
@@ -81,9 +79,6 @@ public class Plugin : BaseUnityPlugin
             if (newScene.name == "Main")
             {
                 OnMainSceneLoadComplete();
-
-                var go = new GameObject("RadioSpawner");
-                go.AddComponent<Components.Debugging.RadioSpawner>();
             }
         };
     }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-using AudioStreamer;
 using AudioStreamer.MediaFoundation;
 using NAudio.Wave;
 

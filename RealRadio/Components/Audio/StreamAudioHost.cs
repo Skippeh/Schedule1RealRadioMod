@@ -4,10 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AudioStreamer;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using RealRadio.Events;
-using ScheduleOne.NPCs.CharacterClasses;
 using UnityEngine;
 
 namespace RealRadio.Components.Audio;
