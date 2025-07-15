@@ -20,20 +20,19 @@ namespace RealRadio.Plugin;
 
 public class RealRadioPlugin
 {
-    public static AssetRegistry? Assets => AssetRegistry.Instance;
-    public static AssetBundle AssetBundle { get; private set; } = null!;
+    private static AssetRegistry? assets => AssetRegistry.Instance;
+    private static AssetBundle assetBundle = null!;
 
     private bool visitedMenu;
-    private static AssetRegistry? assets;
 
     private Harmony? harmony;
 
     public RealRadioPlugin()
     {
-        AssetBundle = LoadAssetBundle();
-        Logger.LogInfo($"Loaded asset bundle: {AssetBundle.name}");
+        assetBundle = LoadAssetBundle();
+        Logger.LogInfo($"Loaded asset bundle: {assetBundle.name}");
 
-        foreach (var path in AssetBundle.GetAllAssetNames())
+        foreach (var path in assetBundle.GetAllAssetNames())
         {
             Logger.LogInfo($"- Found asset: {path}");
         }
@@ -75,9 +74,9 @@ public class RealRadioPlugin
     private void OnRegistryAwake(Registry registry)
     {
         if (AssetRegistry.Instance == null)
-            AssetRegistry.Instance = AssetRegistry.LoadFromAssetBundle(AssetBundle);
+            AssetRegistry.Instance = AssetRegistry.LoadFromAssetBundle(assetBundle);
 
-        AssetRegistry.Register(registry, InstanceFinder.NetworkManager, AssetBundle);
+        AssetRegistry.Register(registry, InstanceFinder.NetworkManager, assetBundle);
     }
 
     private void InitFishNet()
@@ -111,10 +110,10 @@ public class RealRadioPlugin
 
     private void OnDanAwake(Dan dan)
     {
-        if (Assets == null)
+        if (assets == null)
             throw new InvalidOperationException("Assets have not been set");
 
-        foreach (var shopListing in Assets.ShopListings.Listings)
+        foreach (var shopListing in assets.ShopListings.Listings)
         {
             dan.ShopInterface.CreateListingUI(shopListing);
         }
@@ -193,42 +192,42 @@ public class RealRadioPlugin
 
         private void CreateMainSceneServerSingletons()
         {
-            if (Assets == null)
+            if (assets == null)
                 throw new InvalidOperationException("Assets have not been set");
 
             Logger.LogInfo("Creating main scene server singletons");
-            InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.OffGridBuildManager));
-            InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.RadioSyncManager));
-            InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.VehicleRadioManager));
-            InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.BuildingRadioManager));
-            InstanceFinder.ServerManager.Spawn(Instantiate(Assets.Singletons.UserStationsManager));
+            InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.OffGridBuildManager));
+            InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.RadioSyncManager));
+            InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.VehicleRadioManager));
+            InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.BuildingRadioManager));
+            InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.UserStationsManager));
         }
 
         private void CreateMainSceneClientSingletons()
         {
-            if (Assets == null)
+            if (assets == null)
                 throw new InvalidOperationException("Assets have not been set");
 
             Logger.LogInfo("Creating main scene client singletons");
-            Instantiate(Assets.Singletons.RadialMenu);
-            Instantiate(Assets.Singletons.Modal);
-            Instantiate(Assets.Singletons.GameMusicManager);
-            Instantiate(Assets.Singletons.SpeakerConnectionManager);
+            Instantiate(assets.Singletons.RadialMenu);
+            Instantiate(assets.Singletons.Modal);
+            Instantiate(assets.Singletons.GameMusicManager);
+            Instantiate(assets.Singletons.SpeakerConnectionManager);
         }
     }
 
     private void CreatePersistentSingletons()
     {
-        if (Assets == null)
+        if (assets == null)
             throw new InvalidOperationException("Assets have not been set");
 
         Logger.LogInfo("Creating persistent singletons");
-        Instantiate(Assets.Singletons.RadioStationManager);
-        Instantiate(Assets.Singletons.RadioStationInfoManager);
-        Instantiate(Assets.Singletons.YtDlpManager);
-        Instantiate(Assets.Singletons.YtDlpUiManager);
+        Instantiate(assets.Singletons.RadioStationManager);
+        Instantiate(assets.Singletons.RadioStationInfoManager);
+        Instantiate(assets.Singletons.YtDlpManager);
+        Instantiate(assets.Singletons.YtDlpUiManager);
 
         // This should be instantiated last
-        Instantiate(Assets.Singletons.APIManager);
+        Instantiate(assets.Singletons.APIManager);
     }
 }
