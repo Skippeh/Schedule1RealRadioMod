@@ -121,10 +121,6 @@
     <PropertyGroup>
       <PluginDestination>$(SolutionDir)UnityAssets\Assets\Plugins\RealRadio</PluginDestination>
     </PropertyGroup>
-    <ItemGroup>
-      <BepInExDeps Include="$(BepInExSource)\*.dll" />
-      <BepInExDeps Remove="$(BepInExSource)\BepInEx.Harmony.dll" />
-    </ItemGroup>
     <Message Importance="high" Text="Copying plugin files to Unity project" />
     <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFolder="$(PluginDestination)" />
   </Target>
