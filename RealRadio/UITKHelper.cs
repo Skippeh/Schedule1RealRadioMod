@@ -13,13 +13,28 @@ public static class UITKHelper
 
         var builder = new StringBuilder(text);
 
-        int indexOfNoParse1 = text.IndexOf("<noparse>", System.StringComparison.OrdinalIgnoreCase);
-        int indexOfNoParse2 = text.IndexOf("</noparse>", System.StringComparison.OrdinalIgnoreCase);
+        while (true)
+        {
+            int indexOfNoParse1 = text.IndexOf("<noparse>", System.StringComparison.OrdinalIgnoreCase);
+            int indexOfNoParse2 = text.IndexOf("</noparse>", System.StringComparison.OrdinalIgnoreCase);
 
-        if (indexOfNoParse1 != -1)
-            builder.Remove(indexOfNoParse1, "<noparse>".Length);
-        if (indexOfNoParse2 != -1)
-            builder.Remove(indexOfNoParse2, "</noparse>".Length);
+            if (indexOfNoParse1 == -1 && indexOfNoParse2 == -1)
+                break;
+
+            if (indexOfNoParse1 != -1)
+            {
+                builder.Remove(indexOfNoParse1, "<noparse>".Length);
+
+                if (indexOfNoParse2 > indexOfNoParse1)
+                    indexOfNoParse2 -= "<noparse>".Length;
+            }
+
+            if (indexOfNoParse2 != -1)
+                builder.Remove(indexOfNoParse2, "</noparse>".Length);
+
+            // This is probably very inefficient but likely doesn't matter in practice
+            text = builder.ToString();
+        }
 
         builder.Insert(0, "<noparse>");
         builder.Append("</noparse>");
