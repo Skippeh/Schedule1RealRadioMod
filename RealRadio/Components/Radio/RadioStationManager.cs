@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using HashUtility;
+using RealRadio.Assets;
 using RealRadio.Data;
 using ScheduleOne.DevUtilities;
 
@@ -37,9 +38,9 @@ public class RadioStationManager : PersistentSingleton<RadioStationManager>
     {
         base.Awake();
 
-        if (Plugin.Assets?.DefaultRadioStations != null)
+        if (AssetRegistry.Instance?.DefaultRadioStations != null)
         {
-            foreach (var station in Plugin.Assets.DefaultRadioStations)
+            foreach (var station in AssetRegistry.Instance.DefaultRadioStations)
             {
                 AddOrUpdateRadioStation(station, StationSource.DefaultStation);
             }

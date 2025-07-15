@@ -126,13 +126,13 @@ public class BuildingRadioProxy : RadioProxy
     {
         if (Building != null && IsClientOnly)
         {
-            Plugin.Logger.LogWarning($"Received building again");
+            Logger.LogWarning($"Received building again");
             return;
         }
 
         if (!BuildingRadioManager.Instance.Buildings.TryGetValue(buildingHash, out var building))
         {
-            Plugin.Logger.LogError($"Building not found: {buildingHash}");
+            Logger.LogError($"Building not found: {buildingHash}");
             return;
         }
 

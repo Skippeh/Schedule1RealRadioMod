@@ -20,17 +20,17 @@ public class YtDlpHostController : HostController
     {
         if (!state.IsValid())
         {
-            Plugin.Logger.LogWarning($"Can't play invalid song state: {state}");
+            Logger.LogWarning($"Can't play invalid song state: {state}");
             return false;
         }
 
         if (state.SongIndex >= Station.Urls!.Length)
         {
-            Plugin.Logger.LogWarning($"Received out of bounds song index: {state.SongIndex} (max {Station.Urls.Length - 1})");
+            Logger.LogWarning($"Received out of bounds song index: {state.SongIndex} (max {Station.Urls.Length - 1})");
             return false;
         }
 
-        Plugin.Logger.LogInfo($"Play state: {state}");
+        Logger.LogInfo($"Play state: {state}");
 
         currentSongIteration = state.SongIteration.Value;
         lastSongIndex = state.SongIndex.Value;
@@ -132,7 +132,7 @@ public class YtDlpHostController : HostController
 
         if (task.IsFaulted)
         {
-            Plugin.Logger.LogError($"Failed to download audio file '{url}':\n{task.Exception}");
+            Logger.LogError($"Failed to download audio file '{url}':\n{task.Exception}");
             downloadAndPlayAudioFileCoroutine = null;
             yield break;
         }
@@ -145,7 +145,7 @@ public class YtDlpHostController : HostController
         Host.StopAudioStream();
         yield return new WaitUntil(() => Host.AudioStream == null || !Host.AudioStream.Started);
 
-        Plugin.Logger.LogInfo($"Playing audio file '{filePathUrl}'");
+        Logger.LogInfo($"Playing audio file '{filePathUrl}'");
 
         Host.AudioStream = new MediaFoundationAudioStream(filePathUrl, resetReaderAtEof: false)
         {
@@ -165,7 +165,7 @@ public class YtDlpHostController : HostController
             if (Host.AudioStream.CanSeek)
                 Host.AudioStream.CurrentTime = TimeSpan.FromSeconds(startTime);
             else
-                Plugin.Logger.LogWarning($"Audio stream '{filePathUrl}' does not support seeking");
+                Logger.LogWarning($"Audio stream '{filePathUrl}' does not support seeking");
         }
 
         downloadAndPlayAudioFileCoroutine = null;

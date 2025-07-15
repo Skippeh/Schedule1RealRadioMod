@@ -16,6 +16,23 @@ namespace RealRadio.Assets;
 [CreateAssetMenu(fileName = "AssetRegistry", menuName = "RealRadio/ScriptableObjects/Asset Registry/Root", order = 1)]
 public class AssetRegistry : ScriptableObject
 {
+    public static AssetRegistry? Instance
+    {
+        get => instance;
+        set
+        {
+            if (instance != null)
+                throw new InvalidOperationException("AssetRegistry.Instance is already set");
+
+            if (value == null)
+                throw new ArgumentNullException(nameof(value), "AssetRegistry.Instance cannot be null");
+
+            instance = value;
+        }
+    }
+
+    private static AssetRegistry? instance;
+
 #nullable disable
     public ItemDefinitionAssets ItemDefinitions;
     public SingletonPrefabs Singletons;
@@ -108,11 +125,11 @@ public class AssetRegistry : ScriptableObject
 
             if (itemDefinition != null)
             {
-                Plugin.Logger.LogInfo($"Registering ItemDefinition {itemDefinition.ID} from {assetName}");
+                Logger.LogInfo($"Registering ItemDefinition {itemDefinition.ID} from {assetName}");
 
                 if (registry.ItemRegistry.Any(x => x.ID == itemDefinition.ID))
                 {
-                    Plugin.Logger.LogWarning($"ItemDefinition {itemDefinition.ID} is already registered");
+                    Logger.LogWarning($"ItemDefinition {itemDefinition.ID} is already registered");
                     continue;
                 }
 
@@ -133,7 +150,7 @@ public class AssetRegistry : ScriptableObject
 
                 if (networkObject != null)
                 {
-                    Plugin.Logger.LogInfo($"Registering NetworkObject {networkObject.name} from {assetName}");
+                    Logger.LogInfo($"Registering NetworkObject {networkObject.name} from {assetName}");
                     netPrefabs.AddObject(networkObject, checkForDuplicates: true);
                 }
 

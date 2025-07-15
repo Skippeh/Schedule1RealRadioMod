@@ -124,7 +124,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         }
         catch (Exception ex)
         {
-            Plugin.Logger.LogError($"Failed to get song info for radio station '{station.Name}': {ex}");
+            Logger.LogError($"Failed to get song info for radio station '{station.Name}': {ex}");
             return null;
         }
     }
@@ -137,7 +137,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
-        Plugin.Logger.LogInfo($"Updating song info fetcher for radio station '{station}'...");
+        Logger.LogInfo($"Updating song info fetcher for radio station '{station}'...");
 
         StartCoroutine(UpdateFetcher(station, oldStation));
     }
@@ -156,7 +156,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
                 AddYtDlpRadioFetcher(station);
                 break;
             default:
-                Plugin.Logger.LogWarning($"Can not create song info fetcher due to unexpected radio type: {station.Type}");
+                Logger.LogWarning($"Can not create song info fetcher due to unexpected radio type: {station.Type}");
                 break;
         }
     }
@@ -174,9 +174,9 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         if (getFetcherTask.IsFaulted || getFetcherTask.Result == null)
         {
             if (getFetcherTask.IsFaulted)
-                Plugin.Logger.LogError($"Failed to get song info fetcher for radio station '{station.Id} ({station.Url})':\n{getFetcherTask.Exception}");
+                Logger.LogError($"Failed to get song info fetcher for radio station '{station.Id} ({station.Url})':\n{getFetcherTask.Exception}");
             else
-                Plugin.Logger.LogWarning($"No song info fetcher found for radio station '{station.Id} ({station.Url})'");
+                Logger.LogWarning($"No song info fetcher found for radio station '{station.Id} ({station.Url})'");
 
             yield break;
         }
@@ -233,7 +233,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
     private IEnumerator RemoveFetcher(RadioStation station)
     {
-        Plugin.Logger.LogInfo($"Removing song info fetcher for radio station '{station.Id} ({station.Url})'...");
+        Logger.LogInfo($"Removing song info fetcher for radio station '{station.Id} ({station.Url})'...");
 
         fetchers.Remove(station, out var fetcher);
         pendingUpdates.Remove(station);
@@ -246,7 +246,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
             yield return new WaitUntil(() => removeTask.IsCompleted);
 
             if (removeTask.IsFaulted)
-                Plugin.Logger.LogError($"Failed to remove song info fetcher for radio station '{station.Id} ({station.Url})':\n{removeTask.Exception}");
+                Logger.LogError($"Failed to remove song info fetcher for radio station '{station.Id} ({station.Url})':\n{removeTask.Exception}");
         }
     }
 

@@ -1,5 +1,6 @@
 namespace RealRadio.Patches;
 
+using System;
 using FishNet;
 using HarmonyLib;
 using RealRadio.Assets;
@@ -8,11 +9,10 @@ using ScheduleOne;
 [HarmonyPatch(typeof(Registry), nameof(Registry.Awake))]
 public static class RegistryAwakePatch
 {
+    public static event Action<Registry>? RegistryAwake;
+
     public static void Prefix(Registry __instance)
     {
-        if (Plugin.Assets == null)
-            Plugin.Assets = AssetRegistry.LoadFromAssetBundle(Plugin.AssetBundle);
-
-        AssetRegistry.Register(__instance, InstanceFinder.NetworkManager, Plugin.AssetBundle);
+        RegistryAwake?.Invoke(__instance);
     }
 }

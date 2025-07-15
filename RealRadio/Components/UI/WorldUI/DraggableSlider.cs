@@ -127,7 +127,7 @@ namespace RealRadio.Components.UI.WorldUI
                     newValue = Value + GameInput.MouseDelta.y * dragMultiplier * (invertDragDirection ? -1f : 1f);
                     break;
                 default:
-                    Plugin.Logger.LogWarning($"Unknown drag direction: {dragDirection}");
+                    Logger.LogWarning($"Unknown drag direction: {dragDirection}");
                     newValue = Value;
                     break;
             }

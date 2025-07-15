@@ -78,7 +78,7 @@ public class Radio : TogglableOffGridItem, IUsable
 
         if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(idHash.Value, out _))
         {
-            Plugin.Logger.LogWarning($"Invalid radio station hash (not found): {idHash}");
+            Logger.LogWarning($"Invalid radio station hash (not found): {idHash}");
             return;
         }
 
@@ -96,7 +96,7 @@ public class Radio : TogglableOffGridItem, IUsable
     {
         if (index >= MaxFavoriteStations)
         {
-            Plugin.Logger.LogWarning($"Ignoring setting favorite station at index {index} (max allowed index: {MaxFavoriteStations})");
+            Logger.LogWarning($"Ignoring setting favorite station at index {index} (max allowed index: {MaxFavoriteStations})");
             return;
         }
 
@@ -233,7 +233,7 @@ public class Radio : TogglableOffGridItem, IUsable
 
         if (RadioStation == station)
         {
-            Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
+            Logger.LogInfo($"Stopping radio because the station was removed");
             SetRadioStationIdHash(null);
         }
 
@@ -339,14 +339,14 @@ public class Radio : TogglableOffGridItem, IUsable
         if (((IUsable)this).IsInUse)
             return;
 
-        Plugin.Logger.LogInfo("Start configure radio");
+        Logger.LogInfo("Start configure radio");
         SetPlayerUser(Player.Local.NetworkObject);
         OnStartConfigure();
     }
 
     private void StopConfiguring()
     {
-        Plugin.Logger.LogInfo("Stop configure radio");
+        Logger.LogInfo("Stop configure radio");
         OnEndConfigure();
         SetPlayerUser(null);
     }

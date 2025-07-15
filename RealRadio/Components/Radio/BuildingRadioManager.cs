@@ -132,7 +132,7 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
             // Mick's house seems to have double components added for some reason, so we need to check if the building already exists
             if (!Buildings.TryAdd(GetBuildingHash(building), building))
             {
-                Plugin.Logger.LogWarning($"Found duplicate building: {building.GUID} - {building.BuildingName}");
+                Logger.LogWarning($"Found duplicate building: {building.GUID} - {building.BuildingName}");
             }
         }
     }
@@ -164,7 +164,7 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
 
         if (!Proxies.TryAdd(proxy.Building, proxy))
         {
-            Plugin.Logger.LogWarning($"Found duplicate proxy: {proxy.Building.GUID} - {proxy.Building.BuildingName}");
+            Logger.LogWarning($"Found duplicate proxy: {proxy.Building.GUID} - {proxy.Building.BuildingName}");
         }
     }
 
@@ -175,7 +175,7 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
 
         if (!Proxies.Remove(proxy.Building))
         {
-            Plugin.Logger.LogWarning($"Tried to remove unknown building proxy: {proxy.Building.GUID} - {proxy.Building.BuildingName}");
+            Logger.LogWarning($"Tried to remove unknown building proxy: {proxy.Building.GUID} - {proxy.Building.BuildingName}");
         }
     }
 

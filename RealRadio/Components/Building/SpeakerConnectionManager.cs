@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using RealRadio.Assets;
 using RealRadio.Components.Building.Buildables;
 using ScheduleOne;
 using ScheduleOne.DevUtilities;
@@ -88,7 +89,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
     {
         base.Awake();
 
-        selectionArrow = Instantiate(Plugin.Assets!.Prefabs.SelectionArrow);
+        selectionArrow = Instantiate(AssetRegistry.Instance!.Prefabs.SelectionArrow);
         selectionArrow.SetActive(false);
         arrowAnimator = selectionArrow.GetComponentInChildren<Animator>();
 

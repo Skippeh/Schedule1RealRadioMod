@@ -39,12 +39,12 @@ public class DeactivateAudioClientByRange : MonoBehaviour
 
         if (!isInRange && client.enabled)
         {
-            Plugin.Logger.LogDebug("Deactivating audio client due to distance");
+            Logger.LogDebug("Deactivating audio client due to distance");
             client.enabled = false;
         }
         else if (isInRange && !client.enabled)
         {
-            Plugin.Logger.LogDebug("Activating audio client due to distance");
+            Logger.LogDebug("Activating audio client due to distance");
             client.enabled = true;
         }
     }

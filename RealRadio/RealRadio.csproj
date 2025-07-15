@@ -20,9 +20,6 @@
   <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
 
   <ItemGroup>
-    <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-    <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2022.3.32" IncludeAssets="compile" />
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" ExcludeAssets="runtime" />
     <PackageReference Include="FishNetV3.CodeGenerator.MSBuild" Version="1.0.0-beta.11" PrivateAssets="all" ExcludeAssets="runtime" />
@@ -123,15 +120,12 @@
   <Target Name="CopyToUnityProject" AfterTargets="PostBuildEvent" Condition="'$(CI)' == ''">
     <PropertyGroup>
       <PluginDestination>$(SolutionDir)UnityAssets\Assets\Plugins\RealRadio</PluginDestination>
-      <BepInExDestination>$(SolutionDir)UnityAssets\Assets\Plugins\BepInEx</BepInExDestination>
-      <BepInExSource>$(ManagedFolder)\..\..\BepInEx\core</BepInExSource>
     </PropertyGroup>
     <ItemGroup>
       <BepInExDeps Include="$(BepInExSource)\*.dll" />
       <BepInExDeps Remove="$(BepInExSource)\BepInEx.Harmony.dll" />
     </ItemGroup>
-    <Message Importance="high" Text="Copying files @(BepInExDeps) to Unity project" />
+    <Message Importance="high" Text="Copying plugin files to Unity project" />
     <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFolder="$(PluginDestination)" />
-    <Copy SourceFiles="@(BepInExDeps)" DestinationFolder="$(BepInExDestination)" />
   </Target>
 </Project>

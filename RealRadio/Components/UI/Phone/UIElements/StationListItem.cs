@@ -35,7 +35,7 @@ public class StationListItem
     {
         if (station == null)
         {
-            Plugin.Logger.LogInfo("Station is null in OnStationSet call");
+            Logger.LogInfo("Station is null in OnStationSet call");
             return;
         }
 

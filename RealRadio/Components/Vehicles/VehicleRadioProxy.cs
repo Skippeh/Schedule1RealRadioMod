@@ -105,7 +105,7 @@ public class VehicleRadioProxy : RadioProxy
     {
         if (Vehicle != null && IsClientOnly)
         {
-            Plugin.Logger.LogWarning($"Received vehicle again");
+            Logger.LogWarning($"Received vehicle again");
             return;
         }
 
@@ -186,7 +186,7 @@ public class VehicleRadioProxy : RadioProxy
 
     private void OnEngineToggled(bool started)
     {
-        Plugin.Logger.LogInfo($"Engine toggled: {started}");
+        Logger.LogInfo($"Engine toggled: {started}");
 
         if (IsServer)
         {
@@ -238,7 +238,7 @@ public class VehicleRadioProxy : RadioProxy
     {
         if (audioClient == null)
         {
-            Plugin.Logger.LogWarning("Tried to update audio effects but audio client is null");
+            Logger.LogWarning("Tried to update audio effects but audio client is null");
             return;
         }
 

@@ -91,7 +91,7 @@ public class UrlEditModal
 
     private void OnStateChanged()
     {
-        Plugin.Logger.LogInfo($"Url state changed to {State}");
+        Logger.LogInfo($"Url state changed to {State}");
 
         if (debounceCoroutine != null)
         {
@@ -148,7 +148,7 @@ public class UrlEditModal
 
         if (fetchTask.IsFaulted)
         {
-            Plugin.Logger.LogWarning($"Failed to fetch metadata for '{Url}':\n{fetchTask.Exception}");
+            Logger.LogWarning($"Failed to fetch metadata for '{Url}':\n{fetchTask.Exception}");
             fetchException = fetchTask.Exception;
             State = UrlState.ValidAndMetaDataFailed;
             yield break;

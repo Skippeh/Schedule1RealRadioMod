@@ -26,7 +26,7 @@ public class SpeakerLoader<TSpeaker, TSpeakerData> : OffGridItemLoader<TSpeaker,
             var master = GUIDManager.GetObject<Radio>(guid);
 
             if (master == null)
-                Plugin.Logger.LogWarning($"Could not find radio while loading speaker. Radio guid: {Data.MasterGuid}");
+                Logger.LogWarning($"Could not find radio while loading speaker. Radio guid: {Data.MasterGuid}");
 
             Item.MasterGuid = masterGuid;
         }

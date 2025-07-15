@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Linq;
 using HashUtility;
+using RealRadio.Assets;
 using RealRadio.Components.Building;
 using RealRadio.Components.UI;
 using RealRadio.Components.Vehicles;
 using RealRadio.Data;
-using RealRadio.Patches;
 using ScheduleOne;
 using ScheduleOne.DevUtilities;
 using ScheduleOne.PlayerScripts;
@@ -37,7 +37,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
             StartCoroutine(SpawnProxyAfterNetworkInit(vehicle));
         }
 
-        LandVehicleStartPatch.OnVehicleSpawned += OnVehicleSpawned;
+        GameEvents.VehicleSpawned += OnVehicleSpawned;
         RadioStationManager.Instance.OnStationsChanged += OnStationsChanged;
         RadioStationInfoManager.Instance.SongInfoUpdated += OnSongInfoUpdated;
     }
@@ -51,7 +51,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
     {
         base.OnDestroy();
 
-        LandVehicleStartPatch.OnVehicleSpawned -= OnVehicleSpawned;
+        GameEvents.VehicleSpawned -= OnVehicleSpawned;
         RadioStationManager.Instance.OnStationsChanged -= OnStationsChanged;
         RadioStationInfoManager.Instance.SongInfoUpdated -= OnSongInfoUpdated;
     }
@@ -122,7 +122,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
         if (!IsServer)
             yield break;
 
-        var proxyPrefab = Plugin.Assets!.Prefabs.VehicleRadioProxy;
+        var proxyPrefab = AssetRegistry.Instance!.Prefabs.VehicleRadioProxy;
         var proxy = Instantiate(proxyPrefab, parent: transform);
         proxy.GetComponent<VehicleRadioProxy>().Vehicle = vehicle;
         Spawn(proxy);
@@ -160,7 +160,7 @@ public class VehicleRadioManager : NetworkSingleton<VehicleRadioManager>
 
         if (radialMenuOptions == null)
         {
-            Plugin.Logger.LogWarning("Radio station options are null");
+            Logger.LogWarning("Radio station options are null");
             return;
         }
 

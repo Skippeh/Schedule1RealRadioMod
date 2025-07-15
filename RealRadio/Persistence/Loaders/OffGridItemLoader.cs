@@ -44,13 +44,13 @@ public class OffGridItemLoader<TItem, TLoadData> : BuildableItemLoader
 
             if (Data == null)
             {
-                Plugin.Logger.LogError($"{GetType().Name} failed to deserialize data of type '{data.DataType}'");
+                Logger.LogError($"{GetType().Name} failed to deserialize data of type '{data.DataType}'");
                 return false;
             }
         }
         catch (Exception ex)
         {
-            Plugin.Logger.LogError($"{GetType().Name} failed to read data of type '{data.DataType}': {ex}");
+            Logger.LogError($"{GetType().Name} failed to read data of type '{data.DataType}': {ex}");
             return false;
         }
 
@@ -58,25 +58,25 @@ public class OffGridItemLoader<TItem, TLoadData> : BuildableItemLoader
 
         if (itemInstance.Definition is not BuildableItemDefinition buildableItemDefinition)
         {
-            Plugin.Logger.LogError($"{GetType()} failed to get buildable item definition from '{Data.ItemString}'");
+            Logger.LogError($"{GetType()} failed to get buildable item definition from '{Data.ItemString}'");
             return false;
         }
 
         if (buildableItemDefinition.BuiltItem is not TItem)
         {
-            Plugin.Logger.LogError($"{GetType()} failed to get correct item type from '{Data.ItemString}' (expected {typeof(TItem).Name} but got {buildableItemDefinition.BuiltItem.GetType().Name})");
+            Logger.LogError($"{GetType()} failed to get correct item type from '{Data.ItemString}' (expected {typeof(TItem).Name} but got {buildableItemDefinition.BuiltItem.GetType().Name})");
             return false;
         }
 
         if (itemInstance == null)
         {
-            Plugin.Logger.LogError($"{GetType()} failed to get item instance from '{Data.ItemString}'");
+            Logger.LogError($"{GetType()} failed to get item instance from '{Data.ItemString}'");
             return false;
         }
 
         if (!Guid.TryParse(Data.GUID, out var guid))
         {
-            Plugin.Logger.LogError($"{GetType()} failed to parse guid: '{Data.GUID}'");
+            Logger.LogError($"{GetType()} failed to parse guid: '{Data.GUID}'");
             return false;
         }
 
