@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using MelonLoader;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [assembly: MelonInfo(typeof(RealRadio.Plugin.ML.MLMod), "RealRadio", "1.0.0", "Skipcast")]
 [assembly: MelonGame("TVGS", "Schedule I")]

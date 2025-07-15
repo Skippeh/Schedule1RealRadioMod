@@ -1,9 +1,7 @@
 namespace RealRadio.Patches;
 
 using System;
-using FishNet;
 using HarmonyLib;
-using RealRadio.Assets;
 using ScheduleOne;
 
 [HarmonyPatch(typeof(Registry), nameof(Registry.Awake))]
