@@ -57,3 +57,18 @@ Radio stations go into the following folder: `Schedule I\RealRadio\Stations\`. S
 - Immersion is important, but if something feels better even if it's less realistic that should be preferred
 - Generally speaking the mod should be highly polished to the best of your ability, as if it was part of the base game.
 - Custom assets should fit the art style of the base game
+
+## Compiling
+When compiling the project, if you want the plugin to be copied to your game automatically you need to define a environment variable depending on which mod loader you're using.
+
+### BepInEx
+```
+dotnet build /p:BEPINEX=1
+```
+
+### MelonLoader
+```
+dotnet build /p:MELONLOADER=1
+```
+
+You also need to create a `DevVars.targets` file in the root directory. There is an example file included in the repository that you use.
