@@ -42,7 +42,7 @@ public class InternetRadioHostController : HostController
 
     private void SetAudioStream()
     {
-        Host.AudioStream = new MediaFoundationAudioStream(Station.Url ?? throw new ArgumentException("Internet radio station has no URL set"), resetReaderAtEof: false)
+        Host.AudioStream = new MediaFoundationAudioStream(Station.Url ?? throw new ArgumentException("Internet radio station has no URL set"))
         {
             ResampleFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate: AudioSettings.GetSampleRate(), channels: 2),
         };

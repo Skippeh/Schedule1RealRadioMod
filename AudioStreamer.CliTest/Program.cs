@@ -11,7 +11,7 @@ internal class Program
         LogMemoryUsage();
 
         using var file = File.Create("test.pcm");
-        using var stream = new MediaFoundationAudioStream("https://stream.simulatorradio.com", resetReaderAtEof: false)
+        using var stream = new MediaFoundationAudioStream("https://stream.simulatorradio.com")
         {
             ResampleFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate: 44100, channels: 2),
         };

@@ -147,7 +147,7 @@ public class YtDlpHostController : HostController
 
         Logger.LogDebug($"Playing audio file '{filePathUrl}'");
 
-        Host.AudioStream = new MediaFoundationAudioStream(filePathUrl, resetReaderAtEof: false)
+        Host.AudioStream = new MediaFoundationAudioStream(filePathUrl)
         {
             ResampleFormat = WaveFormat.CreateIeeeFloatWaveFormat(sampleRate: AudioSettings.GetSampleRate(), channels: 2),
         };

@@ -11,7 +11,7 @@ namespace AudioStreamer.MediaFoundation;
 /// A full list of supported file formats can be found here:
 /// https://learn.microsoft.com/en-us/windows/win32/medfound/supported-media-formats-in-media-foundation
 /// </summary>
-public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : AudioStream
+public class MediaFoundationAudioStream(string url) : AudioStream
 {
     public WaveFormat? ResampleFormat { get; set; }
 
@@ -20,7 +20,6 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
     public override bool StreamAvailable => hasReadOnce;
 
     private readonly string url = url;
-    private readonly bool resetReaderAtEof = resetReaderAtEof;
     private MediaFoundationReader? reader;
     private MediaFoundationResampler? resampler;
     private bool hasReadOnce;
@@ -135,15 +134,6 @@ public class MediaFoundationAudioStream(string url, bool resetReaderAtEof) : Aud
             else
             {
                 numBytes = reader.Read(outBuffer, offset, count);
-            }
-
-            if (numBytes == 0 && resetReaderAtEof)
-            {
-                Console.WriteLine("Resetting reader at EOF");
-
-                Stop();
-                Start();
-                continue;
             }
 
             break;
