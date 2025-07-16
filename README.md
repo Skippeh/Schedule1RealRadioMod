@@ -64,7 +64,7 @@ Radio stations go into the following folder: `Schedule I\RealRadio\Stations\`. S
 
 ## Compiling
 
-When compiling the project, if you want the plugin to be copied to your game automatically you need to define a environment variable depending on which mod loader you're using.
+When compiling the project, you have to specify which mod loader you're compiling for. You can do this by setting the `BEPINEX` or `MELONLOADER` environment variables or by providing a property value in the `dotnet build` command.
 
 ### BepInEx
 
@@ -78,4 +78,4 @@ dotnet build /p:BEPINEX=1
 dotnet build /p:MELONLOADER=1
 ```
 
-You also need to create a `DevVars.targets` file in the root directory. There is an example file included in the repository that you use.
+You also need to create a `DevVars.targets` file in the root directory. There is an example file included in the repository that you can use.
