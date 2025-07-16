@@ -16,7 +16,7 @@ MonoBehaviour:
   Description: A speaker that you can place on walls and attach to a radio for better
     audio quality.
   ID: com.skipcast.realradio.wall_speaker
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 63a643bca6f750d46946e93dec6533d2, type: 3}
   Category: 4
   Keywords:
   - speaker

@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: Small Analog Radio
   Description: A radio with low quality audio.
   ID: com.skipcast.realradio.small_analog_radio
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: 122ef22a70c3ffe45a88a16c455450b4, type: 3}
   Category: 4
   Keywords:
   - radio
