@@ -26,7 +26,8 @@ public class MLMod : MelonMod
         switch (level)
         {
             case Logger.LogLevel.Debug:
-                log.Msg(System.ConsoleColor.Cyan, data);
+                if (LoaderConfig.Current.Loader.DebugMode)
+                    log.Msg(System.ConsoleColor.Cyan, data);
                 break;
             case Logger.LogLevel.Info:
                 log.Msg(System.ConsoleColor.White, data);
