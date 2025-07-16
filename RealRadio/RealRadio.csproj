@@ -101,6 +101,10 @@
     <CopyToPluginFolder Include="$(TargetDir)\SongInfoFetcher*.pdb" />
   </ItemGroup>
 
+  <Target Name="WarnIfNoModLoaderSet" BeforeTargets="Build" Condition="'$(BEPINEX)' == '' And '$(MELONLOADER)' == ''">
+    <Error Text="One of the following environment variables must be set: BEPINEX, MELONLOADER. Example: dotnet build /p:BEPINEX=1" />
+  </Target>
+
   <Target Name="CopyToPluginFolder" AfterTargets="PostBuildEvent" Condition="'$(CI)' == ''" Outputs="%(PluginFolder.Identity)">
     <PropertyGroup>
       <Destination>%(PluginFolder.Identity)</Destination>
