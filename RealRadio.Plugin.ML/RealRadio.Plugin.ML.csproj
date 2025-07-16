@@ -5,6 +5,11 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>RealRadio.Plugin.ML</AssemblyName>
     <RootNamespace>RealRadio.Plugin.ML</RootNamespace>
+    <RestoreAdditionalProjectSources>
+      $(RestoreAdditionalProjectSources);
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
