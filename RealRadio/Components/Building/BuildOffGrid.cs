@@ -325,10 +325,12 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         {
             var property = Property.OwnedProperties.FirstOrDefault(property =>
             {
-                double dist = property.DistanceFromPropertyBoundsSquared(position);
+                const double MIN_ACCEPTABLE_DISTANCE_SQRD = 0.05 * 0.05;
+                double dist = property.DistanceFromPropertyBoundsSquared(position, MIN_ACCEPTABLE_DISTANCE_SQRD);
 
                 // 0.05 seems to be a good compromise for some colliders not completely covering the outer walls of a property
-                return dist <= 0.05 * 0.05;
+                // without allowing placing items on the outside of outer walls
+                return dist <= MIN_ACCEPTABLE_DISTANCE_SQRD;
             });
 
             return property != null;
