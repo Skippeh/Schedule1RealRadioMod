@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using RealRadio;
 using RealRadio.Components.Building;
+using RealRadio.Helpers;
 using ScheduleOne;
 using ScheduleOne.Building;
 using ScheduleOne.DevUtilities;
@@ -293,14 +294,15 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
 
     private bool TestForValidAngle(Vector3 surfaceNormal)
     {
+        const float EPSILON = 0.00001f;
 
-        if (surfaceNormal.x < buildStart.MinMaxNormalX.x || surfaceNormal.x > buildStart.MinMaxNormalX.y)
+        if (surfaceNormal.x < buildStart.MinMaxNormalX.x - EPSILON || surfaceNormal.x > buildStart.MinMaxNormalX.y + EPSILON)
             return false;
 
-        if (surfaceNormal.y < buildStart.MinMaxNormalY.x || surfaceNormal.y > buildStart.MinMaxNormalY.y)
+        if (surfaceNormal.y < buildStart.MinMaxNormalY.x - EPSILON || surfaceNormal.y > buildStart.MinMaxNormalY.y + EPSILON)
             return false;
 
-        if (surfaceNormal.z < buildStart.MinMaxNormalZ.x || surfaceNormal.z > buildStart.MinMaxNormalZ.y)
+        if (surfaceNormal.z < buildStart.MinMaxNormalZ.x - EPSILON || surfaceNormal.z > buildStart.MinMaxNormalZ.y + EPSILON)
             return false;
 
         return true;
@@ -323,7 +325,12 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         {
             var property = Property.OwnedProperties.FirstOrDefault(property =>
             {
-                return property.DoBoundsContainPoint(position);
+                const double MIN_ACCEPTABLE_DISTANCE_SQRD = 0.05 * 0.05;
+                double dist = property.DistanceFromPropertyBoundsSquared(position, MIN_ACCEPTABLE_DISTANCE_SQRD);
+
+                // 0.05 seems to be a good compromise for some colliders not completely covering the outer walls of a property
+                // without allowing placing items on the outside of outer walls
+                return dist <= MIN_ACCEPTABLE_DISTANCE_SQRD;
             });
 
             return property != null;
