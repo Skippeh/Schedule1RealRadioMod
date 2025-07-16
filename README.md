@@ -1,6 +1,6 @@
 # Real Radio
 
-> A radio plugin for Schedule I using BepInEx
+> An immersive radio mod for Schedule I. Supports both BepInEx and MelonLoader.
 
 **Note: Requires alternate branch on Steam.**
 
