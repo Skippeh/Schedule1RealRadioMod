@@ -186,8 +186,6 @@ public class VehicleRadioProxy : RadioProxy
 
     private void OnEngineToggled(bool started)
     {
-        Logger.LogInfo($"Engine toggled: {started}");
-
         if (IsServer)
         {
             if (started && HasNPCOccupants())

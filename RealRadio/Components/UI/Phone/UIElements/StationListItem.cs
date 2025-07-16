@@ -35,7 +35,7 @@ public class StationListItem
     {
         if (station == null)
         {
-            Logger.LogInfo("Station is null in OnStationSet call");
+            Logger.LogWarning("Station is null in OnStationSet call, ignoring...");
             return;
         }
 

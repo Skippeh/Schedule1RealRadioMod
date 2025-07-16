@@ -91,8 +91,6 @@ public class UrlEditModal
 
     private void OnStateChanged()
     {
-        Logger.LogInfo($"Url state changed to {State}");
-
         if (debounceCoroutine != null)
         {
             owner.StopCoroutine(debounceCoroutine);

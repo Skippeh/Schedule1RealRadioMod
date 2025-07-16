@@ -30,11 +30,11 @@ public class RealRadioPlugin
     public RealRadioPlugin()
     {
         assetBundle = LoadAssetBundle();
-        Logger.LogInfo($"Loaded asset bundle: {assetBundle.name}");
+        Logger.LogDebug($"Loaded asset bundle: {assetBundle.name}");
 
         foreach (var path in assetBundle.GetAllAssetNames())
         {
-            Logger.LogInfo($"- Found asset: {path}");
+            Logger.LogDebug($"- Found asset: {path}");
         }
 
         harmony = new Harmony("com.skipcast.realradio");
@@ -85,12 +85,9 @@ public class RealRadioPlugin
         // So we invoke them manually here.
         var types = typeof(Logger).Assembly.GetExportedTypes().Where(t => t.Namespace == "FishNet.Serializing.Generated");
 
-        Logger.LogInfo($"Found {types.Count()} types to initialize");
-
         foreach (var type in types)
         {
             MethodInfo method = type.GetMethod("InitializeOnce", BindingFlags.NonPublic | BindingFlags.Static);
-            Logger.LogInfo($"Initializing FishNet type: {type.Name} by calling {method}");
             method.Invoke(null, []);
         }
     }
@@ -101,7 +98,7 @@ public class RealRadioPlugin
 
         if (player == null || !player.IsLocalPlayer)
         {
-            Logger.LogInfo($"Detected AppsCanvas creation from non-local player");
+            Logger.LogWarning($"Detected AppsCanvas creation from non-local player, ignoring...");
             return;
         }
 
@@ -195,7 +192,7 @@ public class RealRadioPlugin
             if (assets == null)
                 throw new InvalidOperationException("Assets have not been set");
 
-            Logger.LogInfo("Creating main scene server singletons");
+            Logger.LogDebug("Creating main scene server singletons");
             InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.OffGridBuildManager));
             InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.RadioSyncManager));
             InstanceFinder.ServerManager.Spawn(Instantiate(assets.Singletons.VehicleRadioManager));
@@ -208,7 +205,7 @@ public class RealRadioPlugin
             if (assets == null)
                 throw new InvalidOperationException("Assets have not been set");
 
-            Logger.LogInfo("Creating main scene client singletons");
+            Logger.LogDebug("Creating main scene client singletons");
             Instantiate(assets.Singletons.RadialMenu);
             Instantiate(assets.Singletons.Modal);
             Instantiate(assets.Singletons.GameMusicManager);
@@ -221,7 +218,7 @@ public class RealRadioPlugin
         if (assets == null)
             throw new InvalidOperationException("Assets have not been set");
 
-        Logger.LogInfo("Creating persistent singletons");
+        Logger.LogDebug("Creating persistent singletons");
         Instantiate(assets.Singletons.RadioStationManager);
         Instantiate(assets.Singletons.RadioStationInfoManager);
         Instantiate(assets.Singletons.YtDlpManager);

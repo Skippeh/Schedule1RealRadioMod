@@ -30,7 +30,7 @@ public class CustomRadioStations
         foreach (var filePath in files)
         {
             string iconPath = Path.ChangeExtension(filePath, ".png");
-            Logger.LogInfo($"Attempting to load radio station from file '{filePath}'...");
+            Logger.LogDebug($"Attempting to load radio station from file '{filePath}'...");
 
             try
             {

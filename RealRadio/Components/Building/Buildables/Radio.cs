@@ -233,7 +233,7 @@ public class Radio : TogglableOffGridItem, IUsable
 
         if (RadioStation == station)
         {
-            Logger.LogInfo($"Stopping radio because the station was removed");
+            Logger.LogDebug($"Stopping radio because the station was removed");
             SetRadioStationIdHash(null);
         }
 
@@ -339,14 +339,12 @@ public class Radio : TogglableOffGridItem, IUsable
         if (((IUsable)this).IsInUse)
             return;
 
-        Logger.LogInfo("Start configure radio");
         SetPlayerUser(Player.Local.NetworkObject);
         OnStartConfigure();
     }
 
     private void StopConfiguring()
     {
-        Logger.LogInfo("Stop configure radio");
         OnEndConfigure();
         SetPlayerUser(null);
     }

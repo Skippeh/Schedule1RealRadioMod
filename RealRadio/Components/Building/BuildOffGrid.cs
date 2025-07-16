@@ -59,8 +59,6 @@ public class BuildStartOffGrid : BuildStart_Base
 
     public override void StartBuilding(ItemInstance item)
     {
-        Logger.LogInfo($"BuildStartOffGrid.StartBuilding {item}");
-
         if (item.Definition is not BuildableItemDefinition itemDef)
         {
             Logger.LogError($"item.Definition is not BuildableItemDefinition: {item.Definition}");
@@ -142,7 +140,6 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
 
     public override void Stop()
     {
-        Logger.LogInfo("BuildUpdateOffGrid.Stop");
         buildStart.DestroyGhostObject();
     }
 

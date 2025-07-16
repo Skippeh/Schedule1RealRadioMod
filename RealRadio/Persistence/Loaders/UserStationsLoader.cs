@@ -55,7 +55,7 @@ public class UserStationsLoader : Loader
                 if (validatedStations.Count != data.Stations.Count)
                     Logger.LogWarning($"Loaded {validatedStations.Count} out of {data.Stations.Count} user radio station(s)");
                 else
-                    Logger.LogInfo($"Successfully loaded {data.Stations.Count} user radio station(s)");
+                    Logger.LogDebug($"Successfully loaded {data.Stations.Count} user radio station(s)");
             }
             catch (Exception ex)
             {

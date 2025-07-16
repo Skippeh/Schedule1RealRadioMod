@@ -137,7 +137,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
-        Logger.LogInfo($"Updating song info fetcher for radio station '{station}'...");
+        Logger.LogDebug($"Updating song info fetcher for radio station '{station}'...");
 
         StartCoroutine(UpdateFetcher(station, oldStation));
     }
@@ -233,7 +233,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
     private IEnumerator RemoveFetcher(RadioStation station)
     {
-        Logger.LogInfo($"Removing song info fetcher for radio station '{station.Id} ({station.Url})'...");
+        Logger.LogDebug($"Removing song info fetcher for radio station '{station.Id} ({station.Url})'...");
 
         fetchers.Remove(station, out var fetcher);
         pendingUpdates.Remove(station);

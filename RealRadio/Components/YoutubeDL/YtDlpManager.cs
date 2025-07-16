@@ -151,7 +151,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? _))
             throw new UriFormatException($"Invalid URL '{url}'");
 
-        Logger.LogInfo($"Downloading (if not cached) audio file '{url}'...");
+        Logger.LogDebug($"Downloading (if not cached) audio file '{url}'...");
 
         OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.PreProcessing));
 
@@ -190,12 +190,12 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         if (metaData.Duration == null)
         {
-            Logger.LogInfo($"Attempting to get duration from audio file '{filePath}'...");
+            Logger.LogDebug($"Attempting to get duration from audio file '{filePath}'...");
 
             try
             {
                 metaData.Duration = await GetAudioFileDuration(filePath);
-                Logger.LogInfo($"Duration of audio file '{filePath}' is {metaData.Duration} seconds");
+                Logger.LogDebug($"Duration of audio file '{filePath}' is {metaData.Duration} seconds");
 
                 try
                 {

@@ -53,7 +53,7 @@ public abstract class RadioProxy : NetworkBehaviour
 
         if (RadioStation == station)
         {
-            Logger.LogInfo($"Stopping radio because the station was removed");
+            Logger.LogDebug($"Stopping radio because the station was removed");
             SetRadioStationIdHash(null);
         }
     }

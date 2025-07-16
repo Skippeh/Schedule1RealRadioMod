@@ -236,8 +236,6 @@ public class StationProperties
 
             string url = (string)urlsList.itemsSource[urlsList.selectedIndex];
 
-            Logger.LogInfo($"Opening edit modal for '{url}'");
-
             OpenUrlEditModal(url, (newUrl) =>
             {
                 var index = urlsList.itemsSource.IndexOf(url);

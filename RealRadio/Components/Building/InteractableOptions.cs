@@ -60,14 +60,11 @@ public class InteractableOptions : MonoBehaviour
 
     private void OnInteractStart()
     {
-        Logger.LogInfo("Interact start");
         heldTime = 0;
     }
 
     private void OnInteractEnd()
     {
-        Logger.LogInfo("Interact end");
-
         if (heldTime < MaxHoldTimeBeforeShowOptions)
             selectedOption = Options.FirstOrDefault();
 

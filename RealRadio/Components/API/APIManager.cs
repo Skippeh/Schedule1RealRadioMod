@@ -23,7 +23,7 @@ public class APIManager : PersistentSingleton<APIManager>
 
     public IEnumerator LoadDataCoroutine()
     {
-        Logger.LogInfo("Loading custom radio stations...");
+        Logger.LogDebug("Loading custom radio stations...");
         var loadStationsTask = RadioStations.LoadStationsFromDisk();
 
         yield return new WaitUntil(() => loadStationsTask.IsCompleted);
@@ -38,7 +38,7 @@ public class APIManager : PersistentSingleton<APIManager>
 
         foreach (var station in stations)
         {
-            Logger.LogInfo($"Registering custom radio station: {station.Name} ({station.Id})");
+            Logger.LogDebug($"Registering custom radio station: {station.Name} ({station.Id})");
             RadioStationManager.Instance.AddOrUpdateRadioStation(station, StationSource.FileAPI);
         }
 

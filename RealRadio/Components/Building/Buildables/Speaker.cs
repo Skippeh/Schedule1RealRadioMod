@@ -310,7 +310,6 @@ public class Speaker : OffGridItem, IUsable
         if (((IUsable)this).IsInUse)
             return;
 
-        Logger.LogInfo("Start configure speaker");
         SetPlayerUser(Player.Local.NetworkObject);
     }
 
@@ -319,7 +318,6 @@ public class Speaker : OffGridItem, IUsable
         if (PlayerUserObject != Player.Local.NetworkObject)
             return;
 
-        Logger.LogInfo("Stop configure speaker");
         SetPlayerUser(null);
     }
 

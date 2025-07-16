@@ -155,7 +155,7 @@ public class StreamAudioHost : MonoBehaviour
 
             if (inactiveTimer >= MaxClientInactivityTime)
             {
-                Logger.LogInfo("Stopping audio stream host due to inactivity");
+                Logger.LogDebug("Stopping audio stream host due to inactivity");
                 StopAudioStream();
             }
         }
@@ -182,7 +182,7 @@ public class StreamAudioHost : MonoBehaviour
 
                 if (preventStartRefData.Value)
                 {
-                    Logger.LogInfo("Prevented audio stream start");
+                    Logger.LogDebug("Prevented audio stream start");
                     this.startRequested = false;
                     return;
                 }
@@ -247,7 +247,6 @@ public class StreamAudioHost : MonoBehaviour
 
         foreach (var client in enabledClients)
         {
-            Logger.LogInfo($"Invoking OnHostStartRequested for client {client.Id}");
             client.OnHostStartRequested?.Invoke();
         }
 
@@ -284,12 +283,12 @@ public class StreamAudioHost : MonoBehaviour
     {
         if (startStreamCts != null)
         {
-            Logger.LogInfo("Cancelling start stream task");
+            Logger.LogDebug("Cancelling start stream task");
             startStreamCts.Cancel();
 
             try
             {
-                Logger.LogInfo("Waiting for start stream task to complete");
+                Logger.LogDebug("Waiting for start stream task to complete");
                 startStreamTask?.Wait();
             }
             catch (AggregateException)
@@ -388,7 +387,7 @@ public class StreamAudioHost : MonoBehaviour
 
     private void OnNumActiveClientsChanged()
     {
-        Logger.LogInfo($"Num active clients: {enabledClients.Count}");
+        Logger.LogDebug($"Num active clients: {enabledClients.Count}");
 
         if (enabledClients.Count > 0)
         {
@@ -396,7 +395,7 @@ public class StreamAudioHost : MonoBehaviour
 
             if (AudioStream == null || !AudioStream.Started)
             {
-                Logger.LogInfo("Starting audio stream");
+                Logger.LogDebug("Starting audio stream");
                 StartAudioStream();
             }
         }

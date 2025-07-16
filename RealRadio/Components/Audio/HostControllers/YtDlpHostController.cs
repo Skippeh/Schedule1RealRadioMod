@@ -30,7 +30,7 @@ public class YtDlpHostController : HostController
             return false;
         }
 
-        Logger.LogInfo($"Play state: {state}");
+        Logger.LogDebug($"Play state: {state}");
 
         currentSongIteration = state.SongIteration.Value;
         lastSongIndex = state.SongIndex.Value;
@@ -145,7 +145,7 @@ public class YtDlpHostController : HostController
         Host.StopAudioStream();
         yield return new WaitUntil(() => Host.AudioStream == null || !Host.AudioStream.Started);
 
-        Logger.LogInfo($"Playing audio file '{filePathUrl}'");
+        Logger.LogDebug($"Playing audio file '{filePathUrl}'");
 
         Host.AudioStream = new MediaFoundationAudioStream(filePathUrl, resetReaderAtEof: false)
         {

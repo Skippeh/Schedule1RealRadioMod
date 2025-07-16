@@ -125,7 +125,7 @@ public class AssetRegistry : ScriptableObject
 
             if (itemDefinition != null)
             {
-                Logger.LogInfo($"Registering ItemDefinition {itemDefinition.ID} from {assetName}");
+                Logger.LogDebug($"Registering ItemDefinition {itemDefinition.ID} from {assetName}");
 
                 if (registry.ItemRegistry.Any(x => x.ID == itemDefinition.ID))
                 {
@@ -150,7 +150,7 @@ public class AssetRegistry : ScriptableObject
 
                 if (networkObject != null)
                 {
-                    Logger.LogInfo($"Registering NetworkObject {networkObject.name} from {assetName}");
+                    Logger.LogDebug($"Registering NetworkObject {networkObject.name} from {assetName}");
                     netPrefabs.AddObject(networkObject, checkForDuplicates: true);
                 }
 
