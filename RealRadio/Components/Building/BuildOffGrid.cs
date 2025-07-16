@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using RealRadio;
 using RealRadio.Components.Building;
+using RealRadio.Helpers;
 using ScheduleOne;
 using ScheduleOne.Building;
 using ScheduleOne.DevUtilities;
@@ -324,7 +325,10 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         {
             var property = Property.OwnedProperties.FirstOrDefault(property =>
             {
-                return property.DoBoundsContainPoint(position);
+                double dist = property.DistanceFromPropertyBoundsSquared(position);
+
+                // 0.05 seems to be a good compromise for some colliders not completely covering the outer walls of a property
+                return dist <= 0.05 * 0.05;
             });
 
             return property != null;
