@@ -98,7 +98,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         if (station.Urls is null or { Length: 0 })
         {
-            Plugin.Logger.LogWarning($"YtDlp radio station '{station.Name}' has no URLs");
+            Logger.LogWarning($"YtDlp radio station '{station.Name}' has no URLs");
             return;
         }
 
@@ -116,18 +116,18 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
     private IEnumerator DownloadBinaries()
     {
-        Plugin.Logger.LogInfo("Downloading YtDlp binaries...");
+        Logger.LogInfo("Downloading YtDlp binaries...");
 
         downloadBinariesTask = ytDlp.DownloadBinaries();
         yield return new WaitUntil(() => downloadBinariesTask.IsCompleted);
 
         if (downloadBinariesTask.IsFaulted)
         {
-            Plugin.Logger.LogError($"Failed to download YtDlp binaries:\n{downloadBinariesTask.Exception}");
+            Logger.LogError($"Failed to download YtDlp binaries:\n{downloadBinariesTask.Exception}");
             yield break;
         }
 
-        Plugin.Logger.LogInfo("YtDlp binaries downloaded");
+        Logger.LogInfo("YtDlp binaries downloaded");
     }
 
     public async Task<VideoData> FetchMetaData(string url)
@@ -151,7 +151,7 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
         if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? _))
             throw new UriFormatException($"Invalid URL '{url}'");
 
-        Plugin.Logger.LogInfo($"Downloading (if not cached) audio file '{url}'...");
+        Logger.LogInfo($"Downloading (if not cached) audio file '{url}'...");
 
         OnDownloadProgress?.Invoke(url, new DownloadProgress(DownloadState.PreProcessing));
 
@@ -190,12 +190,12 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         if (metaData.Duration == null)
         {
-            Plugin.Logger.LogInfo($"Attempting to get duration from audio file '{filePath}'...");
+            Logger.LogInfo($"Attempting to get duration from audio file '{filePath}'...");
 
             try
             {
                 metaData.Duration = await GetAudioFileDuration(filePath);
-                Plugin.Logger.LogInfo($"Duration of audio file '{filePath}' is {metaData.Duration} seconds");
+                Logger.LogInfo($"Duration of audio file '{filePath}' is {metaData.Duration} seconds");
 
                 try
                 {
@@ -203,12 +203,12 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
                 }
                 catch (Exception ex)
                 {
-                    Plugin.Logger.LogError($"Failed to update cached metadata for audio file '{filePath}': {ex}");
+                    Logger.LogError($"Failed to update cached metadata for audio file '{filePath}': {ex}");
                 }
             }
             catch (Exception ex)
             {
-                Plugin.Logger.LogError($"Failed to get duration from audio file '{filePath}': {ex}");
+                Logger.LogError($"Failed to get duration from audio file '{filePath}': {ex}");
             }
         }
 
@@ -224,11 +224,11 @@ public class YtDlpManager : PersistentSingleton<YtDlpManager>
 
         if (task.IsFaulted)
         {
-            Plugin.Logger.LogError($"Failed to download audio file '{url}':\n{task.Exception}");
+            Logger.LogError($"Failed to download audio file '{url}':\n{task.Exception}");
             yield break;
         }
 
-        Plugin.Logger.LogInfo($"Audio file '{url}' downloaded: {task.Result}");
+        Logger.LogInfo($"Audio file '{url}' downloaded: {task.Result}");
     }
 
     /// <summary>

@@ -90,7 +90,7 @@ namespace RealRadio.Components.UI.Phone.UIElements
 
                 if (task.Result.Availability is not Availability.Public or Availability.Unlisted)
                 {
-                    Plugin.Logger.LogInfo($"Song '{url}' is not public or unlisted");
+                    Logger.LogInfo($"Song '{url}' is not public or unlisted");
                     failedUrls.Add(url);
                     yield break;
                 }

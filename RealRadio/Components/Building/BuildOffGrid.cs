@@ -12,6 +12,7 @@ using ScheduleOne.PlayerScripts;
 using ScheduleOne.Property;
 using ScheduleOne.UI;
 using UnityEngine;
+using Logger = RealRadio.Logger;
 
 public class BuildStartOffGrid : BuildStart_Base
 {
@@ -58,11 +59,11 @@ public class BuildStartOffGrid : BuildStart_Base
 
     public override void StartBuilding(ItemInstance item)
     {
-        Plugin.Logger.LogInfo($"BuildStartOffGrid.StartBuilding {item}");
+        Logger.LogInfo($"BuildStartOffGrid.StartBuilding {item}");
 
         if (item.Definition is not BuildableItemDefinition itemDef)
         {
-            Plugin.Logger.LogError($"item.Definition is not BuildableItemDefinition: {item.Definition}");
+            Logger.LogError($"item.Definition is not BuildableItemDefinition: {item.Definition}");
             return;
         }
 
@@ -141,7 +142,7 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
 
     public override void Stop()
     {
-        Plugin.Logger.LogInfo("BuildUpdateOffGrid.Stop");
+        Logger.LogInfo("BuildUpdateOffGrid.Stop");
         buildStart.DestroyGhostObject();
     }
 

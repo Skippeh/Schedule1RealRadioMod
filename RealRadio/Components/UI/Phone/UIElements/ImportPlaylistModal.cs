@@ -142,7 +142,7 @@ public class ImportPlaylistModal : IDisposable
 
         if (queryTask.IsFaulted)
         {
-            Plugin.Logger.LogWarning($"Failed to fetch playlist urls: {queryTask.Exception}");
+            Logger.LogWarning($"Failed to fetch playlist urls: {queryTask.Exception}");
             queryCoroutine = null;
             queryException = queryTask.Exception;
             State = UiState.Invalid;

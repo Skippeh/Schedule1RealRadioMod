@@ -155,7 +155,7 @@ public class StreamAudioHost : MonoBehaviour
 
             if (inactiveTimer >= MaxClientInactivityTime)
             {
-                Plugin.Logger.LogInfo("Stopping audio stream host due to inactivity");
+                Logger.LogInfo("Stopping audio stream host due to inactivity");
                 StopAudioStream();
             }
         }
@@ -182,7 +182,7 @@ public class StreamAudioHost : MonoBehaviour
 
                 if (preventStartRefData.Value)
                 {
-                    Plugin.Logger.LogInfo("Prevented audio stream start");
+                    Logger.LogInfo("Prevented audio stream start");
                     this.startRequested = false;
                     return;
                 }
@@ -201,7 +201,7 @@ public class StreamAudioHost : MonoBehaviour
     {
         if (AudioStream == null)
         {
-            Plugin.Logger.LogWarning("AudioStream is null");
+            Logger.LogWarning("AudioStream is null");
             return;
         }
 
@@ -247,7 +247,7 @@ public class StreamAudioHost : MonoBehaviour
 
         foreach (var client in enabledClients)
         {
-            Plugin.Logger.LogInfo($"Invoking OnHostStartRequested for client {client.Id}");
+            Logger.LogInfo($"Invoking OnHostStartRequested for client {client.Id}");
             client.OnHostStartRequested?.Invoke();
         }
 
@@ -264,7 +264,7 @@ public class StreamAudioHost : MonoBehaviour
             }
             catch (Exception ex)
             {
-                Plugin.Logger.LogError($"Failed to start audio stream: {ex}");
+                Logger.LogError($"Failed to start audio stream: {ex}");
                 waitingForWarmup = false;
                 return;
             }
@@ -284,12 +284,12 @@ public class StreamAudioHost : MonoBehaviour
     {
         if (startStreamCts != null)
         {
-            Plugin.Logger.LogInfo("Cancelling start stream task");
+            Logger.LogInfo("Cancelling start stream task");
             startStreamCts.Cancel();
 
             try
             {
-                Plugin.Logger.LogInfo("Waiting for start stream task to complete");
+                Logger.LogInfo("Waiting for start stream task to complete");
                 startStreamTask?.Wait();
             }
             catch (AggregateException)
@@ -327,8 +327,8 @@ public class StreamAudioHost : MonoBehaviour
 
         if (startStreamTask.Exception != null)
         {
-            Plugin.Logger.LogError("Error starting audio stream");
-            Plugin.Logger.LogError(startStreamTask.Exception);
+            Logger.LogError("Error starting audio stream");
+            Logger.LogError(startStreamTask.Exception);
         }
 
         if (!audioSource.isPlaying)
@@ -388,7 +388,7 @@ public class StreamAudioHost : MonoBehaviour
 
     private void OnNumActiveClientsChanged()
     {
-        Plugin.Logger.LogInfo($"Num active clients: {enabledClients.Count}");
+        Logger.LogInfo($"Num active clients: {enabledClients.Count}");
 
         if (enabledClients.Count > 0)
         {
@@ -396,7 +396,7 @@ public class StreamAudioHost : MonoBehaviour
 
             if (AudioStream == null || !AudioStream.Started)
             {
-                Plugin.Logger.LogInfo("Starting audio stream");
+                Logger.LogInfo("Starting audio stream");
                 StartAudioStream();
             }
         }

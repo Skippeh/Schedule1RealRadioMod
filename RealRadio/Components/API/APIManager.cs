@@ -23,14 +23,14 @@ public class APIManager : PersistentSingleton<APIManager>
 
     public IEnumerator LoadDataCoroutine()
     {
-        Plugin.Logger.LogInfo("Loading custom radio stations...");
+        Logger.LogInfo("Loading custom radio stations...");
         var loadStationsTask = RadioStations.LoadStationsFromDisk();
 
         yield return new WaitUntil(() => loadStationsTask.IsCompleted);
 
         if (loadStationsTask.IsFaulted)
         {
-            Plugin.Logger.LogError($"Failed to load custom radio stations:\n{loadStationsTask.Exception}");
+            Logger.LogError($"Failed to load custom radio stations:\n{loadStationsTask.Exception}");
             yield break;
         }
 
@@ -38,10 +38,10 @@ public class APIManager : PersistentSingleton<APIManager>
 
         foreach (var station in stations)
         {
-            Plugin.Logger.LogInfo($"Registering custom radio station: {station.Name} ({station.Id})");
+            Logger.LogInfo($"Registering custom radio station: {station.Name} ({station.Id})");
             RadioStationManager.Instance.AddOrUpdateRadioStation(station, StationSource.FileAPI);
         }
 
-        Plugin.Logger.LogInfo($"Loaded {stations.Count} custom radio station(s)");
+        Logger.LogInfo($"Loaded {stations.Count} custom radio station(s)");
     }
 }

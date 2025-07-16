@@ -116,7 +116,7 @@ public class AudioStreamManager : MonoBehaviour
     {
         if (cachedInstance)
         {
-            Plugin.Logger.LogWarning("An instance of AudioStreamManager already exists");
+            Logger.LogWarning("An instance of AudioStreamManager already exists");
             Destroy(this);
             return;
         }
@@ -135,7 +135,7 @@ public class AudioStreamManager : MonoBehaviour
 
         hosts.Add(station.Id!, oldHost);
         oldHost.GetComponent<HostController>().Station = station;
-        Plugin.Logger.LogInfo($"Updated AudioStreamManager hosts dictionary for radio station {station.Id}");
+        Logger.LogInfo($"Updated AudioStreamManager hosts dictionary for radio station {station.Id}");
     }
 
     private void OnRadioStationRemoved(RadioStation station)
@@ -150,7 +150,7 @@ public class AudioStreamManager : MonoBehaviour
             if (host)
                 Destroy(host.gameObject);
 
-            Plugin.Logger.LogInfo($"Removed AudioStreamManager host for radio station {station.Id}");
+            Logger.LogInfo($"Removed AudioStreamManager host for radio station {station.Id}");
         }
     }
 
@@ -165,14 +165,14 @@ public class AudioStreamManager : MonoBehaviour
                 activeHostsBuffer = new StreamAudioHost[numActiveHosts];
             }
 
-            Plugin.Logger.LogInfo($"activeHosts len: {activeHosts.Count}, numActiveHosts: {numActiveHosts}, activeHostsBuffer len: {activeHostsBuffer.Length}");
+            Logger.LogInfo($"activeHosts len: {activeHosts.Count}, numActiveHosts: {numActiveHosts}, activeHostsBuffer len: {activeHostsBuffer.Length}");
             activeHosts.CopyTo(activeHostsBuffer, 0);
 
             foreach (var host in activeHostsBuffer.Take(activeHosts.Count))
             {
                 if (host.NumActiveClients == 0)
                 {
-                    Plugin.Logger.LogInfo($"Killing quiet audio host before inactive timer expires due to too many active hosts");
+                    Logger.LogInfo($"Killing quiet audio host before inactive timer expires due to too many active hosts");
 
                     host.StopAudioStream();
                     --numActiveHosts;

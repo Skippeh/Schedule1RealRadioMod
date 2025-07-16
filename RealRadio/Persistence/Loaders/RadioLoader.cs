@@ -30,7 +30,7 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
             if (Data.StationIdHash == 0 || !RadioStationManager.Instance.StationsByHashedId.TryGetValue(Data.StationIdHash, out var station))
             {
                 if (Data.StationIdHash != 0)
-                    Plugin.Logger.LogWarning($"Could not find radio station with id {Data.StationIdHash}");
+                    Logger.LogWarning($"Could not find radio station with id {Data.StationIdHash}");
             }
             else
             {
@@ -46,7 +46,7 @@ public class RadioLoader<TRadio, TRadioData> : TogglableOffGridItemLoader<TRadio
 
                 if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(hashId, out var favStation))
                 {
-                    Plugin.Logger.LogWarning($"Could not find favorite radio station with id {hashId}");
+                    Logger.LogWarning($"Could not find favorite radio station with id {hashId}");
                 }
                 else
                 {

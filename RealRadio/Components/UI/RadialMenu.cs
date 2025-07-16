@@ -154,7 +154,7 @@ public class RadialMenu : Singleton<RadialMenu>
 
         if (HoveredOption == null)
         {
-            Plugin.Logger.LogWarning("Hovered option is null");
+            Logger.LogWarning("Hovered option is null");
             return;
         }
 
@@ -368,7 +368,7 @@ public class RadialMenu : Singleton<RadialMenu>
 
         if (options.Count == 0)
         {
-            Plugin.Logger.LogWarning("No options to display in radial menu");
+            Logger.LogWarning("No options to display in radial menu");
             return;
         }
 

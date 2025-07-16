@@ -1,26 +1,19 @@
 ﻿using System;
-using BepInEx;
-using BepInEx.Logging;
 using CommandLine;
-using HarmonyLib;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace LocalMultiplayer;
 
-[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-public class Plugin : BaseUnityPlugin
+public class Plugin : MonoBehaviour
 {
-    internal static new ManualLogSource Logger = null!;
     internal static LaunchArguments? LaunchArguments { get; private set; }
 
-    private static Harmony? harmony;
+    private static HarmonyLib.Harmony? harmony;
 
     private void Awake()
     {
-        Logger = base.Logger;
-
-        harmony = new Harmony("com.skipcast.localmultiplayer");
+        harmony = new HarmonyLib.Harmony("com.skipcast.localmultiplayer");
         harmony.PatchAll();
 
         ParseLaunchArguments();
@@ -39,7 +32,7 @@ public class Plugin : BaseUnityPlugin
             Console.Title += " (CLIENT)";
         }
 
-        Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Logger.LogInfo($"Plugin LocalMultiplayer is loaded!");
 
         SceneManager.activeSceneChanged += (oldScene, newScene) =>
         {

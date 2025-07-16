@@ -310,7 +310,7 @@ public class Speaker : OffGridItem, IUsable
         if (((IUsable)this).IsInUse)
             return;
 
-        Plugin.Logger.LogInfo("Start configure speaker");
+        Logger.LogInfo("Start configure speaker");
         SetPlayerUser(Player.Local.NetworkObject);
     }
 
@@ -319,7 +319,7 @@ public class Speaker : OffGridItem, IUsable
         if (PlayerUserObject != Player.Local.NetworkObject)
             return;
 
-        Plugin.Logger.LogInfo("Stop configure speaker");
+        Logger.LogInfo("Stop configure speaker");
         SetPlayerUser(null);
     }
 

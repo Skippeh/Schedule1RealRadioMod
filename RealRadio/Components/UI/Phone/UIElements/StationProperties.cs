@@ -199,7 +199,7 @@ public class StationProperties
 
                 if (metaDataTask.IsFaulted)
                 {
-                    Plugin.Logger.LogError($"Failed to fetch metadata for URL '{url}':\n{metaDataTask.Exception}");
+                    Logger.LogError($"Failed to fetch metadata for URL '{url}':\n{metaDataTask.Exception}");
                     yield break;
                 }
 
@@ -236,7 +236,7 @@ public class StationProperties
 
             string url = (string)urlsList.itemsSource[urlsList.selectedIndex];
 
-            Plugin.Logger.LogInfo($"Opening edit modal for '{url}'");
+            Logger.LogInfo($"Opening edit modal for '{url}'");
 
             OpenUrlEditModal(url, (newUrl) =>
             {
@@ -390,7 +390,7 @@ public class StationProperties
                 urlField.style.display = DisplayStyle.None;
                 break;
             default:
-                Plugin.Logger.LogWarning($"Unknown radio type selected: {typeField.value}");
+                Logger.LogWarning($"Unknown radio type selected: {typeField.value}");
                 break;
         }
     }

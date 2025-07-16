@@ -22,16 +22,16 @@ public class GameMusicManager : Singleton<GameMusicManager>
             ambientTrack.gameObject.SetActive(false);
         }
 
-        MusicTrackPatches.MusicTrackToggled += OnMusicTrackToggled;
-        MusicTrackPatches.MusicTrackPlay += OnMusicTrackPlay;
+        GameEvents.MusicTrackToggled += OnMusicTrackToggled;
+        GameEvents.MusicTrackPlay += OnMusicTrackPlay;
     }
 
     public override void OnDestroy()
     {
         base.OnDestroy();
 
-        MusicTrackPatches.MusicTrackToggled -= OnMusicTrackToggled;
-        MusicTrackPatches.MusicTrackPlay -= OnMusicTrackPlay;
+        GameEvents.MusicTrackToggled -= OnMusicTrackToggled;
+        GameEvents.MusicTrackPlay -= OnMusicTrackPlay;
     }
 
     private void OnMusicTrackToggled(MusicTrack track, bool enabled)

@@ -60,13 +60,13 @@ public class InteractableOptions : MonoBehaviour
 
     private void OnInteractStart()
     {
-        Plugin.Logger.LogInfo("Interact start");
+        Logger.LogInfo("Interact start");
         heldTime = 0;
     }
 
     private void OnInteractEnd()
     {
-        Plugin.Logger.LogInfo("Interact end");
+        Logger.LogInfo("Interact end");
 
         if (heldTime < MaxHoldTimeBeforeShowOptions)
             selectedOption = Options.FirstOrDefault();
@@ -79,7 +79,7 @@ public class InteractableOptions : MonoBehaviour
 
         if (selectedOption.Id == null)
         {
-            Plugin.Logger.LogWarning($"Selected option '{selectedOption.Name}' has no id, skipping interaction");
+            Logger.LogWarning($"Selected option '{selectedOption.Name}' has no id, skipping interaction");
             return;
         }
 
@@ -101,7 +101,7 @@ public class InteractableOptions : MonoBehaviour
             showingOptions = true;
         else
         {
-            Plugin.Logger.LogWarning("Radial menu is already open");
+            Logger.LogWarning("Radial menu is already open");
         }
     }
 

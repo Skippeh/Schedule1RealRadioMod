@@ -53,7 +53,7 @@ public abstract class RadioProxy : NetworkBehaviour
 
         if (RadioStation == station)
         {
-            Plugin.Logger.LogInfo($"Stopping radio because the station was removed");
+            Logger.LogInfo($"Stopping radio because the station was removed");
             SetRadioStationIdHash(null);
         }
     }
@@ -75,7 +75,7 @@ public abstract class RadioProxy : NetworkBehaviour
 
         if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(idHash.Value, out _))
         {
-            Plugin.Logger.LogWarning($"Invalid radio station hash (not found): {idHash}");
+            Logger.LogWarning($"Invalid radio station hash (not found): {idHash}");
             return;
         }
 
@@ -119,7 +119,7 @@ public abstract class RadioProxy : NetworkBehaviour
 
         if (audioClient)
         {
-            Plugin.Logger.LogWarning("AudioClient is already running");
+            Logger.LogWarning("AudioClient is already running");
             return;
         }
 

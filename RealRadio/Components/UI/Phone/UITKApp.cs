@@ -111,7 +111,7 @@ public abstract class UITKApp<T> : App<UITKApp<T>> where T : PlayerSingleton<UIT
         {
             if (evt.keyCode == key)
             {
-                Plugin.Logger.LogInfo($"Preventing key: {key}");
+                Logger.LogInfo($"Preventing key: {key}");
 
                 evt.PreventDefault();
                 evt.StopPropagation();
