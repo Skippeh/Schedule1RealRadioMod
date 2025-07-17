@@ -12,7 +12,7 @@
     </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
-  <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
+  <Import Project="$(SolutionDir)DevVars.props" Condition="Exists('$(SolutionDir)DevVars.props')" />
 
   <ItemGroup>
     <PackageReference Include="LavaGang.MelonLoader" Version="0.7.1" />

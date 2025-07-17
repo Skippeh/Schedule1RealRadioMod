@@ -24,7 +24,7 @@
     <DefineConstants>MELONLOADER</DefineConstants>
   </PropertyGroup>
 
-  <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
+  <Import Project="$(SolutionDir)DevVars.props" Condition="Exists('$(SolutionDir)DevVars.props')" />
 
   <ItemGroup Condition="'$(BEPINEX)' != ''">
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
