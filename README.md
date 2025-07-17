@@ -78,4 +78,4 @@ dotnet build /p:BEPINEX=1
 dotnet build /p:MELONLOADER=1
 ```
 
-You also need to create a `DevVars.targets` file in the root directory. There is an example file included in the repository that you can use.
+You also need to create a `DevVars.props` file in the root directory. There is an example file included in the repository that you can use.

@@ -484,7 +484,7 @@ $RECYCLE.BIN/
 *.swp
 
 # User specific variables
-/DevVars.targets
+/DevVars.props
 
 # These already exist in root folder, but they're generated automatically if you open a script file from unity (assuming you use vscode)
 UnityAssets/.vscode
@@ -496,3 +496,4 @@ UnityAssets/.vscode
 
 # Blender
 *.blend[1-9]
+/dist/

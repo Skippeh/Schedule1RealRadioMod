@@ -24,7 +24,7 @@
     <DefineConstants>MELONLOADER</DefineConstants>
   </PropertyGroup>
 
-  <Import Project="$(SolutionDir)DevVars.targets" Condition="Exists('$(SolutionDir)DevVars.targets')" />
+  <Import Project="$(SolutionDir)build_targets\CopyPlugin.targets" />
 
   <ItemGroup Condition="'$(BEPINEX)' != ''">
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
@@ -71,16 +71,4 @@
   <ItemGroup>
     <CopyToPluginFolder Include="$(TargetDir)\LocalMultiplayer.dll" />
   </ItemGroup>
-
-  <Target Name="WarnIfNoModLoaderSet" BeforeTargets="Build" Condition="'$(BEPINEX)' == '' And '$(MELONLOADER)' == ''">
-    <Error Text="One of the following environment variables must be set: BEPINEX, MELONLOADER. Example: dotnet build /p:BEPINEX=1" />
-  </Target>
-
-  <Target Name="CopyToPluginFolder" AfterTargets="PostBuildEvent" Condition="'$(CI)' == ''" Outputs="%(PluginFolder.Identity)">
-    <PropertyGroup>
-      <Destination>%(PluginFolder.Identity)</Destination>
-    </PropertyGroup>
-    <Message Importance="high" Text="Copying files to plugin folder: $(Destination)" />
-    <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFiles="@(CopyToPluginFolder->'$(Destination)\..\LocalMultiplayer\%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
 </Project>

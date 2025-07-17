@@ -1,0 +1,58 @@
+<Project>
+  <Import Project="$(SolutionDir)DevVars.props" Condition="Exists('$(SolutionDir)DevVars.props')" />
+
+  <PropertyGroup>
+    <!-- The properties below are designed to be overriden in each project that imports this file -->
+
+    <!-- If true files are copied to various places. If this is disabled nothing gets copied -->
+    <CopyFiles Condition="('$(CopyFiles)' == '') And ('$(BepInExOnly)' == '' Or '$(BEPINEX)' != '') And ('$(MelonLoaderOnly)' == '' Or '$(MELONLOADER)' != '')">true</CopyFiles>
+
+    <!-- If true files are copied to the Unity project's Assets/Plugins folder -->
+    <CopyToUnity Condition="'$(CopyToUnity)' == ''">false</CopyToUnity>
+
+    <!-- The name of the directory to put the plugin files in. Will use the assembly name if not set -->
+    <PluginDirectory Condition="'$(PluginDirectory)' == ''">$(AssemblyName)</PluginDirectory>
+
+    <!-- These properties are used internally and can't be modified by projects -->
+    <ModLoader Condition="'$(BEPINEX)' != ''">BepInEx</ModLoader>
+    <ModLoader Condition="'$(MELONLOADER)' != ''">MelonLoader</ModLoader>
+    <DistDestination>$(SolutionDir)\dist\$(ModLoader)\$(PluginDirectory)</DistDestination>
+  </PropertyGroup>
+
+  <Target Name="WarnIfNoModLoaderSet" BeforeTargets="Build" Condition="'$(BEPINEX)' == '' And '$(MELONLOADER)' == ''">
+    <Error Text="One of the following environment variables must be set: BEPINEX, MELONLOADER. Example: dotnet build /p:BEPINEX=1" />
+  </Target>
+
+  <Target Name="WarnIfNoModLoaderSet" BeforeTargets="Build" Condition="'$(BEPINEX)' == '' And '$(MELONLOADER)' == ''">
+    <Error Text="One of the following environment variables must be set: BEPINEX, MELONLOADER. Example: dotnet build /p:BEPINEX=1" />
+  </Target>
+
+  <Target Name="CopyToPluginFolder" AfterTargets="PostBuildEvent" Condition="'$(CI)' == '' And '$(CopyFiles)' == 'true'" Outputs="%(PluginFolder.Identity)">
+    <PropertyGroup>
+      <Destination>%(PluginFolder.Identity)\$(PluginDirectory)</Destination>
+    </PropertyGroup>
+    <Message Importance="high" Text="Copying $(AssemblyName) files to plugin folder: $(Destination)" />
+    <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFiles="@(CopyToPluginFolder->'$(Destination)\%(RecursiveDir)%(Filename)%(Extension)')" />
+
+    <Message Importance="high" Text="Copying $(AssemblyName) asset files to plugin folder: $(Destination)" />
+    <Copy SourceFiles="@(AssetFiles)" DestinationFiles="@(AssetFiles->'$(Destination)\Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="CopyToUnityProject" AfterTargets="PostBuildEvent" Condition="'$(CI)' == '' And '$(CopyFiles)' == 'true' And '$(CopyToUnity)' == 'true'">
+    <PropertyGroup>
+      <PluginDestination>$(SolutionDir)UnityAssets\Assets\Plugins\$(PluginDirectory)</PluginDestination>
+    </PropertyGroup>
+    <Message Importance="high" Text="Copying $(AssemblyName) plugin files to Unity project" />
+    <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFolder="$(PluginDestination)" />
+  </Target>
+
+  <Target Name="CopyToDist" AfterTargets="PostBuildEvent" Condition="'$(CopyFiles)' == 'true' And '$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <Destination>$(DistDestination)</Destination>
+    </PropertyGroup>
+    <Message Importance="high" Text="Copying $(AssemblyName) files to dist folder: $(DistDestination)" />
+    <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFiles="@(CopyToPluginFolder->'$(Destination)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Importance="high" Text="Copying $(AssemblyName) asset files to dist folder: $(DistDestination)" />
+    <Copy SourceFiles="@(AssetFiles)" DestinationFiles="@(AssetFiles->'$(Destination)\Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+</Project>
