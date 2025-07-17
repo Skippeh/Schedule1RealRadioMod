@@ -31,12 +31,7 @@
     </PropertyGroup>
     <Message Importance="high" Text="Copying $(AssemblyName) files to plugin folder: $(Destination)" />
     <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFiles="@(CopyToPluginFolder->'$(Destination)\%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
 
-  <Target Name="CopyAssetsToPluginFolder" AfterTargets="CopyToPluginFolder" Condition="'$(CI)' == '' And '$(CopyFiles)' == 'true'" Outputs="%(PluginFolder.Identity)">
-    <PropertyGroup>
-      <Destination>%(PluginFolder.Identity)\$(PluginDirectory)</Destination>
-    </PropertyGroup>
     <Message Importance="high" Text="Copying $(AssemblyName) asset files to plugin folder: $(Destination)" />
     <Copy SourceFiles="@(AssetFiles)" DestinationFiles="@(AssetFiles->'$(Destination)\Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
