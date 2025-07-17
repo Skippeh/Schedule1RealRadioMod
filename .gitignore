@@ -496,3 +496,4 @@ UnityAssets/.vscode
 
 # Blender
 *.blend[1-9]
+/dist/

@@ -14,7 +14,9 @@
     <PluginDirectory Condition="'$(PluginDirectory)' == ''">$(AssemblyName)</PluginDirectory>
 
     <!-- This property is used internally and can't be modified -->
-    <DistDestination>$(SolutionDir)\dist\$(PluginDirectory)</DistDestination>
+    <ModLoader Condition="'$(BEPINEX)' != ''">BepInEx</ModLoader>
+    <ModLoader Condition="'$(MELONLOADER)' != ''">MelonLoader</ModLoader>
+    <DistDestination>$(SolutionDir)\dist\$(ModLoader)\$(PluginDirectory)</DistDestination>
   </PropertyGroup>
 
   <Target Name="WarnIfNoModLoaderSet" BeforeTargets="Build" Condition="'$(BEPINEX)' == '' And '$(MELONLOADER)' == ''">
@@ -42,5 +44,15 @@
     </PropertyGroup>
     <Message Importance="high" Text="Copying $(AssemblyName) plugin files to Unity project" />
     <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFolder="$(PluginDestination)" />
+  </Target>
+
+  <Target Name="CopyToDist" AfterTargets="PostBuildEvent" Condition="'$(CopyFiles)' == 'true' And '$(Configuration)' == 'Release'">
+    <PropertyGroup>
+      <Destination>$(DistDestination)</Destination>
+    </PropertyGroup>
+    <Message Importance="high" Text="Copying $(AssemblyName) files to dist folder: $(DistDestination)" />
+    <Copy SourceFiles="@(CopyToPluginFolder)" DestinationFiles="@(CopyToPluginFolder->'$(Destination)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Message Importance="high" Text="Copying $(AssemblyName) asset files to dist folder: $(DistDestination)" />
+    <Copy SourceFiles="@(AssetFiles)" DestinationFiles="@(AssetFiles->'$(Destination)\Assets\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
