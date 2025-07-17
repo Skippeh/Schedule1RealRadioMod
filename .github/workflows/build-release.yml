@@ -1,0 +1,54 @@
+name: Build Release
+on:
+    push:
+        tags:
+            - "v*"
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Set up .NET
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 9.0.x
+            - name: Restore dependencies
+              run: dotnet restore
+            - name: Download game dependencies
+              uses: "Skippeh/steamfetch-action@v1.0.5"
+              with:
+                  username: ${{ secrets.STEAM_USERNAME }}
+                  password: ${{ secrets.STEAM_PASSWORD }}
+                  dir: "${{ github.workspace }}/game_files"
+                  os: "windows"
+                  app: 3164500
+                  osarch: 64
+                  beta: alternate
+                  files: |
+                      regex:^Schedule I_Data/Managed/.+
+            - name: Create DevVars.props
+              uses: 1arp/create-a-file-action@0.4.5
+              with:
+                  file: DevVars.props
+                  content: |
+                      <Project>
+                          <PropertyGroup>
+                              <ManagedFolder>${{ github.workspace }}/game_files/Schedule I_Data/Managed</ManagedFolder>
+                          </PropertyGroup>
+                      </Project>
+            - name: Release build (BepInEx)
+              run: dotnet build /p:BEPINEX=1 -c Release
+            - name: Release build (MelonLoader)
+              run: dotnet build /p:MELONLOADER=1 -c Release
+            - name: Upload artifact (BepInEx)
+              uses: actions/upload-artifact@v4
+              with:
+                  name: RealRadio (BepInEx)
+                  path: dist/BepInEx/RealRadio/**/*
+                  if-no-files-found: error
+            - name: Upload artifact (MelonLoader)
+              uses: actions/upload-artifact@v4
+              with:
+                  name: RealRadio (MelonLoader)
+                  path: dist/MelonLoader/RealRadio/**/*
+                  if-no-files-found: error
