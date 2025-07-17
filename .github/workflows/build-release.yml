@@ -39,9 +39,9 @@ jobs:
             - name: Initial build # First build doesn't copy NAudio files to dist for some reason, work around by building twice
               run: dotnet build /p:BEPINEX=1 -c Release
             - name: Release build (BepInEx)
-              run: dotnet build RealRadio /p:BEPINEX=1 -c Release
+              run: dotnet build /p:BEPINEX=1 -c Release
             - name: Release build (MelonLoader)
-              run: dotnet build RealRadio /p:MELONLOADER=1 -c Release
+              run: dotnet build /p:MELONLOADER=1 -c Release
             - name: Upload artifact (BepInEx)
               uses: actions/upload-artifact@v4
               with:
