@@ -37,7 +37,8 @@ jobs:
                           </PropertyGroup>
                       </Project>
             - name: Release build (BepInEx)
-              run: dotnet build /p:BEPINEX=1 -c Release
+              # First build doesn't copy NAudio files to dist for some reason, work around by building twice
+              run: dotnet build /p:BEPINEX=1 -c Release & dotnet build /p:BEPINEX=1 -c Release
             - name: Release build (MelonLoader)
               run: dotnet build /p:MELONLOADER=1 -c Release
             - name: Upload artifact (BepInEx)
