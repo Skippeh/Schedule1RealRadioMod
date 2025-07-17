@@ -13,7 +13,7 @@
     <!-- The name of the directory to put the plugin files in. Will use the assembly name if not set -->
     <PluginDirectory Condition="'$(PluginDirectory)' == ''">$(AssemblyName)</PluginDirectory>
 
-    <!-- This property is used internally and can't be modified -->
+    <!-- These properties are used internally and can't be modified by projects -->
     <ModLoader Condition="'$(BEPINEX)' != ''">BepInEx</ModLoader>
     <ModLoader Condition="'$(MELONLOADER)' != ''">MelonLoader</ModLoader>
     <DistDestination>$(SolutionDir)\dist\$(ModLoader)\$(PluginDirectory)</DistDestination>
