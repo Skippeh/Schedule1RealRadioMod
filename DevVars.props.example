@@ -1,7 +1,7 @@
 <Project>
 	<ItemGroup>
-        <PluginFolder Include="C:\Steam\steamapps\Schedule I\BepInEx\plugins\RealRadio" Condition="'$(BEPINEX)' != ''" />
-        <PluginFolder Include="C:\Steam\steamapps\Schedule I\Mods\RealRadio" Condition="'$(MELONLOADER)' != ''" />
+        <PluginFolder Include="C:\Steam\steamapps\Schedule I\BepInEx\plugins" Condition="'$(BEPINEX)' != ''" />
+        <PluginFolder Include="C:\Steam\steamapps\Schedule I\Mods" Condition="'$(MELONLOADER)' != ''" />
 		<!-- Add more if necessary -->
 	</ItemGroup>
 
