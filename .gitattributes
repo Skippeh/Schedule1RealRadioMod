@@ -37,3 +37,7 @@
 *.rns filter=lfs diff=lfs merge=lfs -text
 *.reason filter=lfs diff=lfs merge=lfs -text
 *.lxo filter=lfs diff=lfs merge=lfs -text
+
+# Built unity asset bundles
+AssetBundles/* filter=lfs diff=lfs merge=lfs -text
+AssetBundles/*.manifest filter=crlf diff=text merge=text text

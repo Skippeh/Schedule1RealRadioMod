@@ -492,8 +492,10 @@ UnityAssets/.vscode
 # Include meta files in unity project
 !UnityAssets/**/*.meta
 !UnityAssets/Packages/**/*
-/AssetBundles
 
 # Blender
 *.blend[1-9]
 /dist/
+
+# Include asset bundles but exclude the 'AssetBundles' meta files
+/AssetBundles/AssetBundles*
