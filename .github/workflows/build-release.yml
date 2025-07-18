@@ -61,13 +61,13 @@ jobs:
                   cd dist/BepInEx
                   mkdir -p BepInEx/plugins/
                   mv RealRadio BepInEx/plugins/
-                  zip -r RealRadio_BepInEx.zip RealRadio
+                  zip RealRadio_BepInEx.zip . -i BepInEx -r
             - name: Create zipped mod bundle (MelonLoader)
               run: |
                   cd dist/MelonLoader
                   mkdir Mods
                   mv RealRadio Mods/
-                  zip -r RealRadio_MelonLoader.zip RealRadio
+                  zip RealRadio_MelonLoader.zip . -i Mods -r
             - name: Create GitHub release
               uses: softprops/action-gh-release@v2
               with:
