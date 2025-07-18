@@ -59,7 +59,7 @@ jobs:
             - name: Create zipped mod bundle (BepInEx)
               run: |
                   cd dist/BepInEx
-                  mkdir BepInEx/plugins/
+                  mkdir -p BepInEx/plugins/
                   mv RealRadio BepInEx/plugins/
                   zip -r RealRadio_BepInEx.zip RealRadio
             - name: Create zipped mod bundle (MelonLoader)
