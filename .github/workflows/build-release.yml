@@ -56,3 +56,25 @@ jobs:
                   name: RealRadio (MelonLoader)
                   path: dist/MelonLoader/RealRadio/**/*
                   if-no-files-found: error
+            - name: Create zipped mod bundle (BepInEx)
+              run: |
+                  cd dist/BepInEx
+                  mkdir BepInEx/plugins/
+                  mv RealRadio BepInEx/plugins/
+                  zip -r RealRadio_BepInEx.zip RealRadio
+            - name: Create zipped mod bundle (MelonLoader)
+              run: |
+                  cd dist/MelonLoader
+                  mkdir Mods
+                  mv RealRadio Mods/
+                  zip -r RealRadio_MelonLoader.zip RealRadio
+            - name: Create GitHub release
+              uses: softprops/action-gh-release@v2
+              with:
+                  fail_on_unmatched_files: true
+                  files: |
+                      dist/BepInEx/RealRadio_BepInEx.zip
+                      dist/MelonLoader/RealRadio_MelonLoader.zip
+                  generate_release_notes: true
+                  target_commitish: ${{ github.sha }}
+                  draft: true
