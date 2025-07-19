@@ -79,25 +79,10 @@ public class YtDlpHostController : HostController
         if (Host.AudioStream == null)
             preventStart.Value = true;
 
-        float? currentSongDuration = null;
-
-        if (state?.IsValid() == true && YtDlpManager.Instance.AudioMetaData.TryGetValue(Station.Urls![state.SongIndex.Value], out var metaData))
-            currentSongDuration = metaData.Duration;
-
         if (state == null || !state.IsValid())
         {
             preventStart.Value = true;
             RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, currentSongIteration));
-        }
-        else if (currentSongDuration != null && state.CurrentTime >= currentSongDuration.Value)
-        {
-            preventStart.Value = true;
-
-            // Use random start time if the song ended more than 2 seconds ago, otherwise start from the beginning
-            // Note: RadioSyncManager always starts the next song automatically if 2 seconds have passed after the end of the song so this is technically redundant.
-            // Should probably clean this up at some point.
-            float? startTime = (state.CurrentTime - currentSongDuration.Value) >= 2f ? null : 0f;
-            RadioSyncManager.Instance.RequestOrSetSongState(Station, RadioSyncManager.GetRandomRadioStationState(Station, lastSongIndex, state.SongIteration + 1, startTime));
         }
         else if (state.SongIteration != currentSongIteration)
         {
