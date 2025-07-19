@@ -226,9 +226,41 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         });
 
         var state = RadioSyncManager.Instance?.GetLocalState(station);
+        var songState = state == null ? null : GetSongFromState(station, state);
 
-        if (state != null)
-            fetcher.CurrentSong = GetSongFromState(station, state);
+        if (state != null && songState != null)
+        {
+            fetcher.CurrentSong = songState;
+        }
+        else
+        {
+            StartCoroutine(PollStationState());
+
+            IEnumerator PollStationState()
+            {
+                // This is a hack to fix an issue where the station's state and/or song metadata isn't loaded yet when the station is added/updated.
+                // Poll station state and song metadata once per frame until it is available, this usually happens within the next few frames.
+                while (true)
+                {
+                    state = RadioSyncManager.Instance?.GetLocalState(station);
+
+                    if (state != null)
+                    {
+                        fetcher.CurrentSong = GetSongFromState(station, state);
+
+                        if (fetcher.CurrentSong == null)
+                        {
+                            yield return null;
+                            continue;
+                        }
+
+                        break;
+                    }
+
+                    yield return null;
+                }
+            }
+        }
     }
 
     private IEnumerator RemoveFetcher(RadioStation station)
