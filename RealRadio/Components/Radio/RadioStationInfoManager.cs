@@ -236,7 +236,6 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
         Logger.LogDebug($"Removing song info fetcher for radio station '{station.Id} ({station.Url})'...");
 
         fetchers.Remove(station, out var fetcher);
-        pendingUpdates.Remove(station);
         updatedPollTimes.Remove(fetcher);
 
         // if the fetcher is not in the manual fetchers, it was added to the song info fetch manager
@@ -247,6 +246,11 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
             if (removeTask.IsFaulted)
                 Logger.LogError($"Failed to remove song info fetcher for radio station '{station.Id} ({station.Url})':\n{removeTask.Exception}");
+        }
+
+        lock (pendingUpdates)
+        {
+            pendingUpdates.Remove(station);
         }
     }
 
