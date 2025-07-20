@@ -193,7 +193,7 @@ public class Speaker : OffGridItem, IUsable
                     // Max waiting time in seconds for radio to be found.
                     // This needs to be relatively high due to items being registered in the Start method on clients,
                     // which isn't called immediately when joining the server and depends on how long the client takes to receive network data from server.
-                    const float MAX_WAIT_TIME = 10f;
+                    const float MAX_WAIT_TIME = 30f;
 
                     float startTime = Time.unscaledTime;
                     Radio? radio = null;
