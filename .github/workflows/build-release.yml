@@ -62,7 +62,7 @@ jobs:
                   file: dist/MelonLoader/Thunderstore/manifest.json
                   content: |
                       {
-                          "name: "Real_Radio",
+                          "name": "Real_Radio",
                           "description": "An immersive radio mod with positional audio that supports both live internet radio and YtDlp.",
                           "version_number": "${{ steps.realradio_version.outputs.version }}",
                           "website_url": "https://github.com/Skippeh/Schedule1RealRadioMod",
