@@ -4,7 +4,7 @@
 
 **Note: Requires alternate (mono) branch on Steam.**
 
-## Existing features
+## Features
 
 -   Play remote audio streams (from urls). Supports all file formats that Media Foundation supports.
 -   Youtube and [thousands of other sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) are also supported using [yt-dlp](https://github.com/yt-dlp/yt-dlp/) with playback synced between all players. No manual setup is required for yt-dlp to work. All required files are downloaded automatically.
@@ -17,6 +17,15 @@
 -   Residential buildings where NPCs live have a chance (50% atm) to play music when the building has NPCs inside. The time when music starts and stops in a day is randomized at the end of each day. This logic only runs on the server but the playing radio station is synced to all clients
 -   A json file based api to add custom radio stations through modding. [see example below](#example-of-custom-radio-station)
 -   Fetches currently playing song and displays it in various places (only shown when selecting radio station in vehicles at the moment). Supports all radio stations types including (a limited amount of) internet radio stations out of the box. Can be extended to support more internet stations through modding (no documentation on this yet).
+
+## Known issues
+- Player onboarding is not very good. For now here is some tips on how the mod works:
+    - You can buy the radio and wall speaker from Dan's hardware store.
+    - You can hold E on some placeable objects to get more options. For example on the wall speaker you can adjust the mount's angle.
+    - While in a vehicle you can hold the weapon reload button to select and play a radio station.
+- Item selection in the radial menu can be very sensitive with small mouse movements.
+- Joining a server for the first time plays global music. This might clash with any radios playing in the viscinity. This also applies when you're wanted by the police. The game music does fade out though if you're driving a vehicle with a radio station playing for example.
+- The game will freeze temporarily if audio buffering isn't fast enough or if the audio stream dies for whatever reason (such as internet connection issues). Normally the game uses around 50-200 kb/s depending on how many internet streams are active at the same time. YtDlp songs are cached and are only downloaded once.
 
 ### Example of custom radio station
 
