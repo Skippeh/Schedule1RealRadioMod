@@ -1,6 +1,6 @@
 # Real Radio
 
-> An immersive radio mod for Schedule I. Supports both BepInEx and MelonLoader.
+> An immersive radio mod with positional audio that supports both live internet radio and YtDlp.
 
 **Note: Requires alternate (mono) branch on Steam.**
 
