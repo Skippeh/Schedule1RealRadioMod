@@ -2,9 +2,7 @@
 
 > An immersive radio mod for Schedule I. Supports both BepInEx and MelonLoader.
 
-**Note: Requires alternate branch on Steam.**
-
-Currently in development.
+**Note: Requires alternate (mono) branch on Steam.**
 
 ## Existing features
 
@@ -12,15 +10,13 @@ Currently in development.
 -   Youtube and [thousands of other sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) are also supported using [yt-dlp](https://github.com/yt-dlp/yt-dlp/) with playback synced between all players. No manual setup is required for yt-dlp to work. All required files are downloaded automatically.
 -   Create new radio stations in the game using an app on your in-game phone.
 -   Fully compatible and constantly tested in multiplayer both as host and client.
--   A remote stream can be played through multiple AudioSources in Unity (using AudioStreamHost and AudioStreamClient, managed through the AudioStreamManager singleton)
+-   A radio station can be played through multiple audio sources using the same source stream.
 -   Placeable radio object that you can put in your properties. This uses custom placement logic which allows placing the radio object on almost any surface.
--   One or multiple speakers can be connected to a radio object for improved audio quality and simulated stereo sound when set up correctly.
--   A generic radial menu singleton, currently used in vehicles (radio station selection) and placeable radio objects
--   All game objects with a LandVehicle component have an associated VehicleRadioProxy networked object which controls playing audio from the vehicle. Players can change radio station by holding the reload button and selecting a station in the radial menu. Audio effects are changed depending on if the player is inside the vehicle or not. When inside the vehicle the audio is not spatialized and has no audio filters. When the player is not in the vehicle the audio is spatialized and a low pass filter is applied to simulate the audio being muffled from inside the car.
+-   Placeable speakers can be connected to a radio object for improved audio quality and simulated stereo sound when set up correctly.
+-   All vehicles have a built in radio. Players can change radio station by holding the reload button and selecting a station in the radial menu. Audio effects are changed depending on if the player is inside the vehicle or not. When inside the vehicle the audio is not spatialized and has no audio filters. When the player is not in the vehicle the audio is spatialized and a low pass filter is applied to simulate the audio being muffled from inside the car. NPC cars also have a chance to play a random radio station when driven.
 -   Residential buildings where NPCs live have a chance (50% atm) to play music when the building has NPCs inside. The time when music starts and stops in a day is randomized at the end of each day. This logic only runs on the server but the playing radio station is synced to all clients
--   Radio stations played by NPCs are randomized. Radio stations can be excluded from being played by NPCs
--   A json file based api to add custom radio stations. [see example below](#example-of-custom-radio-station)
--   Fetches currently playing song and displays it in various places (only shown when selecting radio station in vehicles at the moment). Supports all radio stations types including (a limited amount of) internet radio stations out of the box. Can be extended to support more internet stations with a custom mod (no documentation on this yet).
+-   A json file based api to add custom radio stations through modding. [see example below](#example-of-custom-radio-station)
+-   Fetches currently playing song and displays it in various places (only shown when selecting radio station in vehicles at the moment). Supports all radio stations types including (a limited amount of) internet radio stations out of the box. Can be extended to support more internet stations through modding (no documentation on this yet).
 
 ### Example of custom radio station
 
@@ -55,12 +51,6 @@ Currently in development.
 If there's a png file with the same name as the json file it will be used at the station's icon. [There are more fields that can be found here](https://github.com/Skippeh/Schedule1RealRadioMod/blob/main/RealRadio/Components/API/Data/RadioStation.cs).
 
 Radio stations go into the following folder: `Schedule I\RealRadio\Stations\`. Subfolders within this folder can also be used.
-
-## General project goals
-
--   Immersion is important, but if something feels better even if it's less realistic that should be preferred
--   Generally speaking the mod should be highly polished to the best of your ability, as if it was part of the base game.
--   Custom assets should fit the art style of the base game
 
 ## Compiling
 
