@@ -55,6 +55,7 @@ jobs:
                   mkdir -p Thunderstore/Mods/
                   cp -r RealRadio Thunderstore/Mods/
                   cp ../../README.md Thunderstore/README.md
+                  cp ../../.thunderstore/icon.png Thunderstore/icon.png
             - name: Create Thunderstore metadata (MelonLoader)
               uses: 1arp/create-a-file-action@0.4.5
               with:
