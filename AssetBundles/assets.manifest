@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 383722627
+CRC: 2420380090
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 8d35120c17ed2b87e7c89416adb3e37c
+    Hash: 24ef491bae2c7d541e85fb3c80719651
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 45bbe2bf511fc157d8b04a69b22aebd8
+    Hash: ee4b0a17b2ce00cdcfd90fa6ab6a5d53
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 8d35120c17ed2b87e7c89416adb3e37c
+    Hash: 24ef491bae2c7d541e85fb3c80719651
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -59,8 +59,6 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
 - Class: 114
-  Script: {fileID: 11500000, guid: 032d0b58230633efb8de577d6e5187b9, type: 3}
-- Class: 114
   Script: {fileID: 2092681471, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: 1510165125, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
@@ -85,39 +83,9 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: ec8da9418a6bf493e93ef4c7b7575847, type: 3}
 - Class: 114
-  Script: {fileID: -764061438, guid: 03534c54b8bf06c4582c469513b5492d, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 4c32a8ad78c081caf8f127099d4c449f, type: 3}
-- Class: 114
-  Script: {fileID: 380587740, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 818862759, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 408637236, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 1925032880, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 1579253900, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+  Script: {fileID: 508013170, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: 948233057, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 1083328886, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 1681013868, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 543635985, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 553754274, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 850496841, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 2144383999, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 512636284, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 190275677, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
-- Class: 114
-  Script: {fileID: 508013170, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -1955325926, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
@@ -125,7 +93,11 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1394056162, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
+  Script: {fileID: 1681013868, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
   Script: {fileID: -731077595, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 850496841, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -2061703826, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
@@ -137,15 +109,29 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1947104319, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
+  Script: {fileID: 190275677, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
   Script: {fileID: 1728278868, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 1579253900, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 818862759, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 380587740, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -1975342492, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -1200178222, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
+  Script: {fileID: 408637236, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
   Script: {fileID: -1401049345, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -1392053649, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 543635985, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 553754274, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -109450075, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
@@ -153,11 +139,25 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -231963635, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
+  Script: {fileID: 1925032880, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
   Script: {fileID: -489146668, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 1083328886, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 2144383999, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 512636284, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -312628940, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: -2013503381, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 032d0b58230633efb8de577d6e5187b9, type: 3}
+- Class: 114
+  Script: {fileID: -764061438, guid: 03534c54b8bf06c4582c469513b5492d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4c32a8ad78c081caf8f127099d4c449f, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -278,6 +278,7 @@ Assets:
 - Assets/RealRadio/Sprites/UI/trash.png
 - Assets/RealRadio/Prefabs/Buildings/BuildingAudioClient.prefab
 - Assets/RealRadio/Prefabs/Singletons/UI/Modal/ModalDocument.uxml
+- Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/Sprites/AppIcon.psd
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlListItem/UrlListItemDocument.uxml
 - Assets/RealRadio/Meshes/SmallPortableRadio/SmallPortableRadio.fbx
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/PanelSettings.asset

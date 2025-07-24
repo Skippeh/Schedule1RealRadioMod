@@ -51,9 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 818862759, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AppName: Radio
-  IconLabel: Radio
-  AppIcon: {fileID: 0}
+  AppName: Radio Stations
+  IconLabel: Stations
+  AppIcon: {fileID: 21300000, guid: b2b32e9801454904ba1afccab15656ab, type: 3}
   Orientation: 0
   AvailableInTutorial: 0
   appContainer: {fileID: 4067317081412966111}
