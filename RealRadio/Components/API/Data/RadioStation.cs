@@ -115,6 +115,7 @@ public class RadioStation
 
         result.Id = Id;
         result.Name = Name ?? string.Empty;
+        result.name = result.Name;
         result.Abbreviation = Abbreviation ?? string.Empty;
         result.Type = Type.GetValueOrDefault();
         result.Url = Url ?? string.Empty;
