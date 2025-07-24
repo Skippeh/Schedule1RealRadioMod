@@ -24,7 +24,7 @@
     - You can hold E on some placeable objects to get more options. For example on the wall speaker you can adjust the mount's angle.
     - While in a vehicle you can hold the weapon reload button to select and play a radio station.
 - Item selection in the radial menu can be very sensitive with small mouse movements.
-- Joining a server for the first time plays global music. This might clash with any radios playing in the viscinity. This also applies when you're wanted by the police. The game music does fade out though if you're driving a vehicle with a radio station playing for example.
+- Joining a server for the first time plays global music. This might clash with any radios playing in the vicinity. This also applies when you're wanted by the police. The game music does fade out though if you're driving a vehicle with a radio station playing for example.
 - The game will freeze temporarily if audio buffering isn't fast enough or if the audio stream dies for whatever reason (such as internet connection issues). Normally the game uses around 50-200 kb/s depending on how many internet streams are active at the same time. YtDlp songs are cached and are only downloaded once.
 
 ### Example of custom radio station
