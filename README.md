@@ -80,9 +80,9 @@ dotnet build /p:MELONLOADER=1
 You also need to create a `DevVars.props` file in the root directory. There is an example file included in the repository that you can use.
 
 ## Attributions
-- Power button icon: https://www.freepik.com/icon/power-button_1073786#fromView=search&page=3&position=92&uuid=c15220a4-c08f-40a4-a8b5-b8a30ace8e7f
-- Gear icon: https://www.freepik.com/icon/cog_799803#fromView=search&page=2&position=6&uuid=a2d3b189-efb1-43af-a088-f2e6b838ee4b
-- Arrow icon: https://www.freepik.com/icon/arrow_15795547#fromView=search&page=1&position=79&uuid=01fa8f5c-b1ea-4d05-be1d-c65eed790cf2
+- Power button icon: https://www.freepik.com/icon/power-button_1073786
+- Gear icon: https://www.freepik.com/icon/cog_799803
+- Arrow icon: https://www.freepik.com/icon/arrow_15795547
 - CD icon: https://www.flaticon.com/free-icons/cd
 - Music icon: https://www.flaticon.com/free-icons/music
 - Bass icon: https://www.flaticon.com/free-icons/bass
