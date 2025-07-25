@@ -56,6 +56,8 @@ jobs:
                   cp -r RealRadio Thunderstore/Mods/
                   cp ../../README.md Thunderstore/README.md
                   cp ../../.thunderstore/icon.png Thunderstore/icon.png
+                  cp ../../.thunderstore/CHANGELOG.md Thunderstore/CHANGELOG.md
+                  cp ../../LICENSE Thunderstore/LICENSE
             - name: Create Thunderstore metadata (MelonLoader)
               uses: 1arp/create-a-file-action@0.4.5
               with:
