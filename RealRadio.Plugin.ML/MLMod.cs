@@ -49,8 +49,9 @@ public class MLMod : MelonMod
     private void InitConfig()
     {
         var category = MelonPreferences.CreateCategory(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME);
-        category.SetFilePath(Path.Combine(MelonEnvironment.UserDataDirectory, "RealRadio.cfg"));
+        category.SetFilePath(Path.Combine(MelonEnvironment.UserDataDirectory, "RealRadio.cfg"), autoload: false);
         Config.Instance = new MLConfig(category);
+        category.LoadFromFile();
     }
 
     class MLConfig : IConfig
