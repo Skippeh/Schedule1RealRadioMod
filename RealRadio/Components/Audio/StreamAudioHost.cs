@@ -200,10 +200,7 @@ public class StreamAudioHost : MonoBehaviour
     private void OnEnable()
     {
         if (AudioStream == null)
-        {
-            Logger.LogWarning("AudioStream is null");
             return;
-        }
 
         if (!AudioStream.Started && enabledClients.Count > 0)
             StartAudioStream();
