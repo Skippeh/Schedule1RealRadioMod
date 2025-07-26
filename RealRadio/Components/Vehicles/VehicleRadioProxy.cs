@@ -73,7 +73,8 @@ public class VehicleRadioProxy : RadioProxy
         else
             audioClientObject.SetActive(false);
 
-        UpdateAudioEffects();
+        if (audioClient != null)
+            UpdateAudioEffects();
     }
 
     private IEnumerator WaitForReceiveVehicleThenInitAudioClient()
@@ -89,6 +90,9 @@ public class VehicleRadioProxy : RadioProxy
     {
         yield return new WaitForSeconds(0.23f);
         audioClientObject?.SetActive(true);
+
+        if (audioClient != null)
+            UpdateAudioEffects();
     }
 
     [ServerRpc(RequireOwnership = false)]
