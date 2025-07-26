@@ -15,7 +15,7 @@ public class StreamAudioHost : MonoBehaviour
     public IReadOnlyCollection<StreamAudioClient> ActiveClients => enabledClients;
     public IReadOnlyCollection<StreamAudioClient> SpawnedClients => spawnedClients;
 
-    public float MaxClientInactivityTime = 30f;
+    private float MaxInactivityTime => Config.Instance.Data.MaxAudioHostInactivityTime;
 
     public int NumActiveClients => enabledClients.Count;
 
@@ -153,7 +153,7 @@ public class StreamAudioHost : MonoBehaviour
         {
             inactiveTimer += Time.unscaledDeltaTime;
 
-            if (inactiveTimer >= MaxClientInactivityTime)
+            if (inactiveTimer >= MaxInactivityTime)
             {
                 Logger.LogDebug("Stopping audio stream host due to inactivity");
                 StopAudioStream();
@@ -342,7 +342,7 @@ public class StreamAudioHost : MonoBehaviour
     {
         readingAudioData = true;
 
-        if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || streamEnded == true || inactiveTimer >= MaxClientInactivityTime)
+        if (AudioStream == null || !AudioStream.StreamAvailable || stopRequested || streamEnded == true || inactiveTimer >= MaxInactivityTime)
         {
             readingAudioData = false;
             return;
