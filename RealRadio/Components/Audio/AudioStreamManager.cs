@@ -17,12 +17,12 @@ public class AudioStreamManager : MonoBehaviour
 
     private Dictionary<string, StreamAudioHost> hosts = new();
     private LinkedList<StreamAudioHost> activeHosts = new();
-    private StreamAudioHost[]? activeHostsBuffer;
+    private List<StreamAudioHost>? inactiveHostsBuffer;
 
     public static AudioStreamManager Instance => GetOrInitInstance();
     private static AudioStreamManager? cachedInstance;
 
-    private uint MaxActiveInaudibleHosts => Config.Instance.Data.MaxInactiveAudioHosts;
+    private uint MaxInactiveHosts => Config.Instance.Data.MaxInactiveAudioHosts;
 
     private static AudioStreamManager GetOrInitInstance()
     {
@@ -156,27 +156,29 @@ public class AudioStreamManager : MonoBehaviour
 
     private void Update()
     {
-        int numActiveHosts = NumActiveHosts;
-
-        if (numActiveHosts > MaxActiveInaudibleHosts)
+        if (NumActiveHosts > MaxInactiveHosts)
         {
-            if (activeHostsBuffer == null || activeHostsBuffer.Length < numActiveHosts)
-            {
-                activeHostsBuffer = new StreamAudioHost[numActiveHosts];
-            }
+            inactiveHostsBuffer ??= [];
+            inactiveHostsBuffer.Clear();
 
-            activeHosts.CopyTo(activeHostsBuffer, 0);
-
-            foreach (var host in activeHostsBuffer.Take(activeHosts.Count))
+            foreach (var host in activeHosts)
             {
                 if (host.NumActiveClients == 0)
                 {
-                    Logger.LogDebug($"Killing quiet audio host before inactive timer expires due to too many active hosts");
+                    inactiveHostsBuffer.Add(host);
+                }
+            }
 
+            if (inactiveHostsBuffer.Count > MaxInactiveHosts)
+            {
+                int numStopped = 0;
+
+                foreach (var host in inactiveHostsBuffer)
+                {
                     host.StopAudioStream();
-                    --numActiveHosts;
+                    ++numStopped;
 
-                    if (numActiveHosts <= MaxActiveInaudibleHosts)
+                    if (inactiveHostsBuffer.Count - numStopped <= MaxInactiveHosts)
                         break;
                 }
             }
