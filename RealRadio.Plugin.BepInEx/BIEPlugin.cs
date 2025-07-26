@@ -84,13 +84,13 @@ public class BIEPlugin : BaseUnityPlugin
                 "General",
                 nameof(MaxAudioHostInactivityTime),
                 defaultValue: 30,
-                "The maximum amount of time (in seconds) that an audio host can be inactive (no audible sound sources) before being stopped."
+                new ConfigDescription("The maximum amount of time (in seconds) that an audio host can be inactive (no audible sound sources) before being stopped.", new AcceptableValueRange<float>(0, float.MaxValue))
             );
             maxInaudibleAudioClientsEntry = config.File.Bind<uint>(
                 "General",
                 nameof(MaxInactiveAudioHosts),
                 defaultValue: 5,
-                "The maximum number of audio hosts that can be inactive (not audible) before stopping the least recently played host."
+                new ConfigDescription("The maximum number of audio hosts that can be inactive (not audible) before stopping the least recently played host.", new AcceptableValueRange<uint>(0, uint.MaxValue))
             );
 
             maxAudioHostInactivityTimeEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxAudioHostInactivityTime));
