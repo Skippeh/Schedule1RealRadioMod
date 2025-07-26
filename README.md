@@ -27,7 +27,7 @@
 - Joining a server for the first time plays global music. This might clash with any radios playing in the vicinity. This also applies when you're wanted by the police. The game music does fade out though if you're driving a vehicle with a radio station playing for example.
 - The game will freeze temporarily if audio buffering isn't fast enough or if the audio stream dies for whatever reason (such as internet connection issues). Normally the game uses around 50-200 kb/s depending on how many internet streams are active at the same time. YtDlp songs are cached and are only downloaded once.
 
-If you find any bugs or have any suggestions, please [open an issue](https://github.com/Skippeh/Schedule1RealRadioMod/issues/new) on GitHub or contact me in the [unofficial Schedule I modding discord server](https://discord.gg/nKRBZNQjCq).
+If you find any bugs or have any suggestions, please [open an issue](https://github.com/Skippeh/Schedule1RealRadioMod/issues/new) on GitHub or contact me (@skipcast) in the [unofficial Schedule I modding discord server](https://discord.gg/nKRBZNQjCq).
 
 ### Example of custom radio station
 
