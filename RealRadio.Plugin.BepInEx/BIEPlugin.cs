@@ -1,4 +1,6 @@
+using System;
 using BepInEx;
+using BepInEx.Configuration;
 
 namespace RealRadio.Plugin.BepInEx;
 
@@ -10,6 +12,7 @@ public class BIEPlugin : BaseUnityPlugin
     void Awake()
     {
         RealRadio.Logger.OnLog += OnLog;
+        InitConfig();
 
         plugin = new RealRadioPlugin();
     }
@@ -30,6 +33,68 @@ public class BIEPlugin : BaseUnityPlugin
             case RealRadio.Logger.LogLevel.Error:
                 Logger.LogError(data);
                 break;
+        }
+    }
+
+    private void InitConfig()
+    {
+        RealRadio.Config.Instance = new BIEConfig(Config);
+    }
+
+    private class BIEConfig : IConfig
+    {
+        public event Action<string, IConfigData>? ValueChanged;
+
+        public IConfigData Data { get; internal set; }
+
+        internal readonly ConfigFile File;
+
+        public BIEConfig(ConfigFile config)
+        {
+            File = config;
+            Data = new BIEConfigData(this);
+        }
+
+        internal void OnValueChanged(string propertyName)
+        {
+            ValueChanged?.Invoke(propertyName, Data);
+        }
+    }
+
+    private class BIEConfigData : IConfigData
+    {
+        public float MaxAudioHostInactivityTime
+        {
+            get => maxAudioHostInactivityTimeEntry.Value;
+            set => maxAudioHostInactivityTimeEntry.Value = value;
+        }
+
+        public uint MaxInactiveAudioHosts
+        {
+            get => maxInaudibleAudioClientsEntry.Value;
+            set => maxInaudibleAudioClientsEntry.Value = value;
+        }
+
+        private readonly ConfigEntry<float> maxAudioHostInactivityTimeEntry;
+        private readonly ConfigEntry<uint> maxInaudibleAudioClientsEntry;
+
+        public BIEConfigData(BIEConfig config)
+        {
+            maxAudioHostInactivityTimeEntry = config.File.Bind<float>(
+                "General",
+                nameof(MaxAudioHostInactivityTime),
+                defaultValue: 30,
+                "The maximum amount of time (in seconds) that an audio host can be inactive (no audible sound sources) before being stopped."
+            );
+            maxInaudibleAudioClientsEntry = config.File.Bind<uint>(
+                "General",
+                nameof(MaxInactiveAudioHosts),
+                defaultValue: 5,
+                "The maximum number of audio hosts that can be inactive (not audible) before stopping the least recently played host."
+            );
+
+            maxAudioHostInactivityTimeEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxAudioHostInactivityTime));
+            maxInaudibleAudioClientsEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxInactiveAudioHosts));
         }
     }
 }
