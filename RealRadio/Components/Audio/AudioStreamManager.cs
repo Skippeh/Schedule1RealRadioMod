@@ -13,8 +13,6 @@ public class AudioStreamManager : MonoBehaviour
 {
     public IReadOnlyCollection<StreamAudioHost> Hosts => hosts.Values;
 
-    public uint MaxActiveInaudibleHosts = 5;
-
     public int NumActiveHosts => activeHosts.Count;
 
     private Dictionary<string, StreamAudioHost> hosts = new();
@@ -23,6 +21,8 @@ public class AudioStreamManager : MonoBehaviour
 
     public static AudioStreamManager Instance => GetOrInitInstance();
     private static AudioStreamManager? cachedInstance;
+
+    private uint MaxActiveInaudibleHosts => Config.Instance.Data.MaxInactiveAudioHosts;
 
     private static AudioStreamManager GetOrInitInstance()
     {
