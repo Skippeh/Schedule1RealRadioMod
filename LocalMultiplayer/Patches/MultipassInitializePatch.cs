@@ -2,7 +2,6 @@ using FishNet.Transporting;
 using FishNet.Transporting.Multipass;
 using FishNet.Transporting.Tugboat;
 using HarmonyLib;
-using VLB;
 
 namespace LocalMultiplayer.Patches;
 
