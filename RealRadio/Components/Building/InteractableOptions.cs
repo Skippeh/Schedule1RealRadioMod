@@ -138,12 +138,12 @@ public class InteractableOptions : MonoBehaviour
 
     private void OnOptionSelected(InteractableOption option)
     {
-        if (InteractionManager.Instance.interactedObject != InteractableObject)
+        if (InteractionManager.Instance.InteractedObject != InteractableObject)
             return;
 
         selectedOption = option;
-        InteractionManager.Instance.interactedObject.EndInteract();
-        InteractionManager.Instance.interactedObject = null;
+        InteractionManager.Instance.InteractedObject.EndInteract();
+        InteractionManager.Instance.InteractedObject = null;
     }
 }
 

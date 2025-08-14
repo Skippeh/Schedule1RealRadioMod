@@ -55,6 +55,8 @@ public class UserStationsManager : NetworkSingleton<UserStationsManager>, IBaseS
 
     public bool HasChanged { get; set; }
 
+    public int LoadOrder => 0;
+
     private Loader loader = new UserStationsLoader();
     private bool invokeStationsChanged;
     private Dictionary<uint, RadioStation> stations = [];
