@@ -29,6 +29,8 @@ namespace ScheduleOne.Vehicles
 
 		public bool HasChanged { get; set; }
 
+		public int LoadOrder { get; }
+
 		public override void Awake()
 		{
 		}
@@ -62,11 +64,6 @@ namespace ScheduleOne.Vehicles
 		}
 
 		public virtual string GetSaveString()
-		{
-			return null;
-		}
-
-		public virtual global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
 		{
 			return null;
 		}

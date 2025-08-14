@@ -572,6 +572,58 @@ namespace ScheduleOne
 			}
 		}
 
+		public class PlayCutscene : global::ScheduleOne.Console.ConsoleCommand
+		{
+			public override string CommandWord => null;
+
+			public override string CommandDescription => null;
+
+			public override string ExampleUsage => null;
+
+			public override void Execute(global::System.Collections.Generic.List<string> args)
+			{
+			}
+		}
+
+		public class SetGravityMultiplier : global::ScheduleOne.Console.ConsoleCommand
+		{
+			public override string CommandWord => null;
+
+			public override string CommandDescription => null;
+
+			public override string ExampleUsage => null;
+
+			public override void Execute(global::System.Collections.Generic.List<string> args)
+			{
+			}
+		}
+
+		public class SetRegionUnlocked : global::ScheduleOne.Console.ConsoleCommand
+		{
+			public override string CommandWord => null;
+
+			public override string CommandDescription => null;
+
+			public override string ExampleUsage => null;
+
+			public override void Execute(global::System.Collections.Generic.List<string> args)
+			{
+			}
+		}
+
+		public class ForceSleep : global::ScheduleOne.Console.ConsoleCommand
+		{
+			public override string CommandWord => null;
+
+			public override string CommandDescription => null;
+
+			public override string ExampleUsage => null;
+
+			public override void Execute(global::System.Collections.Generic.List<string> args)
+			{
+			}
+		}
+
 		[global::System.Serializable]
 		public class LabelledGameObject
 		{

@@ -2,62 +2,39 @@ namespace ScheduleOne.NPCs.CharacterClasses
 {
 	public class Thomas : global::ScheduleOne.NPCs.NPC
 	{
-		public const int CARTEL_CONTRACT_QUANTITY = 15;
+		public global::UnityEngine.Sprite MessagingIcon;
 
-		public const float CARTEL_CONTRACT_PAYMENT = 100f;
-
-		public global::ScheduleOne.NPCs.Schedules.NPCEvent_LocationDialogue FirstMeetingEvent;
-
-		public global::ScheduleOne.NPCs.Schedules.NPCEvent_LocationDialogue HandoverEvent;
-
-		public global::UnityEngine.Events.UnityEvent onCartelContractReceived;
+		public global::UnityEngine.Events.UnityEvent onMeetingEnded;
 
 		private bool NetworkInitialize___EarlyScheduleOne_002ENPCs_002ECharacterClasses_002EThomasAssembly_002DCSharp_002Edll_Excuted;
 
 		private bool NetworkInitialize__LateScheduleOne_002ENPCs_002ECharacterClasses_002EThomasAssembly_002DCSharp_002Edll_Excuted;
 
-		public bool MeetingReminderSent { get; protected set; }
-
-		public bool HandoverReminderSent { get; protected set; }
-
-		protected override void Start()
-		{
-		}
-
-		public void SetFirstMeetingEventActive(bool active)
-		{
-		}
-
-		public void SetHandoverEventActive(bool active)
-		{
-		}
-
-		public void SendMeetingReminder()
-		{
-		}
-
-		public void SendHandoverReminder()
-		{
-		}
-
-		public void InitialMeetingComplete()
-		{
-		}
-
-		private void DialogueChoiceCallback(string choiceLabel)
-		{
-		}
-
-		private void ProcessItemHandover(global::ScheduleOne.UI.Handover.HandoverScreen.EHandoverOutcome outcome, global::System.Collections.Generic.List<global::ScheduleOne.ItemFramework.ItemInstance> items, float price)
-		{
-		}
-
-		public override string GetSaveString()
+		public override global::UnityEngine.Sprite GetMessagingIcon()
 		{
 			return null;
 		}
 
-		public override void Load(global::ScheduleOne.Persistence.Datas.NPCData data, string containerPath)
+		public void SendIntroMessage()
+		{
+		}
+
+		[global::FishNet.Object.ServerRpc(RequireOwnership = false)]
+		public void MeetingEnded_Server()
+		{
+		}
+
+		[global::FishNet.Object.ObserversRpc]
+		private void MeetingEnded()
+		{
+		}
+
+		protected override void CreateMessageConversation()
+		{
+		}
+
+		[global::FishNet.Object.ServerRpc(RequireOwnership = false)]
+		private void CancelAgreement_Server()
 		{
 		}
 
@@ -70,6 +47,42 @@ namespace ScheduleOne.NPCs.CharacterClasses
 		}
 
 		public override void NetworkInitializeIfDisabled()
+		{
+		}
+
+		private void RpcWriter___Server_MeetingEnded_Server_2166136261()
+		{
+		}
+
+		public void RpcLogic___MeetingEnded_Server_2166136261()
+		{
+		}
+
+		private void RpcReader___Server_MeetingEnded_Server_2166136261(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel, global::FishNet.Connection.NetworkConnection conn)
+		{
+		}
+
+		private void RpcWriter___Observers_MeetingEnded_2166136261()
+		{
+		}
+
+		private void RpcLogic___MeetingEnded_2166136261()
+		{
+		}
+
+		private void RpcReader___Observers_MeetingEnded_2166136261(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		{
+		}
+
+		private void RpcWriter___Server_CancelAgreement_Server_2166136261()
+		{
+		}
+
+		private void RpcLogic___CancelAgreement_Server_2166136261()
+		{
+		}
+
+		private void RpcReader___Server_CancelAgreement_Server_2166136261(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel, global::FishNet.Connection.NetworkConnection conn)
 		{
 		}
 

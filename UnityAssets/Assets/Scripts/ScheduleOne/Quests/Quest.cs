@@ -85,7 +85,7 @@ namespace ScheduleOne.Quests
 
 		protected bool autoInitialize;
 
-		public global::ScheduleOne.Quests.EQuestState QuestState { get; protected set; }
+		public global::ScheduleOne.Quests.EQuestState State { get; protected set; }
 
 		public global::System.Guid GUID { get; protected set; }
 
@@ -278,7 +278,12 @@ namespace ScheduleOne.Quests
 			return false;
 		}
 
-		public virtual string GetSaveString()
+		public virtual global::ScheduleOne.Persistence.Datas.SaveData GetSaveData()
+		{
+			return null;
+		}
+
+		public string GetSaveString()
 		{
 			return null;
 		}

@@ -31,8 +31,6 @@ namespace ScheduleOne.Property
 
 		public bool OwnedByDefault;
 
-		public bool DEBUG_SET_OWNED;
-
 		public string IsOwnedVariable;
 
 		[global::UnityEngine.Header("Culling Settings")]
@@ -187,6 +185,11 @@ namespace ScheduleOne.Property
 		{
 		}
 
+		public virtual bool CanBePurchased()
+		{
+			return false;
+		}
+
 		public virtual void SetContentCulled(bool culled)
 		{
 		}
@@ -220,6 +223,16 @@ namespace ScheduleOne.Property
 			return null;
 		}
 
+		protected global::System.Collections.Generic.List<global::ScheduleOne.Persistence.Datas.DynamicSaveData> GetEmployeeSaveDatas()
+		{
+			return null;
+		}
+
+		protected global::System.Collections.Generic.List<global::ScheduleOne.Persistence.Datas.DynamicSaveData> GetObjectSaveDatas()
+		{
+			return null;
+		}
+
 		public virtual global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
 		{
 			return null;
@@ -229,7 +242,7 @@ namespace ScheduleOne.Property
 		{
 		}
 
-		public virtual void Load(global::ScheduleOne.Persistence.Datas.PropertyData propertyData, string containerPath)
+		public virtual void Load(global::ScheduleOne.Persistence.Datas.PropertyData propertyData, string dataString)
 		{
 		}
 
@@ -244,6 +257,11 @@ namespace ScheduleOne.Property
 		}
 
 		public global::System.Collections.Generic.List<global::ScheduleOne.ObjectScripts.Bed> GetUnassignedBeds()
+		{
+			return null;
+		}
+
+		public global::System.Collections.Generic.List<T> GetBuildablesOfType<T>() where T : global::ScheduleOne.EntityFramework.BuildableItem
 		{
 			return null;
 		}
