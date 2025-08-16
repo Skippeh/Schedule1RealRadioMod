@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 2420380090
+CRC: 2501045003
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 24ef491bae2c7d541e85fb3c80719651
+    Hash: 67c29b323d8dee9afbb32261eb9eefe0
   TypeTreeHash:
     serializedVersion: 2
-    Hash: ee4b0a17b2ce00cdcfd90fa6ab6a5d53
+    Hash: 9a42955ee54efd75d74ec0b9c030b777
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: 24ef491bae2c7d541e85fb3c80719651
+    Hash: 67c29b323d8dee9afbb32261eb9eefe0
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -59,6 +59,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
 - Class: 114
+  Script: {fileID: 11500000, guid: 032d0b58230633efb8de577d6e5187b9, type: 3}
+- Class: 114
   Script: {fileID: 2092681471, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
   Script: {fileID: 1510165125, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
@@ -73,15 +75,7 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 745888819, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 8d54a46e54755bbe9039417c0920799c, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: c0648b2367bab503b89767a44e44ae0a, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: 2b6efe429e9f24765f4389c31241fedc, type: 3}
-- Class: 114
   Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-- Class: 114
-  Script: {fileID: 11500000, guid: ec8da9418a6bf493e93ef4c7b7575847, type: 3}
 - Class: 114
   Script: {fileID: 508013170, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
@@ -153,11 +147,15 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -2013503381, guid: 06549ed6e3aa5624283039434632ccf8, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 032d0b58230633efb8de577d6e5187b9, type: 3}
-- Class: 114
   Script: {fileID: -764061438, guid: 03534c54b8bf06c4582c469513b5492d, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: c0648b2367bab503b89767a44e44ae0a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2b6efe429e9f24765f4389c31241fedc, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: 4c32a8ad78c081caf8f127099d4c449f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 8d54a46e54755bbe9039417c0920799c, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 128
@@ -165,8 +163,6 @@ ClassTypes:
 - Class: 165
   Script: {instanceID: 0}
 - Class: 169
-  Script: {instanceID: 0}
-- Class: 212
   Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
@@ -264,78 +260,57 @@ SerializeReferenceClassIdentifiers:
 Assets:
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/AppPanelSettings.asset
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/1fm-trance.png
-- Assets/RealRadio/Sprites/UI/download.png
 - Assets/RealRadio/Prefabs/Singletons/@BuildingRadioManager.prefab
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/heart-dance.png
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/vibesfm.png
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/Heart 00s.asset
-- Assets/RealRadio/Sprites/UI/text.png
 - Assets/RealRadio/Prefabs/Radios/WallSpeaker/WallSpeaker.prefab
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/RenderTarget.renderTexture
-- Assets/RealRadio/Sprites/UI/loading.psd
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Left.mat
-- Assets/RealRadio/Sprites/UI/volume-low.png
-- Assets/RealRadio/Sprites/UI/trash.png
 - Assets/RealRadio/Prefabs/Buildings/BuildingAudioClient.prefab
 - Assets/RealRadio/Prefabs/Singletons/UI/Modal/ModalDocument.uxml
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/Sprites/AppIcon.psd
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlListItem/UrlListItemDocument.uxml
-- Assets/RealRadio/Meshes/SmallPortableRadio/SmallPortableRadio.fbx
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/PanelSettings.asset
 - Assets/RealRadio/AssetRegistry.asset
-- Assets/RealRadio/Meshes/WallSpeaker/WallSpeaker.fbx
 - Assets/RealRadio/Prefabs/Singletons/@OffGridBuildManager.prefab
+- Assets/RealRadio/ScriptableObjects/DefaultRadioStations/heart80s.png
 - Assets/RealRadio/Prefabs/Radios/WallSpeaker/ConfigureUIDocument.uxml
 - Assets/RealRadio/Prefabs/Singletons/UI/RadialMenu/@RadialMenu.prefab
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/Simulator Radio.asset
-- Assets/RealRadio/ScriptableObjects/DefaultRadioStations/heart80s.png
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/RadioApp.prefab
-- Assets/RealRadio/Sounds/UI/button-up.wav
-- Assets/RealRadio/Sounds/UI/button-down.wav
-- Assets/RealRadio/UI/DefaultStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/YtDlpUiDocument.uxml
-- Assets/RealRadio/Sprites/UI/gear.png
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_OK.psd
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/ScreenUIDocument.uxml
-- Assets/RealRadio/Prefabs.asset
-- Assets/RealRadio/Meshes/WallSpeakerMount/WallSpeakerMount.fbx
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_2.psd
 - Assets/RealRadio/Prefabs/Vehicles/VehicleRadioProxy.prefab
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlListItem/UrlListItemStyle.uss
-- Assets/RealRadio/Sprites/UI/add-list.png
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/1.FM Amsterdam Trance.asset
 - Assets/RealRadio/Prefabs/Singletons/UI/RadialMenu/RadialMenuDocument.uxml
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Power.mat
-- Assets/RealRadio/Sprites/UI/rotate-reset.psd
-- Assets/RealRadio/Sprites/UI/x-mark.png
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_2.mat
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/RadioAppStyle.uss
-- Assets/RealRadio/Sprites/UI/heart.png
 - Assets/RealRadio/Prefabs/Singletons/@SpeakerConnectionManager.prefab
-- Assets/RealRadio/Meshes/SelectionArrow/ArrowMaterial.mat
 - Assets/RealRadio/ScriptableObjects/Interactions/Radio/Toggle.asset
 - Assets/RealRadio/Prefabs/Building/VerticalOffGridBuildHandler.prefab
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Volume.mat
 - Assets/RealRadio/Prefabs/Singletons/@RealRadioAPIManager.prefab
 - Assets/RealRadio/Prefabs/Building/SelectionArrow.prefab
-- Assets/RealRadio/Shop Listings.asset
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite.mat
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/ScreenRenderTexture.renderTexture
 - Assets/RealRadio/ScriptableObjects/ItemDefinitions/Wall Speaker.asset
-- Assets/RealRadio/Sprites/UI/deny.png
 - Assets/RealRadio/ScriptableObjects/Interactions/Radio/AdjustMountAngle.asset
 - Assets/RealRadio/Prefabs/Building/HorizontalOffGridBuildHandler.prefab
-- Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght SDF.asset
 - Assets/RealRadio/Prefabs/Building/Equippable_BuildableItem.prefab
 - Assets/RealRadio/ScriptableObjects/Interactions/Radio/ResetMountAngle.asset
-- Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesDocument.uxml
 - Assets/RealRadio/Prefabs/Singletons/@GameMusicManager.prefab
-- Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/Modal/@Modal.prefab
+- Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesStyle.uss
+- Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationProperties/StationPropertiesDocument.uxml
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/UrlEditModal/UrlEditModalDocument.uxml
-- Assets/RealRadio/Prefabs/Singletons/UI/Modal/ModalStyle.uss
-- Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/ScreenUIStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/ValidatePlaylistModal/ValidatePlaylistModalDocument.uxml
+- Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/ScreenUIStyle.uss
+- Assets/RealRadio/Prefabs/Singletons/UI/Modal/ModalStyle.uss
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Left.psd
 - Assets/RealRadio/Prefabs/Singletons/UI/Modal/MessageContentDocument.uxml
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_3.psd
@@ -344,9 +319,7 @@ Assets:
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_3.mat
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/PlaylistImportModal/PlaylistImportModalDocument.uxml
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_4.mat
-- Assets/RealRadio/Sprites/UI/volume-high.png
 - Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/@YtDlpUiManager.prefab
-- Assets/RealRadio/Sprites/UI/arrow.png
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite.psd
 - Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/SubElements/ListItemDocument.uxml
 - Assets/RealRadio/Prefabs/Radios/WallSpeaker/ConfigureUIStyle.uss
@@ -356,33 +329,24 @@ Assets:
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/Heart 80s.asset
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_4.psd
 - Assets/RealRadio/Prefabs/Singletons/@VehicleRadioManager.prefab
-- Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf
-- Assets/RealRadio/Meshes/SelectionArrow/SpawnAnimation.anim
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Right.mat
+- Assets/RealRadio/ScriptableObjects/DefaultRadioStations/simulator-radio.png
 - Assets/RealRadio/Prefabs/Singletons/@RadioStationInfoManager.prefab
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/ValidatePlaylistModal/ValidatePlaylistModalStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/RadialMenu/SubElements/Option.uxml
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/SmallAnalogRadio.prefab
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_1.mat
-- Assets/RealRadio/ScriptableObjects/DefaultRadioStations/simulator-radio.png
 - Assets/RealRadio/Prefabs/Singletons/@UserStationsManager.prefab
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/LAPD Police Radio.asset
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/Vibes FM.asset
 - Assets/RealRadio/Prefabs/Singletons/@YtDlpManager.prefab
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationListItem/StationListItemStyle.uss
-- Assets/RealRadio/Sprites/UI/rotate.png
-- Assets/RealRadio/Sprites/UI/battery-full.psd
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Volume.psd
 - Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/SubElements/ListItemStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/YtDlp/YtDlpUiStyle.uss
-- Assets/RealRadio/Sounds/old-radio-noise.ogg
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/heart00s.png
 - Assets/RealRadio/ScriptableObjects/Interactions/Radio/Configure.asset
-- Assets/RealRadio/Sprites/UI/plus.png
-- Assets/RealRadio/Fonts/SairaStencilOne-Regular SDF.asset
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/heart90s.png
-- Assets/RealRadio/Meshes/SelectionArrow/SelectionArrow.controller
-- Assets/RealRadio/Item Definitions.asset
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/PlaylistImportModal/PlaylistImportModalStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/RadialMenu/SubElements/Arrow.uss
 - Assets/RealRadio/Prefabs/Vehicles/VehicleAudioClient.prefab
@@ -391,7 +355,6 @@ Assets:
 - Assets/RealRadio/Prefabs/Singletons/UI/SpeakerConnectionManager/SpeakerConnectionManagerDocument.uxml
 - Assets/RealRadio/ScriptableObjects/ItemDefinitions/Small Analog Radio.asset
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/Heart Dance.asset
-- Assets/RealRadio/Sprites/UI/volume-muted.png
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Favorite_1.psd
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/Materials/Button_Power.psd
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/RadioAppDocument.uxml
@@ -401,12 +364,7 @@ Assets:
 - Assets/RealRadio/Prefabs/Singletons/UI/SpeakerConnectionManager/SpeakerConnectionManagerStyle.uss
 - Assets/RealRadio/Prefabs/Singletons/UI/RadioApp/SubElements/StationListItem/StationListItemDocument.uxml
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/Heart 90s.asset
-- Assets/RealRadio/Sprites/UI/volume-medium.png
 - Assets/RealRadio/ScriptableObjects/DefaultRadioStations/truckersfm.png
-- Assets/RealRadio/Singletons.asset
-- Assets/RealRadio/Meshes/SelectionArrow/SelectionArrow.fbx
 - Assets/RealRadio/Prefabs/Singletons/UI/RadialMenu/RadialMenuStyle.uss
-- Assets/RealRadio/Fonts/SairaStencilOne-Regular.ttf
-- Assets/RealRadio/Sprites/UI/power-button.png
 - Assets/RealRadio/Prefabs/Radios/SmallAnalogRadio/ScreenMaterial.mat
 Dependencies: []
