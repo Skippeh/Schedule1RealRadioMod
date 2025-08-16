@@ -25,7 +25,7 @@ jobs:
                   os: "windows"
                   app: 3164500
                   osarch: 64
-                  beta: alternate
+                  beta: alternate-beta
                   files: |
                       regex:^Schedule I_Data/Managed/.+
             - name: Create DevVars.props
