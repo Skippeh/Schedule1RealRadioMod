@@ -4,7 +4,7 @@ namespace ScheduleOne.Cartel
 	{
 		public const int DEAL_DUE_TIME_DAYS = 3;
 
-		public const float PAYMENT_MULTIPLIER = 0.6f;
+		public const float PAYMENT_MULTIPLIER = 0.65f;
 
 		public const int DEAL_COOLDOWN_HOURS = 24;
 
@@ -17,10 +17,18 @@ namespace ScheduleOne.Cartel
 
 		public global::UnityEngine.Transform CashSpawnPoint;
 
+		public global::ScheduleOne.Quests.Quest MethRequestPrereqQuest;
+
+		public global::ScheduleOne.Economy.Supplier CokeRequestPrereqSupplier;
+
 		[global::UnityEngine.Header("Settings")]
 		public global::ScheduleOne.ItemFramework.CashPickup CashPrefab;
 
-		public global::ScheduleOne.Product.ProductDefinition[] RequestableProducts;
+		public global::ScheduleOne.Product.ProductDefinition[] RequestableWeed;
+
+		public global::ScheduleOne.Product.ProductDefinition MethDefinition;
+
+		public global::ScheduleOne.Product.ProductDefinition CocaineDefinition;
 
 		public int ProductQuantityMin;
 
