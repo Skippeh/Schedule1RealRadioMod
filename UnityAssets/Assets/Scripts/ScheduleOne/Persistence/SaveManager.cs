@@ -8,7 +8,7 @@ namespace ScheduleOne.Persistence
 
 		public const string TUTORIAL_SCENE_NAME = "Tutorial";
 
-		public const int SAVES_PER_FRAME = 10;
+		public const int SAVES_PER_FRAME = 15;
 
 		public const string SAVE_FILE_EXTENSION = ".json";
 
@@ -52,6 +52,8 @@ namespace ScheduleOne.Persistence
 		public string PlayersSavePath { get; protected set; }
 
 		public string IndividualSavesContainerPath { get; protected set; }
+
+		public string BackupFolderPath => null;
 
 		public string SaveName { get; protected set; }
 
@@ -101,6 +103,10 @@ namespace ScheduleOne.Persistence
 		}
 
 		public void ClearCompletedSaveable(global::ScheduleOne.Persistence.ISaveable saveable)
+		{
+		}
+
+		public void CreateSaveBackup(global::ScheduleOne.Persistence.SaveInfo saveInfo)
 		{
 		}
 

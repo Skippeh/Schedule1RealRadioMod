@@ -13,9 +13,13 @@ namespace ScheduleOne.NPCs
 
 		public bool CanBePickpocketed;
 
+		public float PickpocketDifficultyMultiplier;
+
 		public bool ClearInventoryEachNight;
 
 		public global::ScheduleOne.ItemFramework.ItemDefinition[] TestItems;
+
+		public global::ScheduleOne.ItemFramework.ItemDefinition[] StartupItems;
 
 		[global::UnityEngine.Header("Random cash")]
 		public bool RandomCash;
@@ -85,12 +89,12 @@ namespace ScheduleOne.NPCs
 			return 0;
 		}
 
-		public bool CanItemFit(global::ScheduleOne.ItemFramework.ItemInstance item, int quantity = 1)
+		public bool CanItemFit(global::ScheduleOne.ItemFramework.ItemInstance item)
 		{
 			return false;
 		}
 
-		public int HowManyCanFit(global::ScheduleOne.ItemFramework.ItemInstance item)
+		public int GetCapacityForItem(global::ScheduleOne.ItemFramework.ItemInstance item)
 		{
 			return 0;
 		}
@@ -111,11 +115,6 @@ namespace ScheduleOne.NPCs
 
 		protected virtual void InventoryContentsChanged()
 		{
-		}
-
-		public int GetTotalItemCount()
-		{
-			return 0;
 		}
 
 		public void Hovered()
@@ -141,6 +140,23 @@ namespace ScheduleOne.NPCs
 
 		[global::EasyButtons.Button]
 		public void PrintInventoryContents()
+		{
+		}
+
+		public void Clear()
+		{
+		}
+
+		public float GetCashInInventory()
+		{
+			return 0f;
+		}
+
+		public void RemoveCash(float amountToRemove)
+		{
+		}
+
+		public void AddCash(float amountToAdd)
 		{
 		}
 
@@ -173,6 +189,17 @@ namespace ScheduleOne.NPCs
 		[global::FishNet.Object.TargetRpc(RunLocally = true)]
 		[global::FishNet.Object.ObserversRpc(RunLocally = true)]
 		private void SetSlotLocked_Internal(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, bool locked, global::FishNet.Object.NetworkObject lockOwner, string lockReason)
+		{
+		}
+
+		[global::FishNet.Object.ServerRpc(RunLocally = true, RequireOwnership = false)]
+		public void SetSlotFilter(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
+		{
+		}
+
+		[global::FishNet.Object.ObserversRpc(RunLocally = true)]
+		[global::FishNet.Object.TargetRpc(RunLocally = true)]
+		private void SetSlotFilter_Internal(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
 		{
 		}
 
@@ -273,6 +300,38 @@ namespace ScheduleOne.NPCs
 		}
 
 		private void RpcReader___Observers_SetSlotLocked_Internal_3170825843(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		{
+		}
+
+		private void RpcWriter___Server_SetSlotFilter_527532783(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
+		{
+		}
+
+		public void RpcLogic___SetSlotFilter_527532783(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
+		{
+		}
+
+		private void RpcReader___Server_SetSlotFilter_527532783(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel, global::FishNet.Connection.NetworkConnection conn)
+		{
+		}
+
+		private void RpcWriter___Observers_SetSlotFilter_Internal_527532783(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
+		{
+		}
+
+		private void RpcLogic___SetSlotFilter_Internal_527532783(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
+		{
+		}
+
+		private void RpcReader___Observers_SetSlotFilter_Internal_527532783(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		{
+		}
+
+		private void RpcWriter___Target_SetSlotFilter_Internal_527532783(global::FishNet.Connection.NetworkConnection conn, int itemSlotIndex, global::ScheduleOne.ItemFramework.SlotFilter filter)
+		{
+		}
+
+		private void RpcReader___Target_SetSlotFilter_Internal_527532783(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
 		{
 		}
 

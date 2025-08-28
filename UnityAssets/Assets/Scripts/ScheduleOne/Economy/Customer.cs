@@ -32,6 +32,8 @@ namespace ScheduleOne.Economy
 
 		public static global::System.Action<global::ScheduleOne.Economy.Customer> onCustomerUnlocked;
 
+		public static global::System.Collections.Generic.List<global::ScheduleOne.Economy.Customer> LockedCustomers;
+
 		public static global::System.Collections.Generic.List<global::ScheduleOne.Economy.Customer> UnlockedCustomers;
 
 		public const float AFFINITY_MAX_EFFECT = 0.3f;
@@ -41,6 +43,12 @@ namespace ScheduleOne.Economy
 		public const float QUALITY_MAX_EFFECT = 0.3f;
 
 		public const float DEAL_REJECTED_RELATIONSHIP_CHANGE = -0.5f;
+
+		public const int ATTACK_DEAL_COOLDOWN = 48;
+
+		public const float RELATIONSHIP_THRESHOLD_TO_GIVE_DEAL_TO_CARTEL = 0.25f;
+
+		public const float CUSTOMER_UNLOCKED_CARTEL_INFLUENCE_CHANGE = -0.05f;
 
 		public bool DEBUG;
 
@@ -89,8 +97,6 @@ namespace ScheduleOne.Economy
 		protected global::ScheduleOne.Economy.CustomerData customerData;
 
 		public global::ScheduleOne.Economy.DeliveryLocation DefaultDeliveryLocation;
-
-		public bool CanRecommendFriends;
 
 		[global::UnityEngine.Header("Events")]
 		public global::UnityEngine.Events.UnityEvent onUnlocked;
@@ -188,8 +194,6 @@ namespace ScheduleOne.Economy
 
 		public global::ScheduleOne.Economy.CustomerData CustomerData => null;
 
-		public global::System.Collections.Generic.List<global::ScheduleOne.Product.ProductDefinition> OrderableProducts => null;
-
 		private global::ScheduleOne.Dialogue.DialogueDatabase dialogueDatabase => null;
 
 		public global::ScheduleOne.Map.NPCPoI potentialCustomerPoI { get; private set; }
@@ -270,6 +274,10 @@ namespace ScheduleOne.Economy
 		{
 		}
 
+		private void OfferContractToDealer(global::ScheduleOne.Quests.ContractInfo info, global::ScheduleOne.Economy.Dealer dealer)
+		{
+		}
+
 		protected virtual void DayPass()
 		{
 		}
@@ -288,12 +296,21 @@ namespace ScheduleOne.Economy
 		{
 		}
 
-		private global::ScheduleOne.Quests.ContractInfo CheckContractGeneration(bool force = false)
+		public void ForceDealOffer()
+		{
+		}
+
+		private global::System.Collections.Generic.List<global::ScheduleOne.Product.ProductDefinition> GetOrderableProducts(global::ScheduleOne.Economy.Dealer dealer)
 		{
 			return null;
 		}
 
-		private global::ScheduleOne.Product.ProductDefinition GetWeightedRandomProduct(out float appeal)
+		private global::ScheduleOne.Quests.ContractInfo TryGenerateContract(global::ScheduleOne.Economy.Dealer dealer)
+		{
+			return null;
+		}
+
+		private global::ScheduleOne.Product.ProductDefinition GetWeightedRandomProduct(global::ScheduleOne.Economy.Dealer dealer, out float appeal)
 		{
 			appeal = default(float);
 			return null;
@@ -370,7 +387,7 @@ namespace ScheduleOne.Economy
 		{
 		}
 
-		public virtual string ContractAccepted(global::ScheduleOne.Economy.EDealWindow window, bool trackContract)
+		public global::ScheduleOne.Quests.Contract ContractAccepted(global::ScheduleOne.Economy.EDealWindow window, bool trackContract, global::ScheduleOne.Economy.Dealer dealer)
 		{
 			return null;
 		}
@@ -425,6 +442,11 @@ namespace ScheduleOne.Economy
 		}
 
 		protected virtual bool ShouldTryGenerateDeal()
+		{
+			return false;
+		}
+
+		private bool IsDealTime()
 		{
 			return false;
 		}

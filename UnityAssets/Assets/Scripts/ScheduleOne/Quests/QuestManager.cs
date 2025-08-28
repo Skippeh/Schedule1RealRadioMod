@@ -31,8 +31,6 @@ namespace ScheduleOne.Quests
 
 		private global::ScheduleOne.Persistence.Loaders.QuestsLoader loader;
 
-		private global::System.Collections.Generic.List<string> writtenContractFiles;
-
 		private bool NetworkInitialize___EarlyScheduleOne_002EQuests_002EQuestManagerAssembly_002DCSharp_002Edll_Excuted;
 
 		private bool NetworkInitialize__LateScheduleOne_002EQuests_002EQuestManagerAssembly_002DCSharp_002Edll_Excuted;
@@ -50,6 +48,8 @@ namespace ScheduleOne.Quests
 		public global::System.Collections.Generic.List<string> LocalExtraFolders { get; set; }
 
 		public bool HasChanged { get; set; }
+
+		public int LoadOrder { get; }
 
 		public override void Awake()
 		{
@@ -71,18 +71,18 @@ namespace ScheduleOne.Quests
 		{
 		}
 
-		[global::FishNet.Object.ServerRpc(RequireOwnership = false)]
-		public void SendContractAccepted(global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, bool track, string guid)
+		public global::ScheduleOne.Quests.Contract ContractAccepted(global::ScheduleOne.Economy.Customer customer, global::ScheduleOne.Quests.ContractInfo contractData, bool track, string guid, global::ScheduleOne.Economy.Dealer dealer)
 		{
+			return null;
 		}
 
 		[global::FishNet.Object.ObserversRpc(RunLocally = true)]
 		[global::FishNet.Object.TargetRpc]
-		public void CreateContract_Networked(global::FishNet.Connection.NetworkConnection conn, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
+		public void CreateContract_Networked(global::FishNet.Connection.NetworkConnection conn, string title, string description, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
 		{
 		}
 
-		public global::ScheduleOne.Quests.Contract CreateContract_Local(string title, string description, global::ScheduleOne.Persistence.Datas.QuestEntryData[] entries, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, float payment, global::ScheduleOne.Product.ProductList products, string deliveryLocationGUID, global::ScheduleOne.Quests.QuestWindowConfig deliveryWindow, bool expires, global::ScheduleOne.GameTime.GameDateTime expiry, int pickupScheduleIndex, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::ScheduleOne.Economy.Dealer dealer = null)
+		public global::ScheduleOne.Quests.Contract CreateContract_Local(string title, string description, global::ScheduleOne.Persistence.Datas.QuestEntryData[] entries, string guid, bool tracked, global::ScheduleOne.Economy.Customer customer, float payment, global::ScheduleOne.Product.ProductList products, string deliveryLocationGUID, global::ScheduleOne.Quests.QuestWindowConfig deliveryWindow, bool expires, global::ScheduleOne.GameTime.GameDateTime expiry, int pickupScheduleIndex, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::ScheduleOne.Economy.Dealer dealer = null)
 		{
 			return null;
 		}
@@ -154,15 +154,6 @@ namespace ScheduleOne.Quests
 			return null;
 		}
 
-		public virtual global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
-		{
-			return null;
-		}
-
-		public virtual void DeleteUnapprovedFiles(string parentFolderPath)
-		{
-		}
-
 		public override void NetworkInitialize___Early()
 		{
 		}
@@ -175,35 +166,23 @@ namespace ScheduleOne.Quests
 		{
 		}
 
-		private void RpcWriter___Server_SendContractAccepted_1030683829(global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, bool track, string guid)
+		private void RpcWriter___Observers_CreateContract_Networked_2526053753(global::FishNet.Connection.NetworkConnection conn, string title, string description, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
 		{
 		}
 
-		public void RpcLogic___SendContractAccepted_1030683829(global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, bool track, string guid)
+		public void RpcLogic___CreateContract_Networked_2526053753(global::FishNet.Connection.NetworkConnection conn, string title, string description, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
 		{
 		}
 
-		private void RpcReader___Server_SendContractAccepted_1030683829(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel, global::FishNet.Connection.NetworkConnection conn)
+		private void RpcReader___Observers_CreateContract_Networked_2526053753(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
 		{
 		}
 
-		private void RpcWriter___Observers_CreateContract_Networked_1113640585(global::FishNet.Connection.NetworkConnection conn, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
+		private void RpcWriter___Target_CreateContract_Networked_2526053753(global::FishNet.Connection.NetworkConnection conn, string title, string description, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
 		{
 		}
 
-		public void RpcLogic___CreateContract_Networked_1113640585(global::FishNet.Connection.NetworkConnection conn, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
-		{
-		}
-
-		private void RpcReader___Observers_CreateContract_Networked_1113640585(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
-		{
-		}
-
-		private void RpcWriter___Target_CreateContract_Networked_1113640585(global::FishNet.Connection.NetworkConnection conn, string guid, bool tracked, global::FishNet.Object.NetworkObject customer, global::ScheduleOne.Quests.ContractInfo contractData, global::ScheduleOne.GameTime.GameDateTime expiry, global::ScheduleOne.GameTime.GameDateTime acceptTime, global::FishNet.Object.NetworkObject dealerObj = null)
-		{
-		}
-
-		private void RpcReader___Target_CreateContract_Networked_1113640585(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		private void RpcReader___Target_CreateContract_Networked_2526053753(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
 		{
 		}
 

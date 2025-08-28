@@ -42,7 +42,7 @@ public class BuildingRadioSchedule : MonoBehaviour
 
         bool actionChanged = false, behaviourChanged = false;
         NPCAction? action = schedule.ActiveAction;
-        Behaviour? behaviour = npc.behaviour.activeBehaviour;
+        Behaviour? behaviour = npc.Behaviour.activeBehaviour;
 
         if (action != lastAction)
             actionChanged = true;

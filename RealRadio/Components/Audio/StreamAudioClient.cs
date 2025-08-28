@@ -102,9 +102,6 @@ namespace RealRadio.Components.Audio
 
             Host?.OnClientEnabled(this);
             audioSource.Play();
-
-            if (audioSourceController != null)
-                audioSourceController.isPlayingCached = true;
         }
 
         private void OnDisable()
@@ -128,9 +125,6 @@ namespace RealRadio.Components.Audio
             if (hostEnabled && !audioSource.isPlaying)
             {
                 audioSource.Play();
-
-                if (audioSourceController != null)
-                    audioSourceController.isPlayingCached = true;
             }
         }
 

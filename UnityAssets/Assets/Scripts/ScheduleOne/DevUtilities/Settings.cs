@@ -10,6 +10,14 @@ namespace ScheduleOne.DevUtilities
 
 		public const float MinYPos = -20f;
 
+		public const string BETA_ARG = "-beta";
+
+		public const string DISABLE_COUNTRY_CHECK_ARG = "-disablecountrycheck";
+
+		public const bool COUNTRY_CHECK = false;
+
+		public global::System.Collections.Generic.List<string> LaunchArgs;
+
 		public global::ScheduleOne.DevUtilities.DisplaySettings DisplaySettings;
 
 		public global::ScheduleOne.DevUtilities.DisplaySettings UnappliedDisplaySettings;
@@ -19,6 +27,8 @@ namespace ScheduleOne.DevUtilities
 		public global::ScheduleOne.DevUtilities.AudioSettings AudioSettings;
 
 		public global::ScheduleOne.DevUtilities.InputSettings InputSettings;
+
+		public global::ScheduleOne.DevUtilities.OtherSettings OtherSettings;
 
 		public global::UnityEngine.InputSystem.InputActionAsset InputActions;
 
@@ -58,6 +68,10 @@ namespace ScheduleOne.DevUtilities
 		{
 		}
 
+		private void CheckCountryCode()
+		{
+		}
+
 		public void ApplyDisplaySettings(global::ScheduleOne.DevUtilities.DisplaySettings settings)
 		{
 		}
@@ -87,6 +101,14 @@ namespace ScheduleOne.DevUtilities
 		}
 
 		public void ApplyInputSettings(global::ScheduleOne.DevUtilities.InputSettings settings)
+		{
+		}
+
+		public void ReloadOtherSettings()
+		{
+		}
+
+		public void ApplyOtherSettings(global::ScheduleOne.DevUtilities.OtherSettings settings)
 		{
 		}
 
@@ -122,6 +144,15 @@ namespace ScheduleOne.DevUtilities
 		}
 
 		public global::ScheduleOne.DevUtilities.InputSettings ReadInputSettings()
+		{
+			return null;
+		}
+
+		public void WriteOtherSettings(global::ScheduleOne.DevUtilities.OtherSettings settings)
+		{
+		}
+
+		public global::ScheduleOne.DevUtilities.OtherSettings ReadOtherSettings()
 		{
 			return null;
 		}

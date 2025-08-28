@@ -10,12 +10,17 @@ public static class NetworkManagerAwakePatch
 {
     public static void Prefix(Multipass __instance)
     {
-        var tugboat = __instance.gameObject.AddComponent<Tugboat>();
+        var tugboat = __instance.gameObject.GetComponent<Tugboat>();
+
+        if (tugboat == null)
+        {
+            tugboat = __instance.gameObject.AddComponent<Tugboat>();
+            __instance._transports.Add(tugboat);
+        }
+
         tugboat.SetServerBindAddress("127.0.0.1", IPAddressType.IPv4);
         tugboat.SetMaximumClients(4);
         tugboat.SetClientAddress("127.0.0.1");
         tugboat.SetPort(7777);
-
-        __instance._transports.Add(tugboat);
     }
 }

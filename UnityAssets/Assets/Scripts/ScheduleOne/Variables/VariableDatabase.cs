@@ -38,6 +38,8 @@ namespace ScheduleOne.Variables
 
 		public bool HasChanged { get; set; }
 
+		public int LoadOrder { get; }
+
 		public override void Awake()
 		{
 		}
@@ -109,12 +111,7 @@ namespace ScheduleOne.Variables
 			return null;
 		}
 
-		public virtual global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
-		{
-			return null;
-		}
-
-		public void Load(global::ScheduleOne.Persistence.Datas.VariableData data)
+		public void LoadVariable(global::ScheduleOne.Persistence.Datas.VariableData data)
 		{
 		}
 

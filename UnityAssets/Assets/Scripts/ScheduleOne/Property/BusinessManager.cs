@@ -18,6 +18,8 @@ namespace ScheduleOne.Property
 
 		public bool HasChanged { get; set; }
 
+		public int LoadOrder { get; }
+
 		protected override void Awake()
 		{
 		}
@@ -36,7 +38,11 @@ namespace ScheduleOne.Property
 			return null;
 		}
 
-		public void LoadBusiness(global::ScheduleOne.Persistence.Datas.BusinessData businessData, string containerPath)
+		public virtual void DeleteUnapprovedFiles(string parentFolderPath)
+		{
+		}
+
+		public void LoadBusiness(global::ScheduleOne.Persistence.Datas.BusinessData businessData, string dataString)
 		{
 		}
 	}

@@ -150,6 +150,8 @@ namespace ScheduleOne.ObjectScripts
 
 		private global::ScheduleOne.ItemFramework.SoilDefinition appliedSoilDefinition;
 
+		private global::UnityEngine.Material appliedSoilMaterial;
+
 		public global::FishNet.Object.Synchronizing.SyncVar<float> syncVar____003CSoilLevel_003Ek__BackingField;
 
 		public global::FishNet.Object.Synchronizing.SyncVar<string> syncVar____003CSoilID_003Ek__BackingField;
@@ -621,12 +623,12 @@ namespace ScheduleOne.ObjectScripts
 		{
 		}
 
-		public override string GetSaveString()
+		public override global::ScheduleOne.Persistence.Datas.BuildableItemData GetBaseData()
 		{
 			return null;
 		}
 
-		public override global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
+		public override global::ScheduleOne.Persistence.Datas.DynamicSaveData GetSaveData()
 		{
 			return null;
 		}

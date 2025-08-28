@@ -161,6 +161,10 @@ namespace ScheduleOne.UI.Shop
 		{
 		}
 
+		private void PullStockVariables()
+		{
+		}
+
 		private void DeselectCurrentCategory()
 		{
 		}
@@ -245,7 +249,12 @@ namespace ScheduleOne.UI.Shop
 			return null;
 		}
 
-		public virtual string GetSaveString()
+		public virtual global::ScheduleOne.Persistence.Datas.ShopData GetSaveData()
+		{
+			return null;
+		}
+
+		public string GetSaveString()
 		{
 			return null;
 		}

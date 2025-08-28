@@ -2,6 +2,10 @@ namespace ScheduleOne.Map
 {
 	public class Map : global::ScheduleOne.DevUtilities.Singleton<global::ScheduleOne.Map.Map>
 	{
+		public const global::ScheduleOne.Map.EMapRegion FINAL_REGION = global::ScheduleOne.Map.EMapRegion.Uptown;
+
+		public bool UNLOCK_ALL_REGIONS;
+
 		public global::ScheduleOne.Map.MapRegionData[] Regions;
 
 		[global::UnityEngine.Header("References")]
@@ -19,7 +23,7 @@ namespace ScheduleOne.Map
 		{
 		}
 
-		protected override void OnDestroy()
+		private void OnRankUp(global::ScheduleOne.Levelling.FullRank old, global::ScheduleOne.Levelling.FullRank newRank)
 		{
 		}
 
@@ -28,12 +32,14 @@ namespace ScheduleOne.Map
 			return null;
 		}
 
-		private void GameLoaded()
+		public global::System.Collections.Generic.List<global::ScheduleOne.Map.EMapRegion> GetUnlockedRegions()
 		{
+			return null;
 		}
 
-		private void OnRankUp(global::ScheduleOne.Levelling.FullRank oldRank, global::ScheduleOne.Levelling.FullRank newRank)
+		public global::ScheduleOne.Map.EMapRegion GetRegionFromPosition(global::UnityEngine.Vector3 position)
 		{
+			return default(global::ScheduleOne.Map.EMapRegion);
 		}
 	}
 }

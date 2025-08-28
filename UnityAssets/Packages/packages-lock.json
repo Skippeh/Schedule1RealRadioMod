@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.ecasillas.missingrefsfinder": {
+      "version": "https://github.com/edcasillas/unity-missing-references-finder.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "2df043726063239c034ca97d1ec1eb1f4396e173"
+    },
     "com.unity.2d.animation": {
       "version": "9.1.1",
       "depth": 1,
@@ -18,11 +25,11 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {
+        "com.unity.burst": "1.7.3",
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.mathematics": "1.1.0",
-        "com.unity.modules.uielements": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.burst": "1.7.3"
+        "com.unity.modules.uielements": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },

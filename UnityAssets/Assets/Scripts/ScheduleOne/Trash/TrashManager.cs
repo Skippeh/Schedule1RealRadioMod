@@ -45,6 +45,8 @@ namespace ScheduleOne.Trash
 
 		public bool HasChanged { get; set; }
 
+		public int LoadOrder { get; }
+
 		protected override void Start()
 		{
 		}
@@ -142,11 +144,6 @@ namespace ScheduleOne.Trash
 		}
 
 		public virtual string GetSaveString()
-		{
-			return null;
-		}
-
-		public virtual global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
 		{
 			return null;
 		}

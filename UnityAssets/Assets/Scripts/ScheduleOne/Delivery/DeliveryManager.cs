@@ -32,6 +32,8 @@ namespace ScheduleOne.Delivery
 
 		public bool HasChanged { get; set; }
 
+		public int LoadOrder { get; }
+
 		public override void Awake()
 		{
 		}
@@ -96,15 +98,6 @@ namespace ScheduleOne.Delivery
 		public virtual string GetSaveString()
 		{
 			return null;
-		}
-
-		public virtual global::System.Collections.Generic.List<string> WriteData(string parentFolderPath)
-		{
-			return null;
-		}
-
-		public virtual void DeleteUnapprovedFiles(string parentFolderPath)
-		{
 		}
 
 		public override void NetworkInitialize___Early()

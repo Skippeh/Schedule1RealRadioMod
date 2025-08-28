@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.ecasillas.missingrefsfinder": "https://github.com/edcasillas/unity-missing-references-finder.git",
     "com.unity.2d.psdimporter": "8.0.5",
     "com.unity.addressables": "1.21.21",
     "com.unity.ai.navigation": "1.1.5",

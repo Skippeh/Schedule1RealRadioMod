@@ -92,6 +92,9 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
 
                 var building = stayInBuilding.Building;
 
+                if (building == null)
+                    continue;
+
                 // Skip non residential buildings
                 if (!BuildingIsResidential(building))
                     continue;
@@ -139,6 +142,9 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
 
     private bool BuildingIsResidential(NPCEnterableBuilding building)
     {
+        if (building == null)
+            throw new ArgumentNullException(nameof(building));
+
         if (building is MedicalCentre)
             return false;
 
