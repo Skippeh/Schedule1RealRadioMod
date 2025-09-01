@@ -92,6 +92,12 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
                 continue;
             }
 
+            if (station.Type != RadioType.YtDlp)
+            {
+                Logger.LogWarning($"Received unplayed songs for a non-yt-dlp radio station {station}, ignoring");
+                continue;
+            }
+
             this.unplayedUrls[station] = [.. kv.Value];
 
             // Remove songs that aren't in the station's urls.
