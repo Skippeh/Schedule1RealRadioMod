@@ -64,6 +64,37 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
             RequestOrSetSongState(station, new RadioStationState());
         }
+
+        RequestUnplayedSongs();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestUnplayedSongs(NetworkConnection conn = null!)
+    {
+        var unplayedUrls = new Dictionary<uint, string[]>();
+
+        foreach (var kv in this.unplayedUrls)
+        {
+            unplayedUrls.Add(kv.Key.Id!.GetStableHashCode(), [.. kv.Value]);
+        }
+
+        ReceiveUnplayedSongs(conn, unplayedUrls);
+    }
+
+    [TargetRpc]
+    private void ReceiveUnplayedSongs(NetworkConnection target, Dictionary<uint, string[]> unplayedUrls)
+    {
+        foreach (var kv in unplayedUrls)
+        {
+            if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(kv.Key, out var station))
+            {
+                Logger.LogWarning($"Can not set unplayed songs, could not find radio station with id {kv.Key}");
+                continue;
+            }
+
+            this.unplayedUrls[station] = [.. kv.Value];
+            Logger.LogDebug($"Got {kv.Value.Length} unplayed songs for radio station {station}");
+        }
     }
 
     private void OnClientUserStationUpdated(API.Data.RadioStation station, bool isNew)
