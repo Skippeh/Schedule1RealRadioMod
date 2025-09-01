@@ -226,6 +226,22 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
 
         currentMetaData[station] = videoData;
+
+        if (station.Urls != null && station.Urls.Length > state.SongIndex && unplayedUrls.TryGetValue(station, out var urls))
+        {
+            var url = station.Urls[state.SongIndex.Value];
+            urls.Remove(url);
+
+            // if the list is emptied re-add all the urls
+            if (urls.Count == 0)
+            {
+                foreach (string url2 in station.Urls!)
+                {
+                    urls.Add(url2);
+                }
+            }
+        }
+
         OnStateReceived?.Invoke(station, state);
     }
 
