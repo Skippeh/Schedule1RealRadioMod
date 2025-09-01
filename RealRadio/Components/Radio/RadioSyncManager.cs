@@ -93,6 +93,20 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             }
 
             this.unplayedUrls[station] = [.. kv.Value];
+
+            // Remove songs that aren't in the station's urls.
+            // This shouldn't happen normally but it might(?) happen in some rare desync cases, so let's be safe.
+            // One such case could be if a player joins right as a station is updated and
+            // the new station doesn't contain all the urls from the old one.
+            foreach (string url in unplayedUrls[kv.Key])
+            {
+                if (!station.Urls.Contains(url))
+                {
+                    this.unplayedUrls[station].Remove(url);
+                    Logger.LogWarning($"Removed song {url} from received unplayed songs, it is not in the station's urls");
+                }
+            }
+
             Logger.LogDebug($"Got {kv.Value.Length} unplayed songs for radio station {station}");
         }
     }
