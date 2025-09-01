@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
 using HashUtility;
@@ -21,6 +22,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
     private Dictionary<RadioStation, RadioStationState> radioStates = [];
     private Dictionary<RadioStation, VideoData?> currentMetaData = [];
+    private Dictionary<RadioStation, HashSet<string>> unplayedUrls = [];
 
     public override void Awake()
     {
@@ -81,12 +83,41 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             return;
 
         RadioStationState? oldState = null;
+        HashSet<string>? unplayedUrls = null;
 
         if (oldStation != null)
         {
             radioStates.Remove(oldStation, out oldState);
             currentMetaData.Remove(oldStation);
+            this.unplayedUrls.Remove(oldStation, out unplayedUrls);
         }
+
+        if (unplayedUrls != null)
+        {
+            // remove deleted songs from unplayed songs
+            foreach (var url in unplayedUrls.ToList())
+            {
+                if (!station.Urls.Contains(url))
+                    unplayedUrls.Remove(url);
+            }
+
+            // add new songs to unplayed songs
+            var newUrls = station.Urls.ToList();
+
+            if (oldStation != null)
+                newUrls.RemoveAll(url => oldStation.Urls.Contains(url));
+
+            foreach (var url in newUrls)
+            {
+                unplayedUrls.Add(url);
+            }
+        }
+        else
+        {
+            unplayedUrls = [.. station.Urls!];
+        }
+
+        this.unplayedUrls[station] = unplayedUrls;
 
         if (!IsServer)
             return;
@@ -116,6 +147,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
     {
         radioStates.Remove(station);
         currentMetaData.Remove(station);
+        unplayedUrls.Remove(station);
     }
 
     public RadioStationState? GetLocalState(RadioStation station)
