@@ -269,14 +269,33 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
     public static RadioStationState GetRandomRadioStationState(RadioStation station, ushort? lastSongIndex, uint? iteration, float? startTime = null)
     {
         var result = new RadioStationState();
-        ushort index;
+        ushort? index = null;
 
-        while (true)
+        if (Instance != null)
         {
-            index = (ushort)UnityEngine.Random.Range(0, station.Urls!.Length);
+            if (Instance.unplayedUrls.TryGetValue(station, out var urls) && urls.Count > 0)
+            {
+                while (true)
+                {
+                    var randIndex = UnityEngine.Random.Range(0, urls.Count);
+                    var url = urls.ElementAt(randIndex);
+                    index = (ushort)Array.IndexOf(station.Urls!, url);
 
-            if (lastSongIndex != index || station.Urls.Length <= 1)
-                break;
+                    if (lastSongIndex != index || urls.Count <= 1)
+                        break;
+                }
+            }
+        }
+
+        if (index == null)
+        {
+            while (true)
+            {
+                index = (ushort)UnityEngine.Random.Range(0, station.Urls!.Length);
+
+                if (lastSongIndex != index || station.Urls.Length <= 1)
+                    break;
+            }
         }
 
         result.SongIndex = index;
@@ -284,7 +303,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (startTime == null)
         {
-            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(station.Urls[index], out var metaData) && metaData.Duration.HasValue)
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(station.Urls![index.Value], out var metaData) && metaData.Duration.HasValue)
                 startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
             else
             {
