@@ -130,9 +130,6 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
-        if (station.Type != RadioType.YtDlp)
-            return;
-
         RadioStationState? oldState = null;
         HashSet<string>? unplayedUrls = null;
 
@@ -142,6 +139,9 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             currentMetaData.Remove(oldStation);
             this.unplayedUrls.Remove(oldStation, out unplayedUrls);
         }
+
+        if (station.Type != RadioType.YtDlp)
+            return;
 
         if (unplayedUrls != null)
         {
