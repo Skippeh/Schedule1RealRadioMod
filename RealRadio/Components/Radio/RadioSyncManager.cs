@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using FishNet.Connection;
 using FishNet.Object;
 using HashUtility;
@@ -21,6 +22,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
     private Dictionary<RadioStation, RadioStationState> radioStates = [];
     private Dictionary<RadioStation, VideoData?> currentMetaData = [];
+    private Dictionary<RadioStation, HashSet<string>> unplayedUrls = [];
 
     public override void Awake()
     {
@@ -62,6 +64,57 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
             RequestOrSetSongState(station, new RadioStationState());
         }
+
+        RequestUnplayedSongs();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestUnplayedSongs(NetworkConnection conn = null!)
+    {
+        var unplayedUrls = new Dictionary<uint, string[]>();
+
+        foreach (var kv in this.unplayedUrls)
+        {
+            unplayedUrls.Add(kv.Key.Id!.GetStableHashCode(), [.. kv.Value]);
+        }
+
+        ReceiveUnplayedSongs(conn, unplayedUrls);
+    }
+
+    [TargetRpc]
+    private void ReceiveUnplayedSongs(NetworkConnection target, Dictionary<uint, string[]> unplayedUrls)
+    {
+        foreach (var kv in unplayedUrls)
+        {
+            if (!RadioStationManager.Instance.StationsByHashedId.TryGetValue(kv.Key, out var station))
+            {
+                Logger.LogWarning($"Can not set unplayed songs, could not find radio station with id {kv.Key}");
+                continue;
+            }
+
+            if (station.Type != RadioType.YtDlp)
+            {
+                Logger.LogWarning($"Received unplayed songs for a non-yt-dlp radio station {station}, ignoring");
+                continue;
+            }
+
+            this.unplayedUrls[station] = [.. kv.Value];
+
+            // Remove songs that aren't in the station's urls.
+            // This shouldn't happen normally but it might(?) happen in some rare desync cases, so let's be safe.
+            // One such case could be if a player joins right as a station is updated and
+            // the new station doesn't contain all the urls from the old one.
+            foreach (string url in unplayedUrls[kv.Key])
+            {
+                if (!station.Urls.Contains(url))
+                {
+                    this.unplayedUrls[station].Remove(url);
+                    Logger.LogWarning($"Removed song {url} from received unplayed songs, it is not in the station's urls");
+                }
+            }
+
+            Logger.LogDebug($"Got {kv.Value.Length} unplayed songs for radio station {station}");
+        }
     }
 
     private void OnClientUserStationUpdated(API.Data.RadioStation station, bool isNew)
@@ -77,16 +130,45 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
     private void OnRadioStationUpdated(RadioStation station, RadioStation? oldStation)
     {
-        if (station.Type != RadioType.YtDlp)
-            return;
-
         RadioStationState? oldState = null;
+        HashSet<string>? unplayedUrls = null;
 
         if (oldStation != null)
         {
             radioStates.Remove(oldStation, out oldState);
             currentMetaData.Remove(oldStation);
+            this.unplayedUrls.Remove(oldStation, out unplayedUrls);
         }
+
+        if (station.Type != RadioType.YtDlp)
+            return;
+
+        if (unplayedUrls != null)
+        {
+            // remove deleted songs from unplayed songs
+            foreach (var url in unplayedUrls.ToList())
+            {
+                if (!station.Urls.Contains(url))
+                    unplayedUrls.Remove(url);
+            }
+
+            // add new songs to unplayed songs
+            var newUrls = station.Urls.ToList();
+
+            if (oldStation != null)
+                newUrls.RemoveAll(url => oldStation.Urls.Contains(url));
+
+            foreach (var url in newUrls)
+            {
+                unplayedUrls.Add(url);
+            }
+        }
+        else
+        {
+            unplayedUrls = [.. station.Urls!];
+        }
+
+        this.unplayedUrls[station] = unplayedUrls;
 
         if (!IsServer)
             return;
@@ -116,6 +198,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
     {
         radioStates.Remove(station);
         currentMetaData.Remove(station);
+        unplayedUrls.Remove(station);
     }
 
     public RadioStationState? GetLocalState(RadioStation station)
@@ -194,6 +277,22 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
         }
 
         currentMetaData[station] = videoData;
+
+        if (station.Urls != null && station.Urls.Length > state.SongIndex && unplayedUrls.TryGetValue(station, out var urls))
+        {
+            var url = station.Urls[state.SongIndex.Value];
+            urls.Remove(url);
+
+            // if the list is emptied re-add all the urls
+            if (urls.Count == 0)
+            {
+                foreach (string url2 in station.Urls)
+                {
+                    urls.Add(url2);
+                }
+            }
+        }
+
         OnStateReceived?.Invoke(station, state);
     }
 
@@ -221,14 +320,33 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
     public static RadioStationState GetRandomRadioStationState(RadioStation station, ushort? lastSongIndex, uint? iteration, float? startTime = null)
     {
         var result = new RadioStationState();
-        ushort index;
+        ushort? index = null;
 
-        while (true)
+        if (Instance != null)
         {
-            index = (ushort)UnityEngine.Random.Range(0, station.Urls!.Length);
+            if (Instance.unplayedUrls.TryGetValue(station, out var urls) && urls.Count > 0)
+            {
+                while (true)
+                {
+                    var randIndex = UnityEngine.Random.Range(0, urls.Count);
+                    var url = urls.ElementAt(randIndex);
+                    index = (ushort)Array.IndexOf(station.Urls!, url);
 
-            if (lastSongIndex != index || station.Urls.Length <= 1)
-                break;
+                    if (lastSongIndex != index || urls.Count <= 1)
+                        break;
+                }
+            }
+        }
+
+        if (index == null)
+        {
+            while (true)
+            {
+                index = (ushort)UnityEngine.Random.Range(0, station.Urls!.Length);
+
+                if (lastSongIndex != index || station.Urls.Length <= 1)
+                    break;
+            }
         }
 
         result.SongIndex = index;
@@ -236,7 +354,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
 
         if (startTime == null)
         {
-            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(station.Urls[index], out var metaData) && metaData.Duration.HasValue)
+            if (YtDlpManager.Instance.AudioMetaData.TryGetValue(station.Urls![index.Value], out var metaData) && metaData.Duration.HasValue)
                 startTime = UnityEngine.Random.Range(Math.Min(10f, metaData.Duration.Value), metaData.Duration.Value);
             else
             {
