@@ -286,7 +286,7 @@ public class RadioSyncManager : NetworkSingleton<RadioSyncManager>
             // if the list is emptied re-add all the urls
             if (urls.Count == 0)
             {
-                foreach (string url2 in station.Urls!)
+                foreach (string url2 in station.Urls)
                 {
                     urls.Add(url2);
                 }
