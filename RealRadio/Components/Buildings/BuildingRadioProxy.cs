@@ -70,7 +70,7 @@ public class BuildingRadioProxy : RadioProxy
         {
             startedOnceToday = true;
 
-            if (Building?.OccupantCount > 0 && UnityEngine.Random.Range(0f, 1f) <= 0.5f)
+            if (Building?.OccupantCount > 0 && UnityEngine.Random.Range(0f, 1f) <= Config.Instance.Data.VehicleMusicChance)
                 SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
         }
     }

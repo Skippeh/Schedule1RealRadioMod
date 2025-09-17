@@ -194,7 +194,7 @@ public class VehicleRadioProxy : RadioProxy
         {
             if (started && HasNPCOccupants())
             {
-                if (UnityEngine.Random.Range(0f, 1f) <= 0.5f)
+                if (UnityEngine.Random.Range(0f, 1f) <= Config.Instance.Data.VehicleMusicChance)
                 {
                     SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
                 }
