@@ -82,18 +82,6 @@ public abstract class RadioProxy : NetworkBehaviour
         RadioStationIdHash = idHash;
     }
 
-    private IEnumerator WaitForAudioClientThenEnable()
-    {
-        if (audioClientObject != null)
-        {
-            audioClientObject.SetActive(true);
-            yield break;
-        }
-
-        yield return new WaitUntil(() => audioClientObject != null);
-        audioClientObject!.SetActive(true);
-    }
-
     protected virtual void OnStationChanged(uint? prev, uint? next, bool asServer)
     {
         if (asServer)
