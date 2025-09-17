@@ -17,6 +17,8 @@ public interface IConfigData
 {
     public float MaxAudioHostInactivityTime { get; set; }
     public uint MaxInactiveAudioHosts { get; set; }
+    public float BuildingMusicChance { get; set; }
+    public float VehicleMusicChance { get; set; }
 }
 
 public interface IConfig

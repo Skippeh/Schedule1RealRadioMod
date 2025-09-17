@@ -74,9 +74,21 @@ public class BIEPlugin : BaseUnityPlugin
             get => maxInaudibleAudioClientsEntry.Value;
             set => maxInaudibleAudioClientsEntry.Value = value;
         }
+        public float BuildingMusicChance
+        {
+            get => buildingMusicChanceEntry.Value;
+            set => buildingMusicChanceEntry.Value = value;
+        }
+        public float VehicleMusicChance
+        {
+            get => vehicleMusicChanceEntry.Value;
+            set => vehicleMusicChanceEntry.Value = value;
+        }
 
         private readonly ConfigEntry<float> maxAudioHostInactivityTimeEntry;
         private readonly ConfigEntry<uint> maxInaudibleAudioClientsEntry;
+        private readonly ConfigEntry<float> buildingMusicChanceEntry;
+        private readonly ConfigEntry<float> vehicleMusicChanceEntry;
 
         public BIEConfigData(BIEConfig config)
         {
@@ -92,9 +104,23 @@ public class BIEPlugin : BaseUnityPlugin
                 defaultValue: 5,
                 new ConfigDescription("The maximum number of audio hosts that can be inactive (not audible) before stopping the least recently played host.", new AcceptableValueRange<uint>(0, uint.MaxValue))
             );
+            buildingMusicChanceEntry = config.File.Bind(
+                "General",
+                nameof(BuildingMusicChance),
+                defaultValue: 0.5f,
+                new ConfigDescription("The chance that a radio station will be played from residential buildings when an NPC enters it. Note: in multiplayer, the value of the hosting player will be used.", new AcceptableValueRange<float>(0, 1))
+            );
+            vehicleMusicChanceEntry = config.File.Bind(
+                "General",
+                nameof(VehicleMusicChance),
+                defaultValue: 0.5f,
+                new ConfigDescription("The chance that a radio station will be played from a vehicle when an NPC drives it. Note: in multiplayer, the value of the hosting player will be used.", new AcceptableValueRange<float>(0, 1))
+            );
 
             maxAudioHostInactivityTimeEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxAudioHostInactivityTime));
             maxInaudibleAudioClientsEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxInactiveAudioHosts));
+            buildingMusicChanceEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(BuildingMusicChance));
+            vehicleMusicChanceEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(VehicleMusicChance));
         }
     }
 }
