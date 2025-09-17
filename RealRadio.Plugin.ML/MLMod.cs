@@ -97,14 +97,14 @@ public class MLMod : MelonMod
                 description: "The maximum number of audio hosts that can be inactive (not audible) before stopping the least recently played host.",
                 validator: new ValueRange<uint>(0, uint.MaxValue)
             );
-            buildingMusicChanceEntry = config.Category.CreateEntry<float>(
+            buildingMusicChanceEntry = config.Category.CreateEntry(
                 nameof(BuildingMusicChance),
                 default_value: 0.5f,
                 display_name: "Building music chance",
                 description: "The chance that a radio station will be played from residential buildings when an NPC enters it. Note: in multiplayer, the value of the hosting player will be used.",
                 validator: new ValueRange<float>(0, 1)
             );
-            vehicleMusicChanceEntry = config.Category.CreateEntry<float>(
+            vehicleMusicChanceEntry = config.Category.CreateEntry(
                 nameof(VehicleMusicChance),
                 default_value: 0.5f,
                 display_name: "Vehicle music chance",
