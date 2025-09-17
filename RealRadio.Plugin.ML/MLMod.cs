@@ -80,6 +80,8 @@ public class MLMod : MelonMod
         private readonly MelonPreferences_Entry<uint> maxInaudibleAudioClientsEntry;
         private readonly MelonPreferences_Entry<float> buildingMusicChanceEntry;
         private readonly MelonPreferences_Entry<float> vehicleMusicChanceEntry;
+        private readonly MelonPreferences_Entry<bool> enableBuildingMusicEntry;
+        private readonly MelonPreferences_Entry<bool> enableVehicleMusicEntry;
 
         public MLConfigData(MLConfig config)
         {
@@ -111,11 +113,25 @@ public class MLMod : MelonMod
                 description: "The chance that a radio station will be played from a vehicle when an NPC drives it. Note: in multiplayer, the value of the hosting player will be used.",
                 validator: new ValueRange<float>(0, 1)
             );
+            enableBuildingMusicEntry = config.Category.CreateEntry(
+                nameof(EnableBuildingMusic),
+                default_value: true,
+                display_name: "Play random radio stations from residential buildings",
+                description: "If enabled, a random radio station may be played from residential buildings when an NPC enters it. In multiplayer this setting only affects yourself and also works as a non-hosting player."
+            );
+            enableVehicleMusicEntry = config.Category.CreateEntry(
+                nameof(EnableVehicleMusic),
+                default_value: true,
+                display_name: "Play random radio stations from NPC vehicles",
+                description: "If enabled, a random radio station may be played from NPC vehicles when an NPC drives it. In multiplayer this setting only affects yourself and also works as a non-hosting player."
+            );
 
             maxAudioHostInactivityTimeEntry.OnEntryValueChanged.Subscribe((_, _) => config.OnValueChanged(nameof(MaxAudioHostInactivityTime)));
             maxInaudibleAudioClientsEntry.OnEntryValueChanged.Subscribe((_, _) => config.OnValueChanged(nameof(MaxInactiveAudioHosts)));
             buildingMusicChanceEntry.OnEntryValueChanged.Subscribe((_, _) => config.OnValueChanged(nameof(BuildingMusicChance)));
             vehicleMusicChanceEntry.OnEntryValueChanged.Subscribe((_, _) => config.OnValueChanged(nameof(VehicleMusicChance)));
+            enableBuildingMusicEntry.OnEntryValueChanged.Subscribe((_, _) => config.OnValueChanged(nameof(EnableBuildingMusic)));
+            enableVehicleMusicEntry.OnEntryValueChanged.Subscribe((_, _) => config.OnValueChanged(nameof(EnableVehicleMusic)));
         }
 
         public float MaxAudioHostInactivityTime
@@ -138,6 +154,17 @@ public class MLMod : MelonMod
         {
             get => vehicleMusicChanceEntry.Value;
             set => vehicleMusicChanceEntry.Value = value;
+        }
+
+        public bool EnableBuildingMusic
+        {
+            get => enableBuildingMusicEntry.Value;
+            set => enableBuildingMusicEntry.Value = value;
+        }
+        public bool EnableVehicleMusic
+        {
+            get => enableVehicleMusicEntry.Value;
+            set => enableVehicleMusicEntry.Value = value;
         }
     }
 }

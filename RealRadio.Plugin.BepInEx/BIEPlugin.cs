@@ -85,10 +85,24 @@ public class BIEPlugin : BaseUnityPlugin
             set => vehicleMusicChanceEntry.Value = value;
         }
 
+        public bool EnableBuildingMusic
+        {
+            get => enableBuildingMusicEntry.Value;
+            set => enableBuildingMusicEntry.Value = value;
+        }
+
+        public bool EnableVehicleMusic
+        {
+            get => enableVehicleMusicEntry.Value;
+            set => enableVehicleMusicEntry.Value = value;
+        }
+
         private readonly ConfigEntry<float> maxAudioHostInactivityTimeEntry;
         private readonly ConfigEntry<uint> maxInaudibleAudioClientsEntry;
         private readonly ConfigEntry<float> buildingMusicChanceEntry;
         private readonly ConfigEntry<float> vehicleMusicChanceEntry;
+        private readonly ConfigEntry<bool> enableBuildingMusicEntry;
+        private readonly ConfigEntry<bool> enableVehicleMusicEntry;
 
         public BIEConfigData(BIEConfig config)
         {
@@ -116,11 +130,25 @@ public class BIEPlugin : BaseUnityPlugin
                 defaultValue: 0.5f,
                 new ConfigDescription("The chance that a radio station will be played from a vehicle when an NPC drives it. Note: in multiplayer, the value of the hosting player will be used.", new AcceptableValueRange<float>(0, 1))
             );
+            enableBuildingMusicEntry = config.File.Bind(
+                "General",
+                nameof(EnableBuildingMusic),
+                defaultValue: true,
+                new ConfigDescription("If enabled, a random radio station may be played from residential buildings when an NPC enters it. In multiplayer this setting only affects yourself and also works as a non-hosting player.", null)
+            );
+            enableVehicleMusicEntry = config.File.Bind(
+                "General",
+                nameof(EnableVehicleMusic),
+                defaultValue: true,
+                new ConfigDescription("If enabled, a random radio station may be played from NPC vehicles when an NPC drives it. In multiplayer this setting only affects yourself and also works as a non-hosting player.", null)
+            );
 
             maxAudioHostInactivityTimeEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxAudioHostInactivityTime));
             maxInaudibleAudioClientsEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(MaxInactiveAudioHosts));
             buildingMusicChanceEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(BuildingMusicChance));
             vehicleMusicChanceEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(VehicleMusicChance));
+            enableBuildingMusicEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(EnableBuildingMusic));
+            enableVehicleMusicEntry.SettingChanged += (_, _) => config.OnValueChanged(nameof(EnableVehicleMusic));
         }
     }
 }
