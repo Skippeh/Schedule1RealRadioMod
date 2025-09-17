@@ -169,4 +169,6 @@ public class BuildingRadioProxy : RadioProxy
             ambientSound.GetComponent<AudioSource>().mute = true;
         }
     }
+
+    protected override bool ShouldInitAudioClient() => Config.Instance.Data.EnableBuildingMusic;
 }

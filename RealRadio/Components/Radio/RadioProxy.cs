@@ -126,7 +126,8 @@ public abstract class RadioProxy : NetworkBehaviour
         if (audioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
-        audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
+        if (ShouldInitAudioClient())
+            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
     }
 
     protected virtual void UnbindAudioClient()
@@ -141,4 +142,6 @@ public abstract class RadioProxy : NetworkBehaviour
         audioClient?.Host?.DetachClient(audioClientObject);
         audioClient = null;
     }
+
+    protected virtual bool ShouldInitAudioClient() => true;
 }

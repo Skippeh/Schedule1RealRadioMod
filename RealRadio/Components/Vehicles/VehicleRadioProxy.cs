@@ -251,6 +251,8 @@ public class VehicleRadioProxy : RadioProxy
         source.GetComponent<AudioLowPassFilter>().enabled = !isInVehicle;
         audioClient.ConvertToMono = !isInVehicle;
     }
+
+    protected override bool ShouldInitAudioClient() => Config.Instance.Data.EnableVehicleMusic;
 }
 
 public class VehicleRadioProxyReference : MonoBehaviour
