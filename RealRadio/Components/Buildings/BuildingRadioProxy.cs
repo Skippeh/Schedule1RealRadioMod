@@ -96,7 +96,9 @@ public class BuildingRadioProxy : RadioProxy
 
         base.InitAudioClient(delayStart);
 
-        audioClient!.ConvertToMono = true;
+        if (audioClient != null)
+            audioClient.ConvertToMono = true;
+
         audioClientObject!.SetActive(true);
     }
 
