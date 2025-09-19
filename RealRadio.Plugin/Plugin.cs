@@ -6,6 +6,7 @@ using System.Reflection;
 using FishNet;
 using HarmonyLib;
 using RealRadio.Assets;
+using RealRadio.Compnoents.ConsoleCommands;
 using RealRadio.Components.UI.Phone;
 using RealRadio.Patches;
 using ScheduleOne;
@@ -49,6 +50,7 @@ public class RealRadioPlugin
         MusicTrackPatches.MusicTrackPlay += (track) => GameEvents.MusicTrackPlay?.Invoke(track);
         MusicTrackPatches.MusicTrackToggled += (track, enabled) => GameEvents.MusicTrackToggled?.Invoke(track, enabled);
         RegistryAwakePatch.RegistryAwake += OnRegistryAwake;
+        ConsoleAwakePatch.OnPostConsoleAwake += (console) => ConsoleCommandsManager.RegisterCommands();
 
         if (Registry.Instance != null)
             OnRegistryAwake(Registry.Instance);
