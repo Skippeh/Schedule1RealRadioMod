@@ -13,7 +13,7 @@ public class NearestBuildingCommand : Console.ConsoleCommand
 {
     public override string CommandWord => "rr_nearestbuilding";
 
-    public override string CommandDescription => "Print the name of the nearest residential building";
+    public override string CommandDescription => "Print information about the nearest residential building";
 
     public override string ExampleUsage => "rr_nearestbuilding";
 
