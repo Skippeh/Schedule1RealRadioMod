@@ -28,6 +28,26 @@ public class BuildingRadioProxy : RadioProxy
 
         ScheduleOne.GameTime.TimeManager.Instance.onMinutePass += OnMinutePass;
         ScheduleOne.GameTime.TimeManager.Instance.onDayPass += OnDayPass;
+
+        Config.Instance.ValueChanged += OnConfigValueChanged;
+    }
+
+    private void OnConfigValueChanged(string propertyName, IConfigData data)
+    {
+        if (propertyName != nameof(IConfigData.EnableBuildingMusic))
+            return;
+
+        if (RadioStation == null)
+            return;
+
+        if (data.EnableBuildingMusic)
+        {
+            InitAudioClient(delayStart: false);
+        }
+        else
+        {
+            UnbindAudioClient();
+        }
     }
 
     public override void OnStartServer()
