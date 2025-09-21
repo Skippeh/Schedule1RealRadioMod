@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using FishNet.Connection;
 using FishNet.Object;
 using HashUtility;
+using NAudio.CoreAudioApi;
 using RealRadio.Components.Radio;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.Vehicles;
@@ -16,6 +17,37 @@ namespace RealRadio.Components.Vehicles;
 public class VehicleRadioProxy : RadioProxy
 {
     public LandVehicle? Vehicle { get; set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Config.Instance.ValueChanged += OnConfigValueChanged;
+    }
+
+    private void OnConfigValueChanged(string propertyName, IConfigData data)
+    {
+        if (propertyName != nameof(IConfigData.EnableVehicleMusic))
+            return;
+
+        if (audioClientObject == null)
+            return;
+
+        if (RadioStation == null)
+            return;
+
+        if (!HasNPCOccupants())
+            return;
+
+        if (data.EnableVehicleMusic)
+        {
+            InitAudioClient(delayStart: false);
+        }
+        else
+        {
+            UnbindAudioClient();
+        }
+    }
 
     protected override void OnDestroy()
     {
