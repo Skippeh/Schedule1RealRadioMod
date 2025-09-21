@@ -156,12 +156,12 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
         if (building is PoliceStation)
             return false;
 
-        var name = building.name.ToLowerInvariant();
-        var buildingName = building.BuildingName.ToLowerInvariant();
+        var name = building.name;
+        var buildingName = building.BuildingName;
 
         foreach (var word in blackListedBuildingWords)
         {
-            if (name.Contains(word) || buildingName.Contains(word))
+            if (name.Contains(word, StringComparison.OrdinalIgnoreCase) || buildingName.Contains(word, StringComparison.OrdinalIgnoreCase))
                 return false;
         }
 
