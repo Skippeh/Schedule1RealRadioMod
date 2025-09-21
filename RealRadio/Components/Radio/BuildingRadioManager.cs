@@ -55,6 +55,9 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
         "peter's",
         "beth's",
         "jessi's",
+
+        // this building is close enough to be audible from the sweatshop
+        "north apartments",
     ];
 
     public override void Awake()
