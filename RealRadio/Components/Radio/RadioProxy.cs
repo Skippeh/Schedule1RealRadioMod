@@ -126,7 +126,6 @@ public abstract class RadioProxy : NetworkBehaviour
         if (audioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
-
         audioClient?.Host?.DetachClient(audioClientObject);
         audioClient = null;
     }
