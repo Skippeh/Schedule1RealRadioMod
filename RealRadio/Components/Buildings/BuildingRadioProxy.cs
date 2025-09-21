@@ -28,6 +28,26 @@ public class BuildingRadioProxy : RadioProxy
 
         ScheduleOne.GameTime.TimeManager.Instance.onMinutePass += OnMinutePass;
         ScheduleOne.GameTime.TimeManager.Instance.onDayPass += OnDayPass;
+
+        Config.Instance.ValueChanged += OnConfigValueChanged;
+    }
+
+    private void OnConfigValueChanged(string propertyName, IConfigData data)
+    {
+        if (propertyName != nameof(IConfigData.EnableBuildingMusic))
+            return;
+
+        if (RadioStation == null)
+            return;
+
+        if (data.EnableBuildingMusic)
+        {
+            InitAudioClient(delayStart: false);
+        }
+        else
+        {
+            UnbindAudioClient();
+        }
     }
 
     public override void OnStartServer()
@@ -70,7 +90,7 @@ public class BuildingRadioProxy : RadioProxy
         {
             startedOnceToday = true;
 
-            if (Building?.OccupantCount > 0 && UnityEngine.Random.Range(0f, 1f) <= 0.5f)
+            if (Building?.OccupantCount > 0 && UnityEngine.Random.Range(0f, 1f) <= Config.Instance.Data.BuildingMusicChance)
                 SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
         }
     }
@@ -96,7 +116,9 @@ public class BuildingRadioProxy : RadioProxy
 
         base.InitAudioClient(delayStart);
 
-        audioClient!.ConvertToMono = true;
+        if (audioClient != null)
+            audioClient.ConvertToMono = true;
+
         audioClientObject!.SetActive(true);
     }
 
@@ -169,4 +191,6 @@ public class BuildingRadioProxy : RadioProxy
             ambientSound.GetComponent<AudioSource>().mute = true;
         }
     }
+
+    protected override bool ShouldInitAudioClient() => Config.Instance.Data.EnableBuildingMusic;
 }

@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using FishNet.Connection;
 using FishNet.Object;
 using HashUtility;
+using NAudio.CoreAudioApi;
 using RealRadio.Components.Radio;
 using ScheduleOne.PlayerScripts;
 using ScheduleOne.Vehicles;
@@ -16,6 +17,37 @@ namespace RealRadio.Components.Vehicles;
 public class VehicleRadioProxy : RadioProxy
 {
     public LandVehicle? Vehicle { get; set; }
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        Config.Instance.ValueChanged += OnConfigValueChanged;
+    }
+
+    private void OnConfigValueChanged(string propertyName, IConfigData data)
+    {
+        if (propertyName != nameof(IConfigData.EnableVehicleMusic))
+            return;
+
+        if (audioClientObject == null)
+            return;
+
+        if (RadioStation == null)
+            return;
+
+        if (!HasNPCOccupants())
+            return;
+
+        if (data.EnableVehicleMusic)
+        {
+            InitAudioClient(delayStart: false);
+        }
+        else
+        {
+            UnbindAudioClient();
+        }
+    }
 
     protected override void OnDestroy()
     {
@@ -194,7 +226,7 @@ public class VehicleRadioProxy : RadioProxy
         {
             if (started && HasNPCOccupants())
             {
-                if (UnityEngine.Random.Range(0f, 1f) <= 0.5f)
+                if (UnityEngine.Random.Range(0f, 1f) <= Config.Instance.Data.VehicleMusicChance)
                 {
                     SetRadioStationIdHash(RadioStationManager.Instance.GetRandomNPCStation().Id!.GetStableHashCode());
                 }
@@ -251,6 +283,8 @@ public class VehicleRadioProxy : RadioProxy
         source.GetComponent<AudioLowPassFilter>().enabled = !isInVehicle;
         audioClient.ConvertToMono = !isInVehicle;
     }
+
+    protected override bool ShouldInitAudioClient() => Config.Instance.Data.EnableVehicleMusic;
 }
 
 public class VehicleRadioProxyReference : MonoBehaviour

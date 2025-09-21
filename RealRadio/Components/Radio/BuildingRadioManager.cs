@@ -49,7 +49,15 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
         "caravan",
         "courthouse",
         "townhall",
-        "benji", // lives right next to player's motel room, which can get annoying
+
+        // residents living in the motel rooms next to the player's motel room
+        "benji's",
+        "peter's",
+        "beth's",
+        "jessi's",
+
+        // this building is close enough to be audible from the sweatshop
+        "north apartments",
     ];
 
     public override void Awake()
@@ -151,12 +159,12 @@ public class BuildingRadioManager : NetworkSingleton<BuildingRadioManager>
         if (building is PoliceStation)
             return false;
 
-        var name = building.name.ToLowerInvariant();
-        var buildingName = building.BuildingName.ToLowerInvariant();
+        var name = building.name;
+        var buildingName = building.BuildingName;
 
         foreach (var word in blackListedBuildingWords)
         {
-            if (name.Contains(word) || buildingName.Contains(word))
+            if (name.Contains(word, StringComparison.OrdinalIgnoreCase) || buildingName.Contains(word, StringComparison.OrdinalIgnoreCase))
                 return false;
         }
 

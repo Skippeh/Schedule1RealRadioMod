@@ -82,18 +82,6 @@ public abstract class RadioProxy : NetworkBehaviour
         RadioStationIdHash = idHash;
     }
 
-    private IEnumerator WaitForAudioClientThenEnable()
-    {
-        if (audioClientObject != null)
-        {
-            audioClientObject.SetActive(true);
-            yield break;
-        }
-
-        yield return new WaitUntil(() => audioClientObject != null);
-        audioClientObject!.SetActive(true);
-    }
-
     protected virtual void OnStationChanged(uint? prev, uint? next, bool asServer)
     {
         if (asServer)
@@ -126,7 +114,8 @@ public abstract class RadioProxy : NetworkBehaviour
         if (audioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
-        audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
+        if (ShouldInitAudioClient())
+            audioClient = AudioStreamManager.Instance.GetOrCreateHost(RadioStation).AddClient(audioClientObject);
     }
 
     protected virtual void UnbindAudioClient()
@@ -137,8 +126,9 @@ public abstract class RadioProxy : NetworkBehaviour
         if (audioClientObject == null)
             throw new InvalidOperationException("AudioClientObject is null");
 
-
         audioClient?.Host?.DetachClient(audioClientObject);
         audioClient = null;
     }
+
+    protected virtual bool ShouldInitAudioClient() => true;
 }
