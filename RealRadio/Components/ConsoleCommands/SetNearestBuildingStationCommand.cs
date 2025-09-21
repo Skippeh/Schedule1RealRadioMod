@@ -8,7 +8,7 @@ using Console = ScheduleOne.Console;
 
 namespace RealRadio.Components.ConsoleCommands;
 
-public class SetNearestBuildingStation : Console.ConsoleCommand
+public class SetNearestBuildingStationCommand : Console.ConsoleCommand
 {
     public override string CommandWord => "rr_setnearestbuildingstation";
 
