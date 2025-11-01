@@ -25,7 +25,7 @@ namespace ScheduleOne.NPCs
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CFaceDirection_Process_003Ed__141 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CFaceDirection_Process_003Ed__154 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -60,7 +60,7 @@ namespace ScheduleOne.NPCs
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CFaceDirection_Process_003Ed__141(int _003C_003E1__state)
+			public _003CFaceDirection_Process_003Ed__154(int _003C_003E1__state)
 			{
 			}
 
@@ -129,36 +129,32 @@ namespace ScheduleOne.NPCs
 
 		public float MoveSpeedMultiplier;
 
-		public bool SlipperyMode;
-
-		public float SlipperyModeMultiplier;
-
+		[global::UnityEngine.Header("Obstacle Avoidance")]
 		public bool ObstacleAvoidanceEnabled;
 
 		public global::UnityEngine.AI.ObstacleAvoidanceType DefaultObstacleAvoidanceType;
+
+		[global::UnityEngine.Header("Slippery Mode")]
+		public bool SlipperyMode;
+
+		public float SlipperyModeMultiplier;
 
 		[global::UnityEngine.Header("References")]
 		public global::UnityEngine.AI.NavMeshAgent Agent;
 
 		public global::ScheduleOne.NPCs.NPCSpeedController SpeedController;
 
+		public global::UnityEngine.CapsuleCollider CapsuleCollider;
+
+		public global::ScheduleOne.NPCs.NPCAnimation Animation;
+
+		public global::ScheduleOne.Tools.SmoothedVelocityCalculator VelocityCalculator;
+
+		public global::ScheduleOne.Dragging.Draggable RagdollDraggable;
+
+		public global::UnityEngine.Collider RagdollDraggableCollider;
+
 		protected global::ScheduleOne.NPCs.NPC npc;
-
-		public global::UnityEngine.CapsuleCollider capsuleCollider;
-
-		[global::UnityEngine.SerializeField]
-		protected global::ScheduleOne.NPCs.NPCAnimation anim;
-
-		[global::UnityEngine.SerializeField]
-		protected global::UnityEngine.Rigidbody ragdollCentralRB;
-
-		public global::ScheduleOne.Tools.SmoothedVelocityCalculator velocityCalculator;
-
-		[global::UnityEngine.SerializeField]
-		protected global::ScheduleOne.Dragging.Draggable RagdollDraggable;
-
-		[global::UnityEngine.SerializeField]
-		protected global::UnityEngine.Collider RagdollDraggableCollider;
 
 		public float MovementSpeedScale;
 
@@ -180,7 +176,7 @@ namespace ScheduleOne.NPCs
 
 		private bool forceIsMoving;
 
-		private global::UnityEngine.Coroutine FaceDirectionRoutine;
+		private global::UnityEngine.Coroutine faceDirectionRoutine;
 
 		private global::System.Collections.Generic.List<global::UnityEngine.ConstantForce> ragdollForceComponents;
 
@@ -190,7 +186,7 @@ namespace ScheduleOne.NPCs
 
 		private global::UnityEngine.Vector3 stumbleDirection;
 
-		private global::System.Collections.Generic.List<global::UnityEngine.Vector3> desiredVelocityHistory;
+		private CircularQueue<global::UnityEngine.Vector3> desiredVelocityHistory;
 
 		private int desiredVelocityHistoryLength;
 
@@ -200,13 +196,17 @@ namespace ScheduleOne.NPCs
 
 		private global::UnityEngine.AI.NavMeshPath agentCurrentPath;
 
+		private float agentCurrentSpeed;
+
 		private global::UnityEngine.Vector3[] agentCurrentPathCorners;
+
+		private global::UnityEngine.Coroutine ladderClimbRoutine;
 
 		private bool NetworkInitialize___EarlyScheduleOne_002ENPCs_002ENPCMovementAssembly_002DCSharp_002Edll_Excuted;
 
 		private bool NetworkInitialize__LateScheduleOne_002ENPCs_002ENPCMovementAssembly_002DCSharp_002Edll_Excuted;
 
-		public bool hasDestination { get; protected set; }
+		public bool HasDestination { get; protected set; }
 
 		public bool IsMoving => false;
 
@@ -218,9 +218,17 @@ namespace ScheduleOne.NPCs
 
 		public global::ScheduleOne.NPCs.NPCMovement.EStance Stance { get; protected set; }
 
-		public float timeSinceHitByCar { get; protected set; }
+		public float TimeSinceHitByCar { get; protected set; }
 
 		public bool FaceDirectionInProgress => false;
+
+		public bool IsOnLadder => false;
+
+		public float CurrentLadderSpeed { get; protected set; }
+
+		public bool IsClimbingUpwards => false;
+
+		public global::ScheduleOne.Map.Ladder CurrentLadder { get; protected set; }
 
 		public global::UnityEngine.Vector3 CurrentDestination { get; protected set; }
 
@@ -240,15 +248,11 @@ namespace ScheduleOne.NPCs
 		{
 		}
 
-		public override void OnSpawnServer(global::FishNet.Connection.NetworkConnection connection)
-		{
-		}
-
 		protected virtual void Update()
 		{
 		}
 
-		protected virtual void LateUpdate()
+		public void SetAgentEnabled(bool enabled)
 		{
 		}
 
@@ -256,7 +260,6 @@ namespace ScheduleOne.NPCs
 		{
 		}
 
-		[global::EasyButtons.Button]
 		private void Stumble()
 		{
 		}
@@ -378,6 +381,10 @@ namespace ScheduleOne.NPCs
 			return false;
 		}
 
+		public void SetDestination(global::UnityEngine.Transform target)
+		{
+		}
+
 		public void SetDestination(global::UnityEngine.Vector3 pos)
 		{
 		}
@@ -419,7 +426,7 @@ namespace ScheduleOne.NPCs
 		{
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.NPCs.NPCMovement._003CFaceDirection_Process_003Ed__141))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.NPCs.NPCMovement._003CFaceDirection_Process_003Ed__154))]
 		protected global::System.Collections.IEnumerator FaceDirection_Process(global::UnityEngine.Vector3 forward, float lerpTime)
 		{
 			return null;
@@ -463,6 +470,14 @@ namespace ScheduleOne.NPCs
 		private global::UnityEngine.AI.NavMeshPath GetPathTo(global::UnityEngine.Vector3 position, float proximityReq = 1f)
 		{
 			return null;
+		}
+
+		public void TraverseLadder(global::ScheduleOne.Map.Ladder ladder)
+		{
+		}
+
+		private void CancelTraverseLadder()
+		{
 		}
 
 		public virtual void NetworkInitialize___Early()

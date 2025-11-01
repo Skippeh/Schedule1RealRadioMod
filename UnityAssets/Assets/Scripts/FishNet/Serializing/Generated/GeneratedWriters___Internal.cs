@@ -212,6 +212,10 @@ namespace FishNet.Serializing.Generated
 		{
 		}
 
+		public static void Write___ScheduleOne_002EGraffiti_002ESprayStroke_005B_005DFishNet_002ESerializing_002EGenerated(this global::FishNet.Serializing.Writer writer, global::ScheduleOne.Graffiti.SprayStroke[] value)
+		{
+		}
+
 		public static void Write___ScheduleOne_002EVehicles_002ELandVehicleFishNet_002ESerializing_002EGenerated(this global::FishNet.Serializing.Writer writer, global::ScheduleOne.Vehicles.LandVehicle value)
 		{
 		}
@@ -249,6 +253,10 @@ namespace FishNet.Serializing.Generated
 		}
 
 		public static void Write___ScheduleOne_002EProduct_002EEDrugTypeFishNet_002ESerializing_002EGenerated(this global::FishNet.Serializing.Writer writer, global::ScheduleOne.Product.EDrugType value)
+		{
+		}
+
+		public static void Write___ScheduleOne_002EDoors_002EEDoorSideFishNet_002ESerializing_002EGenerated(this global::FishNet.Serializing.Writer writer, global::ScheduleOne.Doors.EDoorSide value)
 		{
 		}
 
@@ -321,10 +329,6 @@ namespace FishNet.Serializing.Generated
 		}
 
 		public static void Write___ScheduleOne_002ECartel_002ECartelDealInfo_002FEStatusFishNet_002ESerializing_002EGenerated(this global::FishNet.Serializing.Writer writer, global::ScheduleOne.Cartel.CartelDealInfo.EStatus value)
-		{
-		}
-
-		public static void Write___ScheduleOne_002EDoors_002EEDoorSideFishNet_002ESerializing_002EGenerated(this global::FishNet.Serializing.Writer writer, global::ScheduleOne.Doors.EDoorSide value)
 		{
 		}
 
