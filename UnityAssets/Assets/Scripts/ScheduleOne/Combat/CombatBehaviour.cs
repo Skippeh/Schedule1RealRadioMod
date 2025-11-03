@@ -3,7 +3,7 @@ namespace ScheduleOne.Combat
 	public class CombatBehaviour : global::ScheduleOne.NPCs.Behaviour.Behaviour
 	{
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003C_003Ec__DisplayClass73_0
+		private sealed class _003C_003Ec__DisplayClass78_0
 		{
 			public global::ScheduleOne.Combat.CombatBehaviour _003C_003E4__this;
 
@@ -19,7 +19,7 @@ namespace ScheduleOne.Combat
 
 		[global::System.Runtime.InteropServices.StructLayout(global::System.Runtime.InteropServices.LayoutKind.Auto)]
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private struct _003C_003Ec__DisplayClass73_1
+		private struct _003C_003Ec__DisplayClass78_1
 		{
 			public global::ScheduleOne.Combat.ERangedWeaponAction action;
 
@@ -27,7 +27,7 @@ namespace ScheduleOne.Combat
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CRangedWeaponRoutine_003Ed__73 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CRangedWeaponRoutine_003Ed__78 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -35,9 +35,9 @@ namespace ScheduleOne.Combat
 
 			public global::ScheduleOne.Combat.CombatBehaviour _003C_003E4__this;
 
-			private global::ScheduleOne.Combat.CombatBehaviour._003C_003Ec__DisplayClass73_0 _003C_003E8__1;
+			private global::ScheduleOne.Combat.CombatBehaviour._003C_003Ec__DisplayClass78_0 _003C_003E8__1;
 
-			private global::ScheduleOne.Combat.CombatBehaviour._003C_003Ec__DisplayClass73_1 _003C_003E8__2;
+			private global::ScheduleOne.Combat.CombatBehaviour._003C_003Ec__DisplayClass78_1 _003C_003E8__2;
 
 			private bool _003CforceReposition_003E5__2;
 
@@ -60,7 +60,7 @@ namespace ScheduleOne.Combat
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CRangedWeaponRoutine_003Ed__73(int _003C_003E1__state)
+			public _003CRangedWeaponRoutine_003Ed__78(int _003C_003E1__state)
 			{
 			}
 
@@ -87,7 +87,7 @@ namespace ScheduleOne.Combat
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CRepositionToRangedWeaponRange_003Ed__74 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CRepositionToRangedWeaponRange_003Ed__79 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -114,7 +114,7 @@ namespace ScheduleOne.Combat
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CRepositionToRangedWeaponRange_003Ed__74(int _003C_003E1__state)
+			public _003CRepositionToRangedWeaponRange_003Ed__79(int _003C_003E1__state)
 			{
 			}
 
@@ -141,7 +141,7 @@ namespace ScheduleOne.Combat
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CSearchRoutine_003Ed__86 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CSearchRoutine_003Ed__92 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -168,7 +168,7 @@ namespace ScheduleOne.Combat
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CSearchRoutine_003Ed__86(int _003C_003E1__state)
+			public _003CSearchRoutine_003Ed__92(int _003C_003E1__state)
 			{
 			}
 
@@ -194,7 +194,7 @@ namespace ScheduleOne.Combat
 			}
 		}
 
-		public const float RECENT_VISIBILITY_THRESHOLD = 2.5f;
+		public const float RECENT_VISIBILITY_THRESHOLD = 3.5f;
 
 		public const float REPOSITION_TIME = 4f;
 
@@ -208,10 +208,10 @@ namespace ScheduleOne.Combat
 
 		public const float REACHED_DESTINATION_DISTANCE = 2f;
 
+		public bool DEBUG;
+
 		[global::UnityEngine.Header("General Setttings")]
 		public float GiveUpRange;
-
-		public float GiveUpTime;
 
 		public int GiveUpAfterSuccessfulHits;
 
@@ -237,23 +237,15 @@ namespace ScheduleOne.Combat
 
 		public global::FishNet.Object.NetworkObject DebugTarget;
 
-		protected bool overrideTargetDistance;
-
-		protected float targetDistanceOverride;
-
-		protected bool isTargetRecentlyVisible;
-
-		protected bool isTargetImmediatelyVisible;
-
 		protected float timeSinceLastSighting;
-
-		protected float playerSightedDuration;
 
 		protected global::UnityEngine.Vector3 lastKnownTargetPosition;
 
 		private float timeSinceLastReposition;
 
 		private float timeWithinAttackRange;
+
+		private bool visionEventReceived;
 
 		protected global::ScheduleOne.AvatarFramework.Equipping.AvatarWeapon currentWeapon;
 
@@ -271,6 +263,8 @@ namespace ScheduleOne.Combat
 
 		private float nextAngryVO;
 
+		public global::System.Action onSuccessfulHit;
+
 		private bool NetworkInitialize___EarlyScheduleOne_002ECombat_002ECombatBehaviourAssembly_002DCSharp_002Edll_Excuted;
 
 		private bool NetworkInitialize__LateScheduleOne_002ECombat_002ECombatBehaviourAssembly_002DCSharp_002Edll_Excuted;
@@ -281,6 +275,10 @@ namespace ScheduleOne.Combat
 
 		public float TimeSinceTargetReacquired { get; protected set; }
 
+		public bool IsTargetRecentlyVisible { get; private set; }
+
+		public bool IsTargetImmediatelyVisible { get; private set; }
+
 		public override void Awake()
 		{
 		}
@@ -289,12 +287,14 @@ namespace ScheduleOne.Combat
 		{
 		}
 
-		private void Update()
+		[global::FishNet.Object.ServerRpc(RequireOwnership = false, RunLocally = true)]
+		public void SetTargetAndEnable_Server(global::FishNet.Object.NetworkObject target)
 		{
 		}
 
 		[global::FishNet.Object.ObserversRpc(RunLocally = true)]
-		public void SetTarget(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
+		[global::FishNet.Object.TargetRpc]
+		protected void SetTarget_Client(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
 		{
 		}
 
@@ -334,10 +334,6 @@ namespace ScheduleOne.Combat
 		{
 		}
 
-		protected virtual void FixedUpdate()
-		{
-		}
-
 		protected void UpdateTimeout()
 		{
 		}
@@ -357,6 +353,10 @@ namespace ScheduleOne.Combat
 		protected global::UnityEngine.Vector3 GetPredictedFutureTargetPosition(float lead_Min = 0f, float lead_Max = 2f)
 		{
 			return default(global::UnityEngine.Vector3);
+		}
+
+		protected override void SetDestination(global::UnityEngine.Vector3 position, bool teleportIfFail = true, float successThreshold = 1f)
+		{
 		}
 
 		[global::FishNet.Object.ObserversRpc(RunLocally = true)]
@@ -392,13 +392,13 @@ namespace ScheduleOne.Combat
 		{
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.Combat.CombatBehaviour._003CRangedWeaponRoutine_003Ed__73))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.Combat.CombatBehaviour._003CRangedWeaponRoutine_003Ed__78))]
 		private global::System.Collections.IEnumerator RangedWeaponRoutine()
 		{
 			return null;
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.Combat.CombatBehaviour._003CRepositionToRangedWeaponRange_003Ed__74))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.Combat.CombatBehaviour._003CRepositionToRangedWeaponRange_003Ed__79))]
 		private global::System.Collections.IEnumerator RepositionToRangedWeaponRange()
 		{
 			return null;
@@ -426,7 +426,7 @@ namespace ScheduleOne.Combat
 		{
 		}
 
-		protected bool IsTargetVisible()
+		protected bool IsTargetVisibleThisFrame()
 		{
 			return false;
 		}
@@ -436,6 +436,11 @@ namespace ScheduleOne.Combat
 		}
 
 		protected virtual void TargetSpotted()
+		{
+		}
+
+		[global::FishNet.Object.ServerRpc(RequireOwnership = false)]
+		public void NotifyServerTargetSeen()
 		{
 		}
 
@@ -452,7 +457,7 @@ namespace ScheduleOne.Combat
 		{
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.Combat.CombatBehaviour._003CSearchRoutine_003Ed__86))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.Combat.CombatBehaviour._003CSearchRoutine_003Ed__92))]
 		private global::System.Collections.IEnumerator SearchRoutine()
 		{
 			return null;
@@ -468,13 +473,14 @@ namespace ScheduleOne.Combat
 			return false;
 		}
 
-		private void RepositionToTargetRange(global::UnityEngine.Vector3 origin)
+		private void RepositionToTargetMeleeRange(global::UnityEngine.Vector3 origin)
 		{
 		}
 
-		private global::UnityEngine.Vector3 GetRandomReachablePointNear(global::UnityEngine.Vector3 point, float randomRadius, float minDistance = 0f)
+		private bool GetRandomReachablePointNear(global::UnityEngine.Vector3 originPoint, float randomRadius, out global::UnityEngine.Vector3 randomPoint, float minDistance = 0f)
 		{
-			return default(global::UnityEngine.Vector3);
+			randomPoint = default(global::UnityEngine.Vector3);
+			return false;
 		}
 
 		protected float GetMinTargetDistance()
@@ -504,15 +510,35 @@ namespace ScheduleOne.Combat
 		{
 		}
 
-		private void RpcWriter___Observers_SetTarget_1824087381(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
+		private void RpcWriter___Server_SetTargetAndEnable_Server_3323014238(global::FishNet.Object.NetworkObject target)
 		{
 		}
 
-		public void RpcLogic___SetTarget_1824087381(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
+		public void RpcLogic___SetTargetAndEnable_Server_3323014238(global::FishNet.Object.NetworkObject target)
 		{
 		}
 
-		private void RpcReader___Observers_SetTarget_1824087381(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		private void RpcReader___Server_SetTargetAndEnable_Server_3323014238(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel, global::FishNet.Connection.NetworkConnection conn)
+		{
+		}
+
+		private void RpcWriter___Observers_SetTarget_Client_1824087381(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
+		{
+		}
+
+		protected void RpcLogic___SetTarget_Client_1824087381(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
+		{
+		}
+
+		private void RpcReader___Observers_SetTarget_Client_1824087381(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		{
+		}
+
+		private void RpcWriter___Target_SetTarget_Client_1824087381(global::FishNet.Connection.NetworkConnection conn, global::FishNet.Object.NetworkObject target)
+		{
+		}
+
+		private void RpcReader___Target_SetTarget_Client_1824087381(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
 		{
 		}
 
@@ -549,6 +575,18 @@ namespace ScheduleOne.Combat
 		}
 
 		private void RpcReader___Observers_Attack_2166136261(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
+		{
+		}
+
+		private void RpcWriter___Server_NotifyServerTargetSeen_2166136261()
+		{
+		}
+
+		public void RpcLogic___NotifyServerTargetSeen_2166136261()
+		{
+		}
+
+		private void RpcReader___Server_NotifyServerTargetSeen_2166136261(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel, global::FishNet.Connection.NetworkConnection conn)
 		{
 		}
 

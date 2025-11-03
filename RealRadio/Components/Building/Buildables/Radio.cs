@@ -356,7 +356,7 @@ public class Radio : TogglableOffGridItem, IUsable
         PlayerCamera.Instance.OverrideTransform(ConfigureCameraTransform.position, ConfigureCameraTransform.rotation, lerpTime: 0.2f);
         PlayerCamera.Instance.OverrideFOV(60f, 0.2f);
         PlayerInventory.Instance.SetInventoryEnabled(false);
-        PlayerMovement.Instance.canMove = false;
+        PlayerMovement.Instance.CanMove = false;
         CompassManager.Instance.SetVisible(false);
     }
 
@@ -367,7 +367,7 @@ public class Radio : TogglableOffGridItem, IUsable
         PlayerCamera.Instance.StopFOVOverride(0.2f);
         PlayerCamera.Instance.StopTransformOverride(0.2f);
         PlayerInventory.Instance.SetInventoryEnabled(true);
-        PlayerMovement.Instance.canMove = true;
+        PlayerMovement.Instance.CanMove = true;
         CompassManager.Instance.SetVisible(true);
     }
 

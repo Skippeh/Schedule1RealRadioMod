@@ -16,8 +16,6 @@ namespace ScheduleOne.NPCs
 
 		public string ID;
 
-		public bool AutoGenerateMugshot;
-
 		public global::UnityEngine.Sprite MugshotSprite;
 
 		public global::ScheduleOne.Map.EMapRegion Region;
@@ -274,7 +272,7 @@ namespace ScheduleOne.NPCs
 		{
 		}
 
-		protected virtual void Update()
+		protected virtual void UpdateVisionConeState(bool value)
 		{
 		}
 
@@ -392,8 +390,16 @@ namespace ScheduleOne.NPCs
 		{
 		}
 
+		protected virtual void EnterBuilding(string buildingGUID, int doorIndex)
+		{
+		}
+
 		[global::FishNet.Object.ObserversRpc(RunLocally = true)]
 		public void ExitBuilding(string buildingID = "")
+		{
+		}
+
+		protected virtual void ExitBuilding(global::ScheduleOne.Map.NPCEnterableBuilding building)
 		{
 		}
 
@@ -468,11 +474,6 @@ namespace ScheduleOne.NPCs
 
 		public void SetAnimationBool(string trigger, bool val)
 		{
-		}
-
-		protected virtual bool ShouldNoticeGeneralCrime(global::ScheduleOne.PlayerScripts.Player player)
-		{
-			return false;
 		}
 
 		protected virtual void SetUnsettled_30s(global::ScheduleOne.PlayerScripts.Player player)

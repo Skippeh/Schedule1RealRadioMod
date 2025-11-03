@@ -8,6 +8,8 @@ namespace ScheduleOne.AvatarFramework.Animation
 
 		public const float AimIKRange = 20f;
 
+		public static global::UnityEngine.Transform TempContainer;
+
 		public bool DEBUG;
 
 		[global::UnityEngine.Header("References")]
@@ -49,6 +51,8 @@ namespace ScheduleOne.AvatarFramework.Animation
 
 		private bool overrideRotateBody;
 
+		private bool blockLookOverrides;
+
 		private global::UnityEngine.Vector3 lastFrameLookOriginPos;
 
 		private global::UnityEngine.Vector3 lastFrameLookOriginForward;
@@ -86,6 +90,10 @@ namespace ScheduleOne.AvatarFramework.Animation
 		}
 
 		public void OverrideLookTarget(global::UnityEngine.Vector3 targetPosition, int priority, bool rotateBody = false)
+		{
+		}
+
+		public void BlockLookTargetOverrides()
 		{
 		}
 

@@ -18,7 +18,7 @@ namespace ScheduleOne.AvatarFramework.Animation
 
 		public const bool GLOBAL_USE_IMPOSTOR = true;
 
-		public const float AnimationRangeSqr = 1600f;
+		public const float AnimationRangeSqr = 2025f;
 
 		public const float FrustrumCullMinDist = 225f;
 
@@ -31,6 +31,8 @@ namespace ScheduleOne.AvatarFramework.Animation
 		public static global::UnityEngine.Vector3 SITTING_OFFSET;
 
 		public const float SEAT_TIME = 0.5f;
+
+		private bool _IsAvatarCulled;
 
 		public bool DEBUG_MODE;
 
@@ -100,7 +102,28 @@ namespace ScheduleOne.AvatarFramework.Animation
 
 		public bool StandUpAnimationPlaying { get; protected set; }
 
-		public bool IsAvatarCulled { get; private set; }
+		public bool IsAvatarCulled
+		{
+			get
+			{
+				return false;
+			}
+			private set
+			{
+			}
+		}
+
+		public event global::System.Action<bool> onAvatarCullStateChanged
+		{
+			[global::System.Runtime.CompilerServices.CompilerGenerated]
+			add
+			{
+			}
+			[global::System.Runtime.CompilerServices.CompilerGenerated]
+			remove
+			{
+			}
+		}
 
 		protected virtual void Awake()
 		{

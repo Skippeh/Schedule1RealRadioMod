@@ -53,9 +53,14 @@ public class InteractableOptions : MonoBehaviour
         InteractableObject.onInteractStart.AddListener(OnInteractStart);
         InteractableObject.onInteractEnd.AddListener(OnInteractEnd);
 
-        PauseMenu.Instance.onPause.AddListener(OnGamePause);
+        PauseMenu.Instance.onPause += OnGamePause;
 
         UpdateInteractionText();
+    }
+
+    private void OnDestroy()
+    {
+        PauseMenu.Instance.onPause -= OnGamePause;
     }
 
     private void OnInteractStart()
