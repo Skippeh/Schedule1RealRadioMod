@@ -31,7 +31,7 @@ public class OneFMSongInfoFetcher : HttpRequestSongInfoFetcher
         string json = await WebClient.DownloadStringTaskAsync(playlistUri);
         HistorySong[] history = JsonConvert.DeserializeObject<HistorySong[]>(json) ?? throw new HttpRequestException("Deserialized JSON is null");
         var song = history.First();
-        return new SongInfo(song.Title, song.Artist);
+        return CurrentSong = new SongInfo(song.Title, song.Artist);
     }
 
     private string ParseRadioStation(Uri uri)
