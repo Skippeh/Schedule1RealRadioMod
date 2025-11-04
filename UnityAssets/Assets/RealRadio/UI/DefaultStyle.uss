@@ -5,7 +5,7 @@ Label {
 Label,
 .unity-base-field,
 .unity-button {
-    -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-VariableFont_wdth,wght.ttf");
+    -unity-font-definition: url("project://database/Assets/RealRadio/Fonts/OpenSans-Regular.ttf");
 }
 
 /* We need a more specific selector for the border radius otherwise the border-radius for the .unity-button selector overrides this */
