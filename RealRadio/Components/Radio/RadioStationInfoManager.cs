@@ -73,7 +73,7 @@ public class RadioStationInfoManager : PersistentSingleton<RadioStationInfoManag
 
         foreach (var kv in fetchersToPoll)
         {
-            if (Time.time - kv.Value >= 10f)
+            if (Time.unscaledTime - kv.Value >= 10f)
             {
                 updatedPollTimes.Add(kv.Key);
                 kv.Key.RequestSongInfo();
