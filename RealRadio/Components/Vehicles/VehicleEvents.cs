@@ -27,10 +27,7 @@ public class VehicleEvents : Singleton<VehicleEvents>
 
         foreach (Player player in Player.PlayerList)
         {
-            if (player.CurrentVehicle != null)
-            {
-                OnPlayerEnterVehicle(player, player.CurrentVehicle.GetComponent<LandVehicle>());
-            }
+            OnPlayerSpawned(player);
         }
     }
 
@@ -43,6 +40,11 @@ public class VehicleEvents : Singleton<VehicleEvents>
     {
         player.onEnterVehicle += (vehicle) => OnPlayerEnterVehicle(player, vehicle);
         player.onExitVehicle += (vehicle, exitPoint) => OnPlayerExitVehicle(player, vehicle, exitPoint);
+
+        if (player.CurrentVehicle != null)
+        {
+            OnPlayerEnterVehicle(player, player.CurrentVehicle.GetComponent<LandVehicle>());
+        }
     }
 
     private void OnPlayerEnterVehicle(Player player, LandVehicle vehicle)
