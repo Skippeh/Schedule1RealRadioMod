@@ -23,6 +23,9 @@ public class VehicleRadioProxy : RadioProxy
         base.Awake();
 
         Config.Instance.ValueChanged += OnConfigValueChanged;
+
+        VehicleEvents.Instance.PlayerEnterVehicle += OnPlayerEnterVehicle;
+        VehicleEvents.Instance.PlayerExitVehicle += OnPlayerExitVehicle;
     }
 
     private void OnConfigValueChanged(string propertyName, IConfigData data)
@@ -53,9 +56,15 @@ public class VehicleRadioProxy : RadioProxy
     {
         base.OnDestroy();
 
+        VehicleEvents.Instance.PlayerEnterVehicle -= OnPlayerEnterVehicle;
+        VehicleEvents.Instance.PlayerExitVehicle -= OnPlayerExitVehicle;
+
         if (Vehicle)
         {
-            var proxyRef = Vehicle?.gameObject.GetComponent<VehicleRadioProxyReference>();
+            Vehicle!.onVehicleStart -= OnVehicleStart;
+            Vehicle.onVehicleStop -= OnVehicleStop;
+
+            var proxyRef = Vehicle.gameObject.GetComponent<VehicleRadioProxyReference>();
 
             if (proxyRef)
                 Destroy(proxyRef);
@@ -160,10 +169,8 @@ public class VehicleRadioProxy : RadioProxy
         audioClientObject.transform.SetParent(Vehicle.transform, worldPositionStays: false);
         audioClientObject.SetActive(false);
 
-        Vehicle.onVehicleStart.AddListener(OnVehicleStart);
-        Vehicle.onVehicleStop.AddListener(OnVehicleStop);
-        Vehicle.onPlayerEnterVehicle += OnPlayerEnterVehicle;
-        Vehicle.onPlayerExitVehicle += OnPlayerExitVehicle;
+        Vehicle.onVehicleStart += OnVehicleStart;
+        Vehicle.onVehicleStop += OnVehicleStop;
 
         var proxyRef = Vehicle.gameObject.AddComponent<VehicleRadioProxyReference>();
         proxyRef.Proxy = this;
@@ -248,18 +255,18 @@ public class VehicleRadioProxy : RadioProxy
             audioClientObject?.SetActive(false);
     }
 
-    private void OnPlayerEnterVehicle(Player player)
+    private void OnPlayerEnterVehicle(Player player, LandVehicle vehicle)
     {
-        if (player == null || !player.IsLocalPlayer)
+        if (player == null || !player.IsLocalPlayer || vehicle != Vehicle)
             return;
 
         if (RadioStation != null)
             UpdateAudioEffects();
     }
 
-    private void OnPlayerExitVehicle(Player player)
+    private void OnPlayerExitVehicle(Player player, LandVehicle vehicle, Transform exitPoint)
     {
-        if (player == null || !player.IsLocalPlayer)
+        if (player == null || !player.IsLocalPlayer || vehicle != Vehicle)
             return;
 
         OnEngineToggled(HasOccupants());
