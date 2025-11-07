@@ -8,6 +8,7 @@ using HarmonyLib;
 using RealRadio.Assets;
 using RealRadio.Compnoents.ConsoleCommands;
 using RealRadio.Components.UI.Phone;
+using RealRadio.Components.Vehicles;
 using RealRadio.Patches;
 using ScheduleOne;
 using ScheduleOne.NPCs.CharacterClasses;
@@ -212,6 +213,12 @@ public class RealRadioPlugin
             Instantiate(assets.Singletons.Modal);
             Instantiate(assets.Singletons.GameMusicManager);
             Instantiate(assets.Singletons.SpeakerConnectionManager);
+
+            // Create singleton for VehicleEvents
+            {
+                var go = new GameObject("VehicleEvents", typeof(VehicleEvents));
+                go.hideFlags = HideFlags.HideAndDontSave;
+            }
         }
     }
 
