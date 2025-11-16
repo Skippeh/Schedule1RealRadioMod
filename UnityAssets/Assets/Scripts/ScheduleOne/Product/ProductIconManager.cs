@@ -15,17 +15,21 @@ namespace ScheduleOne.Product
 			public global::UnityEngine.Sprite Icon;
 		}
 
+		public const string ProductIconPath = "Textures/ProductIcons";
+
 		[global::UnityEngine.SerializeField]
 		private global::System.Collections.Generic.List<global::ScheduleOne.Product.ProductIconManager.ProductIcon> icons;
 
 		[global::UnityEngine.Header("Product and packaging")]
 		public global::ScheduleOne.DevUtilities.IconGenerator IconGenerator;
 
-		public string IconContainerPath;
-
 		public global::ScheduleOne.Product.ProductDefinition[] Products;
 
 		public global::ScheduleOne.Product.Packaging.PackagingDefinition[] Packaging;
+
+		protected override void Awake()
+		{
+		}
 
 		public global::UnityEngine.Sprite GetIcon(string productID, string packagingID, bool ignoreError = false)
 		{
