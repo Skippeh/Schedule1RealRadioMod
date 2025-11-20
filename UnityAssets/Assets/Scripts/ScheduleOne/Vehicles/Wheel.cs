@@ -12,6 +12,14 @@ namespace ScheduleOne.Vehicles
 
 		public const float WHEEL_ANIMATION_DISTANCE = 40f;
 
+		public const float HandbrakeFowardStiffnessMultiplier_Front = 0.9f;
+
+		public const float HandbrakeSidewayStiffnessMultiplier_Front = 0.7f;
+
+		public const float HandbrakeFowardStiffnessMultiplier_Rear = 0.9f;
+
+		public const float HandbrakeSidewayStiffnessMultiplier_Rear = 0.3f;
+
 		public bool DEBUG_MODE;
 
 		[global::UnityEngine.Header("References")]
@@ -29,10 +37,6 @@ namespace ScheduleOne.Vehicles
 
 		[global::UnityEngine.Header("Settings")]
 		public bool DriftParticlesEnabled;
-
-		public float ForwardStiffnessMultiplier_Handbrake;
-
-		public float SidewayStiffnessMultiplier_Handbrake;
 
 		[global::UnityEngine.Header("Drift Audio")]
 		public bool DriftAudioEnabled;
@@ -53,10 +57,6 @@ namespace ScheduleOne.Vehicles
 
 		private global::UnityEngine.WheelFrictionCurve sidewaysCurve;
 
-		private global::UnityEngine.Transform wheelTransform;
-
-		public bool isStatic { get; protected set; }
-
 		public bool IsDrifting { get; protected set; }
 
 		public bool IsDrifting_Smoothed => false;
@@ -65,11 +65,21 @@ namespace ScheduleOne.Vehicles
 
 		public float DriftIntensity { get; protected set; }
 
+		public bool IsSteerWheel { get; set; }
+
+		private void Awake()
+		{
+		}
+
 		protected virtual void Start()
 		{
 		}
 
 		public void FixedUpdateWheel()
+		{
+		}
+
+		public void FakeWheelRotation()
 		{
 		}
 
@@ -89,11 +99,7 @@ namespace ScheduleOne.Vehicles
 		{
 		}
 
-		public virtual void SetIsStatic(bool s)
-		{
-		}
-
-		private void GroundWheelModel()
+		public virtual void SetPhysicsEnabled(bool enabled)
 		{
 		}
 

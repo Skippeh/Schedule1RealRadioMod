@@ -101,11 +101,15 @@ namespace ScheduleOne.Police
 		{
 		}
 
+		protected override void OnDestroy()
+		{
+		}
+
 		protected void Update()
 		{
 		}
 
-		protected override void MinPass()
+		protected override void OnTick()
 		{
 		}
 

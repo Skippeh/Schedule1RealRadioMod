@@ -2,7 +2,7 @@ namespace ScheduleOne.Cartel
 {
 	public class CartelDealer : global::ScheduleOne.Economy.Dealer
 	{
-		public const float DEALER_DEFEATED_INFLUENCE_CHANGE = -0.05f;
+		public const float DEALER_DEFEATED_INFLUENCE_CHANGE = -0.1f;
 
 		public const int PRODUCT_COUNT_MIN = 2;
 
@@ -33,19 +33,15 @@ namespace ScheduleOne.Cartel
 		{
 		}
 
-		public override void OnStartServer()
-		{
-		}
-
 		public override void OnSpawnServer(global::FishNet.Connection.NetworkConnection connection)
 		{
 		}
 
-		private void RandomizeInventory()
+		public void RandomizeInventory()
 		{
 		}
 
-		private void RandomizeAppearance()
+		public void RandomizeAppearance()
 		{
 		}
 

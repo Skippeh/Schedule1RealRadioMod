@@ -359,6 +359,10 @@ namespace ScheduleOne.GameTime
 			return null;
 		}
 
+		private void PassMinute()
+		{
+		}
+
 		private void Tick()
 		{
 		}

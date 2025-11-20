@@ -38,11 +38,11 @@ namespace ScheduleOne.Product
 		public global::ScheduleOne.Product.MethDefinition DefaultMeth;
 
 		[global::UnityEngine.Header("Mix Maps")]
-		public global::ScheduleOne.Properties.MixMaps.MixerMap WeedMixMap;
+		public global::ScheduleOne.Effects.MixMaps.MixerMap WeedMixMap;
 
-		public global::ScheduleOne.Properties.MixMaps.MixerMap MethMixMap;
+		public global::ScheduleOne.Effects.MixMaps.MixerMap MethMixMap;
 
-		public global::ScheduleOne.Properties.MixMaps.MixerMap CokeMixMap;
+		public global::ScheduleOne.Effects.MixMaps.MixerMap CokeMixMap;
 
 		private global::System.Collections.Generic.List<global::ScheduleOne.Product.ProductDefinition> createdProducts;
 
@@ -134,11 +134,6 @@ namespace ScheduleOne.Product
 		{
 		}
 
-		[global::FishNet.Object.TargetRpc]
-		public void SetIsDoneReplicating(global::FishNet.Connection.NetworkConnection conn)
-		{
-		}
-
 		[global::FishNet.Object.ServerRpc(RequireOwnership = false)]
 		public void SetMethDiscovered()
 		{
@@ -163,7 +158,7 @@ namespace ScheduleOne.Product
 		{
 		}
 
-		public global::ScheduleOne.Properties.MixMaps.MixerMap GetMixerMap(global::ScheduleOne.Product.EDrugType type)
+		public global::ScheduleOne.Effects.MixMaps.MixerMap GetMixerMap(global::ScheduleOne.Product.EDrugType type)
 		{
 			return null;
 		}
@@ -270,7 +265,7 @@ namespace ScheduleOne.Product
 			return null;
 		}
 
-		public global::ScheduleOne.StationFramework.StationRecipe GetRecipe(global::System.Collections.Generic.List<global::ScheduleOne.Properties.Property> productProperties, global::ScheduleOne.Properties.Property mixerProperty)
+		public global::ScheduleOne.StationFramework.StationRecipe GetRecipe(global::System.Collections.Generic.List<global::ScheduleOne.Effects.Effect> productProperties, global::ScheduleOne.Effects.Effect mixerProperty)
 		{
 			return null;
 		}
@@ -280,7 +275,7 @@ namespace ScheduleOne.Product
 		{
 		}
 
-		public global::ScheduleOne.Product.ProductDefinition GetKnownProduct(global::ScheduleOne.Product.EDrugType type, global::System.Collections.Generic.List<global::ScheduleOne.Properties.Property> properties)
+		public global::ScheduleOne.Product.ProductDefinition GetKnownProduct(global::ScheduleOne.Product.EDrugType type, global::System.Collections.Generic.List<global::ScheduleOne.Effects.Effect> properties)
 		{
 			return null;
 		}
@@ -341,7 +336,7 @@ namespace ScheduleOne.Product
 			return 0f;
 		}
 
-		public static float CalculateProductValue(float baseValue, global::System.Collections.Generic.List<global::ScheduleOne.Properties.Property> properties)
+		public static float CalculateProductValue(float baseValue, global::System.Collections.Generic.List<global::ScheduleOne.Effects.Effect> properties)
 		{
 			return 0f;
 		}
@@ -360,18 +355,6 @@ namespace ScheduleOne.Product
 		}
 
 		public override void NetworkInitializeIfDisabled()
-		{
-		}
-
-		private void RpcWriter___Target_SetIsDoneReplicating_328543758(global::FishNet.Connection.NetworkConnection conn)
-		{
-		}
-
-		public void RpcLogic___SetIsDoneReplicating_328543758(global::FishNet.Connection.NetworkConnection conn)
-		{
-		}
-
-		private void RpcReader___Target_SetIsDoneReplicating_328543758(global::FishNet.Serializing.PooledReader PooledReader0, global::FishNet.Transporting.Channel channel)
 		{
 		}
 
