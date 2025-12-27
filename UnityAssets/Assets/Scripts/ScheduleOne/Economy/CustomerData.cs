@@ -77,17 +77,12 @@ namespace ScheduleOne.Economy
 		}
 
 		[global::EasyButtons.Button]
-		public void RandomizeProperties()
+		public void RandomizeFavouriteEffects()
 		{
 		}
 
 		[global::EasyButtons.Button]
 		public void RandomizeTiming()
-		{
-		}
-
-		[global::EasyButtons.Button]
-		public void ClearInvalid()
 		{
 		}
 	}

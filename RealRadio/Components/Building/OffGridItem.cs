@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using FishNet.Connection;
 using RealRadio.Persistence.Data;
 using ScheduleOne.EntityFramework;
 using ScheduleOne.ItemFramework;
@@ -49,5 +50,13 @@ public abstract class OffGridItem : BuildableItem
             transform.position,
             transform.rotation.eulerAngles
         );
+    }
+
+    public override void SendInitializationToClient(NetworkConnection conn)
+    {
+    }
+
+    public override void SendInitializationToServer()
+    {
     }
 }
