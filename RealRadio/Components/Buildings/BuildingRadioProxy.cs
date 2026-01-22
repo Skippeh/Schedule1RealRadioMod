@@ -81,12 +81,12 @@ public class BuildingRadioProxy : RadioProxy
         if (IsClientOnly)
             return;
 
-        if (ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StopTime && RadioStationIdHash != null)
+        if (ScheduleOne.GameTime.TimeManager.Instance.DailyMinSum >= StopTime && RadioStationIdHash != null)
         {
             SetRadioStationIdHash(null);
         }
 
-        if (!startedOnceToday && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal >= StartTime && ScheduleOne.GameTime.TimeManager.Instance.DailyMinTotal < StopTime && RadioStationIdHash == null)
+        if (!startedOnceToday && ScheduleOne.GameTime.TimeManager.Instance.DailyMinSum >= StartTime && ScheduleOne.GameTime.TimeManager.Instance.DailyMinSum < StopTime && RadioStationIdHash == null)
         {
             startedOnceToday = true;
 
