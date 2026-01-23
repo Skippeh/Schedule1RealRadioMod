@@ -21,7 +21,7 @@
   <Import Project="$(SolutionDir)build_targets\CopyPlugin.targets" />
 
   <ItemGroup>
-    <PackageReference Include="LavaGang.MelonLoader" Version="0.7.1" />
+    <PackageReference Include="LavaGang.MelonLoader" Version="0.7.0" />
   </ItemGroup>
 
   <ItemGroup>
