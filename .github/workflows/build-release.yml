@@ -69,7 +69,7 @@ jobs:
                           "version_number": "${{ steps.realradio_version.outputs.version }}",
                           "website_url": "https://github.com/Skippeh/Schedule1RealRadioMod",
                           "dependencies": [
-                            "LavaGang-MelonLoader-0.7.1"
+                            "LavaGang-MelonLoader-0.7.0"
                           ]
                       }
             - name: Upload artifact (MelonLoader Thunderstore)
