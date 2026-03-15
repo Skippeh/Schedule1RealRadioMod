@@ -181,7 +181,7 @@ public class BuildingRadioProxy : RadioProxy
         audioClientObject.SetActive(false);
 
         // Disable existing ambient loops in building
-        var ambientSounds = Building.GetComponentsInChildren<AmbientTrackGroup>(includeInactive: true);
+        var ambientSounds = Building.GetComponentsInChildren<AudioClipListPlayer>(includeInactive: true);
 
         foreach (var ambientSound in ambientSounds)
         {
