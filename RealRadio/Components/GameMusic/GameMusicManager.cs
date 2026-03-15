@@ -17,7 +17,7 @@ public class GameMusicManager : Singleton<GameMusicManager>
     public override void Awake()
     {
         // Disable ambient music
-        foreach (var ambientTrack in FindObjectsOfType<AmbientTrack>())
+        foreach (var ambientTrack in FindObjectsOfType<AmbientTrackGroup>())
         {
             ambientTrack.gameObject.SetActive(false);
         }
@@ -40,13 +40,13 @@ public class GameMusicManager : Singleton<GameMusicManager>
 
         if (enabled && !isActiveTrack)
         {
-            activeMusicTracks.Add(track, track.Controller);
+            activeMusicTracks.Add(track, track._audioSource);
         }
         else if (!enabled && isActiveTrack)
         {
-            if (track.FadeOutTime > 0f)
+            if (track._fadeOutTime > 0f)
             {
-                StartCoroutine(RemoveTrackAfterDelay(track, track.FadeOutTime));
+                StartCoroutine(RemoveTrackAfterDelay(track, track._fadeOutTime));
             }
             else
             {
@@ -57,13 +57,13 @@ public class GameMusicManager : Singleton<GameMusicManager>
 
     private void OnMusicTrackPlay(MusicTrack track)
     {
-        activeMusicTracks.TryAdd(track, track.Controller);
+        activeMusicTracks.TryAdd(track, track._audioSource);
     }
 
     private IEnumerator RemoveTrackAfterDelay(MusicTrack track, float delay)
     {
         soonStopping.Add(track);
-        track.volumeMultiplier = currentVolume;
+        track._volumeMultiplier = currentVolume;
         yield return new WaitForSeconds(delay);
         RemoveTrack(track);
     }
@@ -139,12 +139,12 @@ public class GameMusicManager : Singleton<GameMusicManager>
                 currentVolume = volumeTarget;
             }
 
-            controller.VolumeMultiplier = track.VolumeMultiplier * currentVolume;
+            controller.VolumeMultiplier = track._volumeMultiplier * currentVolume;
             controller.ApplyVolume();
 
             if (track is StartLoopMusicTrack loopTrack && loopTrack.IsPlaying)
             {
-                loopTrack.LoopSound.VolumeMultiplier = track.VolumeMultiplier * currentVolume;
+                loopTrack.LoopSound.VolumeMultiplier = track._volumeMultiplier * currentVolume;
                 loopTrack.LoopSound.ApplyVolume();
             }
         }

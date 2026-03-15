@@ -51,7 +51,7 @@ namespace RealRadio.Components.Audio
             audioSource = GetComponent<AudioSource>() ?? throw new InvalidOperationException("No AudioSource component found on game object");
 
             int numChannels = 1;
-            audioSource.clip = AudioClip.Create("Dummy", 2048, numChannels, AudioSettings.GetSampleRate(), false);
+            audioSource.clip = AudioClip.Create("Dummy", 2048, numChannels, UnityEngine.AudioSettings.GetSampleRate(), false);
             audioSource.loop = true;
             float[] audioData = new float[2048 * numChannels];
             Array.Fill(audioData, 1);

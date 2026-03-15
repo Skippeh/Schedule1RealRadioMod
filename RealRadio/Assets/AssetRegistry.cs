@@ -136,7 +136,7 @@ public class AssetRegistry : ScriptableObject
                 registry.ItemRegistry.Add(new Registry.ItemRegister
                 {
                     ID = itemDefinition.ID,
-                    AssetPath = assetName,
+                    name = assetName,
                     Definition = itemDefinition
                 });
                 continue;

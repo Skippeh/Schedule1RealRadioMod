@@ -53,6 +53,9 @@
     <Reference Include="$(ManagedFolder)\Assembly-CSharp.dll" Publicize="true">
       <Private>false</Private>
     </Reference>
+    <Reference Include="$(ManagedFolder)\ScheduleOne.Core.dll" Publicize="true">
+      <Private>false</Private>
+    </Reference>
     <Reference Include="$(ManagedFolder)\FishNet.Runtime.dll">
         <Private>false</Private>
     </Reference>

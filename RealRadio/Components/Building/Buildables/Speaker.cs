@@ -473,7 +473,7 @@ public class Speaker : OffGridItem, IUsable
 
     private void OnVolumeChanged(float volume)
     {
-        audioSourceController.SetVolume(volume);
+        audioSourceController.SetBaseVolume(volume);
     }
 
     private void OnToggled(bool isOn)

@@ -57,8 +57,8 @@ namespace RealRadio.Components.Audio
             }
             else
             {
-                if (!Mathf.Approximately(controller.Volume, volume))
-                    controller.SetVolume(volume);
+                if (!Mathf.Approximately(controller._baseVolume, volume))
+                    controller.SetBaseVolume(volume);
             }
         }
     }
