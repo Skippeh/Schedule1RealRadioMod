@@ -419,7 +419,7 @@ public class RadialMenu : Singleton<RadialMenu>
         uiOption.style.top = (Screen.height / 2) - (uiOption.resolvedStyle.height / 2);
 
         int i = (int)uiOption.userData;
-        float sliceSize = 360 / options.Count;
+        float sliceSize = 360f / options.Count;
 
         float angle = (sliceSize * i) - 90f;
         float offsetFromMiddle = GetItemOffsetFromMiddle();
