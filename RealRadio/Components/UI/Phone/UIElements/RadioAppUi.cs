@@ -33,9 +33,11 @@ public class RadioAppUi : MonoBehaviour
     [SerializeField]
     private VisualTreeAsset stationListItemAsset = null!;
 
+#pragma warning disable CS0649 // Field is never assigned (it's assigned in prefab from Unity)
     [Header("Style")]
     [SerializeField]
     private float backgroundScrollSpeed;
+#pragma warning restore CS0649
 
     private Vector2 backgroundMoveDirection;
 

@@ -401,8 +401,10 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
 public class SpeakerConnectionArrowTransform : MonoBehaviour
 {
+#pragma warning disable CS0649 // Field is never assigned (it's assigned in prefab from Unity)
     [SerializeField]
     private Transform? overrideTransform;
+#pragma warning restore CS0649
 
     public Transform GetTransform()
     {
