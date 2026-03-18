@@ -396,10 +396,10 @@ public class RadialMenu : Singleton<RadialMenu>
             else
                 label.style.display = DisplayStyle.None;
 
-            if (option.BackgroundColor is not null or { a: 0, r: 0, g: 0, b: 0 })
+            if (option.BackgroundColor is not null and not { a: 0, r: 0, g: 0, b: 0 })
                 root.style.backgroundColor = option.BackgroundColor.Value;
 
-            if (option.TextColor is not null or { a: 0, r: 0, g: 0, b: 0 })
+            if (option.TextColor is not null and not { a: 0, r: 0, g: 0, b: 0 })
                 label.style.color = option.TextColor.Value;
 
             radialItemsContainer.Add(uiOption);

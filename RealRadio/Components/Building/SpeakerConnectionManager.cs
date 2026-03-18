@@ -131,7 +131,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     public void StartEditMode(BuildableItem? initialSelectedItem = null, Action<Speaker, Buildables.Radio>? connectedCallback = null)
     {
-        if (initialSelectedItem != null && initialSelectedItem is not Speaker or Buildables.Radio)
+        if (initialSelectedItem != null && initialSelectedItem is not Speaker and not Buildables.Radio)
             throw new ArgumentException($"{nameof(initialSelectedItem)} ({initialSelectedItem}) must be a {nameof(Speaker)} or {nameof(Buildables.Radio)}");
 
         if (EditModeEnabled)
