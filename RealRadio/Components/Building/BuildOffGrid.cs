@@ -367,7 +367,7 @@ public class BuildUpdateOffGrid : BuildUpdate_Base
         if (buildStart.GhostObject == null)
             return;
 
-        var buildManager = Singleton<BuildManager>.Instance;
+        var buildManager = BuildManager.Instance;
         Material material;
 
         if (positionIsValid || sqrDistanceDiff <= MaxSnapDistanceSqr)

@@ -3,7 +3,7 @@ namespace ScheduleOne.Vehicles
 	[global::UnityEngine.RequireComponent(typeof(global::FishNet.Component.Transforming.NetworkTransform))]
 	[global::UnityEngine.RequireComponent(typeof(global::FishNet.Component.Ownership.PredictedOwner))]
 	[global::UnityEngine.RequireComponent(typeof(global::ScheduleOne.Combat.PhysicsDamageable))]
-	public class LandVehicle : global::FishNet.Object.NetworkBehaviour, global::ScheduleOne.IGUIDRegisterable, global::ScheduleOne.Persistence.ISaveable
+	public class LandVehicle : global::FishNet.Object.NetworkBehaviour, global::ScheduleOne.IGUIDRegisterable, global::ScheduleOne.Persistence.ISaveable, global::ScheduleOne.Weather.IWeatherEntity
 	{
 		public const float KINEMATIC_THRESHOLD_DISTANCE = 30f;
 
@@ -14,6 +14,10 @@ namespace ScheduleOne.Vehicles
 		public const bool USE_WHEEL = false;
 
 		public const float SPEED_DISPLAY_MULTIPLIER = 1.4f;
+
+		public const float MaxImpactDamage = 120f;
+
+		public const float MaxImpactDamageSpeed = 100f;
 
 		public bool DEBUG;
 
@@ -308,6 +312,23 @@ namespace ScheduleOne.Vehicles
 		public global::System.Collections.Generic.List<string> LocalExtraFolders { get; set; }
 
 		public bool HasChanged { get; set; }
+
+		global::UnityEngine.Transform global::ScheduleOne.Weather.IWeatherEntity.Transform => null;
+
+		string global::ScheduleOne.Weather.IWeatherEntity.WeatherVolume
+		{
+			[global::System.Runtime.CompilerServices.CompilerGenerated]
+			get
+			{
+				return null;
+			}
+			[global::System.Runtime.CompilerServices.CompilerGenerated]
+			set
+			{
+			}
+		}
+
+		public bool IsUnderCover { get; set; }
 
 		public float SyncAccessor__003CCurrentSteerAngle_003Ek__BackingField
 		{
@@ -675,6 +696,14 @@ namespace ScheduleOne.Vehicles
 		}
 
 		public virtual void Load(global::ScheduleOne.Persistence.Datas.VehicleData data, string containerPath)
+		{
+		}
+
+		public void OnWeatherChange(global::ScheduleOne.Weather.WeatherConditions newConditions)
+		{
+		}
+
+		public void OnUpdateWeatherEntity()
 		{
 		}
 

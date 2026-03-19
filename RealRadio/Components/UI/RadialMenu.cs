@@ -396,10 +396,10 @@ public class RadialMenu : Singleton<RadialMenu>
             else
                 label.style.display = DisplayStyle.None;
 
-            if (option.BackgroundColor is not null or { a: 0, r: 0, g: 0, b: 0 })
+            if (option.BackgroundColor is not null and not { a: 0, r: 0, g: 0, b: 0 })
                 root.style.backgroundColor = option.BackgroundColor.Value;
 
-            if (option.TextColor is not null or { a: 0, r: 0, g: 0, b: 0 })
+            if (option.TextColor is not null and not { a: 0, r: 0, g: 0, b: 0 })
                 label.style.color = option.TextColor.Value;
 
             radialItemsContainer.Add(uiOption);
@@ -419,7 +419,7 @@ public class RadialMenu : Singleton<RadialMenu>
         uiOption.style.top = (Screen.height / 2) - (uiOption.resolvedStyle.height / 2);
 
         int i = (int)uiOption.userData;
-        float sliceSize = 360 / options.Count;
+        float sliceSize = 360f / options.Count;
 
         float angle = (sliceSize * i) - 90f;
         float offsetFromMiddle = GetItemOffsetFromMiddle();

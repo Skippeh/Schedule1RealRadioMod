@@ -105,7 +105,15 @@ public class RealRadioPlugin
             return;
         }
 
-        PhoneBootstrap.CreateApp(canvas);
+        IEnumerator Coroutine()
+        {
+            yield return null;
+            PhoneBootstrap.CreateApp(canvas);
+        }
+
+        // We need to do this at the end of the frame due to OnAppsCanvasCreated being called from AppCanvas.Awake.
+        // If we don't the Stations app will be added to the first phone app 'slot' on the home screen, and we want it to be last.
+        canvas.StartCoroutine(Coroutine());
     }
 
     private void OnDanAwake(Dan dan)

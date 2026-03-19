@@ -18,6 +18,9 @@
 
     <!-- Copy files included in CopyToPluginFolder to the Unity project's Assets/Plugins folder -->
     <CopyToUnity>true</CopyToUnity>
+
+    <!-- Don't warn about "This package may not be fully compatible with your project" due to using netstandard2.1 but using packages that only target net framework -->
+     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <Import Project="$(SolutionDir)build_targets\CopyPlugin.targets" />
@@ -51,6 +54,9 @@
 
   <ItemGroup>
     <Reference Include="$(ManagedFolder)\Assembly-CSharp.dll" Publicize="true">
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="$(ManagedFolder)\ScheduleOne.Core.dll" Publicize="true">
       <Private>false</Private>
     </Reference>
     <Reference Include="$(ManagedFolder)\FishNet.Runtime.dll">

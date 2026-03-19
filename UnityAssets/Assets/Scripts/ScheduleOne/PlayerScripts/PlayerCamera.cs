@@ -10,7 +10,7 @@ namespace ScheduleOne.PlayerScripts
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CILerpCamera_003Ed__116 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CILerpCamera_003Ed__120 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -55,7 +55,7 @@ namespace ScheduleOne.PlayerScripts
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CILerpCamera_003Ed__116(int _003C_003E1__state)
+			public _003CILerpCamera_003Ed__120(int _003C_003E1__state)
 			{
 			}
 
@@ -82,7 +82,7 @@ namespace ScheduleOne.PlayerScripts
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CILerpFOV_003Ed__127 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CILerpFOV_003Ed__131 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -117,7 +117,7 @@ namespace ScheduleOne.PlayerScripts
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CILerpFOV_003Ed__127(int _003C_003E1__state)
+			public _003CILerpFOV_003Ed__131(int _003C_003E1__state)
 			{
 			}
 
@@ -144,7 +144,7 @@ namespace ScheduleOne.PlayerScripts
 		}
 
 		[global::System.Runtime.CompilerServices.CompilerGenerated]
-		private sealed class _003CLerpDoF_003Ed__124 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
+		private sealed class _003CLerpDoF_003Ed__128 : global::System.Collections.Generic.IEnumerator<object>, global::System.Collections.IEnumerator, global::System.IDisposable
 		{
 			private int _003C_003E1__state;
 
@@ -181,7 +181,7 @@ namespace ScheduleOne.PlayerScripts
 			}
 
 			[global::System.Diagnostics.DebuggerHidden]
-			public _003CLerpDoF_003Ed__124(int _003C_003E1__state)
+			public _003CLerpDoF_003Ed__128(int _003C_003E1__state)
 			{
 			}
 
@@ -282,6 +282,8 @@ namespace ScheduleOne.PlayerScripts
 
 		private global::System.Collections.Generic.Dictionary<int, global::ScheduleOne.Tools.MotionEvent> movementEvents;
 
+		private global::System.Collections.Generic.List<int> movementEventKeys;
+
 		private float freeCamSpeed;
 
 		private float mouseX;
@@ -293,6 +295,8 @@ namespace ScheduleOne.PlayerScripts
 		private float schizoFoV;
 
 		private float timeUntilNextSchizoVoice;
+
+		private static bool isCursorShowing;
 
 		private global::System.Collections.Generic.List<global::UnityEngine.Vector3> gizmos;
 
@@ -331,6 +335,8 @@ namespace ScheduleOne.PlayerScripts
 		public float FovJitter { get; private set; }
 
 		public global::System.Collections.Generic.List<string> activeUIElements { get; protected set; }
+
+		public static bool IsCursorShowing => false;
 
 		protected override void Awake()
 		{
@@ -436,7 +442,7 @@ namespace ScheduleOne.PlayerScripts
 		{
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.PlayerScripts.PlayerCamera._003CILerpCamera_003Ed__116))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.PlayerScripts.PlayerCamera._003CILerpCamera_003Ed__120))]
 		protected global::System.Collections.IEnumerator ILerpCamera(global::UnityEngine.Vector3 endPos, global::UnityEngine.Quaternion endRot, float lerpTime, bool worldSpace, bool returnToRestingPosition = false, bool reenableLook = false)
 		{
 			return null;
@@ -462,7 +468,7 @@ namespace ScheduleOne.PlayerScripts
 		{
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.PlayerScripts.PlayerCamera._003CLerpDoF_003Ed__124))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.PlayerScripts.PlayerCamera._003CLerpDoF_003Ed__128))]
 		private global::System.Collections.IEnumerator LerpDoF(bool active, float lerpTime)
 		{
 			return null;
@@ -472,7 +478,7 @@ namespace ScheduleOne.PlayerScripts
 		{
 		}
 
-		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.PlayerScripts.PlayerCamera._003CILerpFOV_003Ed__127))]
+		[global::System.Runtime.CompilerServices.IteratorStateMachine(typeof(global::ScheduleOne.PlayerScripts.PlayerCamera._003CILerpFOV_003Ed__131))]
 		protected global::System.Collections.IEnumerator ILerpFOV(float endFov, float lerpTime)
 		{
 			return null;

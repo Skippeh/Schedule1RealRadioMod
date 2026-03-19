@@ -147,6 +147,8 @@ namespace ScheduleOne.GameTime
 
 		public ActionList onTick;
 
+		public global::System.Action onTimeChanged;
+
 		public global::System.Action<int> onTimeSkip;
 
 		public global::System.Action onTimeSet;
@@ -172,8 +174,6 @@ namespace ScheduleOne.GameTime
 		private bool NetworkInitialize__LateScheduleOne_002EGameTime_002ETimeManagerAssembly_002DCSharp_002Edll_Excuted;
 
 		public static float MinuteDuration => 0f;
-
-		public static float TicksPerMinute => 0f;
 
 		[field: global::UnityEngine.SerializeField]
 		public int DefaultTime { get; private set; }
@@ -223,6 +223,10 @@ namespace ScheduleOne.GameTime
 		public int LoadOrder { get; }
 
 		public override void Awake()
+		{
+		}
+
+		protected override void Start()
 		{
 		}
 

@@ -26,11 +26,13 @@ namespace ScheduleOne.AvatarFramework.Equipping
 
 		public string AnimationTrigger;
 
+		private bool _equipped;
+
 		public string AssetPath;
 
 		protected global::ScheduleOne.AvatarFramework.Avatar avatar;
 
-		[global::EasyButtons.Button]
+		[global::ScheduleOne.Core.Button]
 		public void RecalculateAssetPath()
 		{
 		}

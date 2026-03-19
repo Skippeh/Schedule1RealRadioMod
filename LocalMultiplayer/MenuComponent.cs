@@ -190,7 +190,7 @@ public class MenuComponent : MonoBehaviour
         if (save == null && host)
             throw new ArgumentException("Need to specify a save if hosting");
 
-        MusicPlayer.Instance.StopAndDisableTracks();
+        MusicManager.Instance.StopAndDisableTracks();
 
         if (host)
         {

@@ -13,20 +13,20 @@ MonoBehaviour:
   m_Name: Wall Speaker
   m_EditorClassIdentifier: 
   Name: Wall Speaker
+  ID: com.skipcast.realradio.wall_speaker
   Description: A speaker that you can place on walls and attach to a radio for better
     audio quality.
-  ID: com.skipcast.realradio.wall_speaker
   Icon: {fileID: 21300000, guid: 63a643bca6f750d46946e93dec6533d2, type: 3}
   Category: 4
-  Keywords:
-  - speaker
-  AvailableInDemo: 1
-  LabelDisplayColor: {r: 1, g: 1, b: 1, a: 1}
   StackLimit: 10
+  UsableInFilters: 0
+  EquippableData: {fileID: 0}
+  legalStatus: 0
+  AvailableInDemo: 1
+  EquipMode: 0
   Equippable: {fileID: 4594350203163546566, guid: a08004eb11f7fb1449b95ef623864bbc, type: 3}
   CustomItemUI: {fileID: 0}
   CustomInfoContent: {fileID: 0}
-  legalStatus: 0
   BasePurchasePrice: 1000
   ShopCategories:
   - Category: 1
@@ -36,6 +36,8 @@ MonoBehaviour:
     Tier: 1
   ResellMultiplier: 0.5
   StoredItem: {fileID: 0}
+  PickpocketDifficultyMultiplier: 0.1
   StationItem: {fileID: 0}
+  CombatUtility: 0
   BuiltItem: {fileID: 3060968634576037990, guid: 8e3dce067d776eb4cb6712f4f4da9076, type: 3}
   BuildSoundType: 2

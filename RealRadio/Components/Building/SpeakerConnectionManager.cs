@@ -131,7 +131,7 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
     public void StartEditMode(BuildableItem? initialSelectedItem = null, Action<Speaker, Buildables.Radio>? connectedCallback = null)
     {
-        if (initialSelectedItem != null && initialSelectedItem is not Speaker or Buildables.Radio)
+        if (initialSelectedItem != null && initialSelectedItem is not Speaker and not Buildables.Radio)
             throw new ArgumentException($"{nameof(initialSelectedItem)} ({initialSelectedItem}) must be a {nameof(Speaker)} or {nameof(Buildables.Radio)}");
 
         if (EditModeEnabled)
@@ -401,8 +401,10 @@ public class SpeakerConnectionManager : Singleton<SpeakerConnectionManager>
 
 public class SpeakerConnectionArrowTransform : MonoBehaviour
 {
+#pragma warning disable CS0649 // Field is never assigned (it's assigned in prefab from Unity)
     [SerializeField]
     private Transform? overrideTransform;
+#pragma warning restore CS0649
 
     public Transform GetTransform()
     {

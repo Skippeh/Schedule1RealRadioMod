@@ -16,6 +16,9 @@
 
     <!-- The name of the plugin directory, needs to match the name of the main assembly to go in the same directory -->
     <PluginDirectory>RealRadio</PluginDirectory>
+
+    <!-- Don't warn about "This package may not be fully compatible with your project" due to using netstandard2.1 but using packages that only target net framework -->
+     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <Import Project="$(SolutionDir)build_targets\CopyPlugin.targets" />

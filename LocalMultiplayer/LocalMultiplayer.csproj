@@ -14,6 +14,9 @@
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
     <RootNamespace>LocalMultiplayer</RootNamespace>
+
+    <!-- Don't warn about "This package may not be fully compatible with your project" due to using netstandard2.1 but using packages that only target net framework -->
+     <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(BEPINEX)' != ''">
